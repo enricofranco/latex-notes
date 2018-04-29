@@ -5,6 +5,8 @@
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{multirow}
 \usepackage{parallel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -23,5 +25,140 @@
 \include{memory_management_unit}
 \include{virtual_memory}
 \include{device_management}
+
+\chapter{File system}
+The \emph{file system} is a layer of OS which transforms block interface of disks (or other block devices) into files, directories, etc.
+A \emph{file} is an abstract data type that associates the name to its data. Data are normally referred as record but they are organized in blocks. There is no correspondence between blocks and records. Blocks are not accessed directly, because in between there are strategies on how accessing the block which may optimize the block access.
+
+\section{Overview}
+File systems have traditionally divided the disk into equally sized blocks to simplify their design and limit the worst-case fragmentation. When files are allocated, only whole blocks can be allocated to individual files. But, as file sizes are often not multiples of the file system block size, this design inherently results in the last blocks of files  occupying only a part of the block, resulting in what is called \emph{internal fragmentation}. This waste of space can be significant if the file system stores many small files and can become critical when attempting to use higher block sizes to improve performance.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.4]{images/file_system/logical_level_file_access.png}
+\caption{Logical levels for file access}
+\end{figure}
+
+\subsection{Regular file}
+Data in a file are reachable using common operations such as creation, writing, reading, deleting, etc.
+
+Different OSs keep track of different file attributes, including:
+\begin{itemize}
+\item File type;
+\item File system type;
+\item Volume;
+\item Starting address;
+\item Size;
+\item Owner;
+\item Access rights;
+\item Use information (when/who has last written/read/modified the file or its attributes).
+\end{itemize}
+Files are organized in directories and subdirectories.
+
+\subsection{Disk file organization}
+There are three major methods to store files on disks: contiguous, linked and indexed.
+
+\subsubsection{Contiguous allocation}
+Contiguous allocation requires that all blocks of a file are kept together one after the other. In this way, access is very fast because reading consecutive blocks requires no movement of the disk heads or one small step to the next adjacent cylinder.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.35]{images/file_system/contiguous_allocation.png}
+\caption{Contiguous allocation}
+\end{figure}
+
+This type of allocation has the same issues of the contiguous allocation in main memory (e.g.\@ first fit, best fit, fragmentation problems). Problems can arise when files grow, or if the exact file size is unknown at creation time. In fact, an over-estimation will cause external fragmentation and space waste, while under-estimation may cause the relocation of the file.
+
+\subsubsection{Linked allocation}
+Disk files can be stored as linked lists, with the expense of the storage space consumed by each link (i.e.\@ for each block, 4 bytes are lost to store the address of next block). Linked allocation has no external fragmentation, does not require to know a priori the file size and, therefore, allows files to grow dynamically. This allocation permits only sequential access to files because it is needed to traverse the entire series of blocks and it is dangerous because administration data (link) together with user data and it has the disadvantage that, if a pointer is lost or damaged, the entire file is unreachable and corrupted.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.35]{images/file_system/linked_allocation.png}
+\caption{Linked allocation}
+\end{figure}
+
+The \textbf{File Allocation Table (FAT)}, adopted by \emph{DOS file system}, is an improvement to basic linked allocation. The main idea is to separate administration data from user data adopted. Directories are associated with a number representing both the pointer to the first block of data and an index into FAT. Each entry of the FAT contains the index of next block, providing separation between administration and user data and immediate access to the first block. Therefore, small files (which are the most common) can be immediately referenced.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.35]{images/file_system/fat.png}
+\caption{File Allocation Table (FAT)}
+\end{figure}
+
+\subsubsection{Indexed allocation}
+Indexed allocation keeps all the indexes into a single block (i.e. block of indexes) for each file instead of spreading them all over the file system or storing them in a FAT. When a file is opened, its index block is opened too and it is possible to access the its blocks wherever they are. Some disk space is wasted because an entire index block must be allocated for each files. There are several approaches to implement the index block:
+\begin{itemize}
+\item Linked Scheme: An index block is one disk block, which can be read and written in a single disk operation. The first index block contains some header information, the first N block addresses, and if necessary a pointer to additional linked index blocks;
+\item Multi-Level Index: The first index block contains a set of pointers to secondary index blocks, which in turn contain pointers to the actual data blocks.
+\end{itemize}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.35]{images/file_system/indexed_allocation.png}
+\caption{Indexed allocation}
+\end{figure}
+
+\section{UNIX file system organization}
+UNIX adopts a \emph{combined scheme} in its inodes. In fact, it stores 10 data block pointers directly in the inode, and then singly, doubly and triply indirect pointers provide access to more data blocks as needed.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Boot block & Superblock & Inode list & Data blocks \\ 
+\hline 
+\end{tabular} 
+\end{center}
+
+\begin{itemize}
+\item The first block is the \emph{boot block} containing the bootstrap code loaded and executed at system power on.
+\item The \emph{superblock} describes the file system state, i.e.\@ size, number of files included, free list of inodes and data blocks, etc.
+\end{itemize}
+
+\paragraph{Inode} The \emph{inode} contains information about the owner, file type (regular, directory, special, \dots), access rights, access times, link number, file size and table of the data block addresses on disk. Those information can be retrieved exploiting command \texttt{ls -l}.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.35]{images/file_system/unix_combined_scheme.png}
+\caption{The UNIX allocation of disk space}
+\end{figure}
+
+\subsection{Functions for file system management}
+Table~\ref{system_mgmt_upper_layers} includes functions directly used by system calls, which exploit functionality provided by procedures contained in table~\ref{system_mgmt_lower_layers}. Here, the functions placed at the lower layer, are used directly by the buffer cache, e.g.\@ get block, block release, block read. The most used is \texttt{getblk} used to retrieve a block at any access. Those functions are exploited by some allocation algorithms, placed on top of them, e.g.\@ copy, delayed write.
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|cc|cc|}
+\hline 
+\multicolumn{3}{|c|}{\texttt{namei}} & \multirow{2}{*}{\texttt{alloc}} & \multirow{2}{*}{\texttt{free}} & \multirow{2}{*}{\texttt{ialloc}} & \multirow{2}{*}{\texttt{ifree}} \\\cline{1-3} 
+\texttt{iget} & \texttt{iput} & \texttt{bmap} & & & & \\ 
+\hline 
+\end{tabular}
+\caption{Upper layers}
+\label{system_mgmt_upper_layers}
+\end{table} 
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline 
+\multicolumn{5}{|c|}{buffer allocation algorithm} \\ 
+\hline 
+\texttt{getblk} & \texttt{brelse} & \texttt{bread} & \texttt{breada} & \texttt{bwrite} \\ 
+\hline 
+\end{tabular} 
+\caption{Lower layers}
+\label{system_mgmt_lower_layers}
+\end{table}
+
+\paragraph{\texttt{iget}} It is called by system call \texttt{open}. It locks the inode, allocates in memory a copy of the inode describing a file and returns an unlocked inode with reference count incremented by one. If the inode free list is empty, the kernel returns an error.
+
+\paragraph{\texttt{iput}} It is called by system call \texttt{close}. It locks the inode and decrements the reference count by one. If the reference count is 0, the inode is written on disk if modified and its copy is released from the inode free list. If the link~count \footnote{Number of names referring to that object.} is 0, the kernel releases all the data blocks of the file and its disk inode.
+
+Reference counter and link counter may differ, for example, if a file is created (system call \texttt{creat}) and immediately unlinked the reference counter is one while the link counter is zero. In this case, only the process creating the file has the possibility to access the file because it knows its file descriptor, thus it may use the file as a temporary one. When the process closes (system call \texttt{close}) the file, both reference and link counters are zero and, therefore, the kernel can remove the file.
+
+\paragraph{\texttt{bmap}} It converts the file offset in the corresponding physical block on disk. Given the offset, it uses the inode pointers to identify disk block where the information is stored and returns a pointer to the disk block.
+
+\paragraph{\texttt{namei}} It returns the inode of a file, given its pathname. It analyzes a pathname component at a time and finds the corresponding inode. The pointer to the inode of the process working directory is stored in the user area \footnote{Common kernel memory area to all process. Kernel uses this are to store the parameters of the currently running process}. It implements a non trivial and expensive operation. In fact it is used only once when a file is opened, then the file descriptor is used to reach the file.
 
 \end{document}
