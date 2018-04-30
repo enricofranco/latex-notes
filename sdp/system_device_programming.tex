@@ -161,4 +161,150 @@ Reference counter and link counter may differ, for example, if a file is created
 
 \paragraph{\texttt{namei}} It returns the inode of a file, given its pathname. It analyzes a pathname component at a time and finds the corresponding inode. The pointer to the inode of the process working directory is stored in the user area \footnote{Common kernel memory area to all process. Kernel uses this are to store the parameters of the currently running process}. It implements a non trivial and expensive operation. In fact it is used only once when a file is opened, then the file descriptor is used to reach the file.
 
+\paragraph{\texttt{ialloc}} It is called by system call \texttt{open} with \texttt{O\_CREAT} flag. It assigns a disk inode to a file that has to be created.
+
+\paragraph{\texttt{ifree}} It is called by system call \texttt{unlink}. It releases the inode of a file that has been remove, and is not currently in use, i.e.\@ reference count greater than zero.
+
+\paragraph{\texttt{alloc}} It is called when the file is written and a new data block is needed. It allocates the first free block number in the superblock free list. If this block is the last block available in the superblock's list, it contains all the addresses to free blocks in the disk. Thus, the operating system will use the number of the block as pointer to a block storing the next element of the linked list, which is integrally loaded into the cache and the previous block, now empty, can be allocated for the process which made the request for it.
+
+\paragraph{\texttt{free}} It provides the same functionalities of the \texttt{ifree} routine saw previously.
+
+\subsection{File system system calls}
+\begin{itemize}
+\item Return a descriptor: \texttt{open}, \texttt{creat}, \texttt{dup}, \texttt{pipe}, \texttt{close};
+\item Use \texttt{namei}: \texttt{open}, \texttt{creat}, \texttt{chdir}, \texttt{chroot}, \texttt{chown}, \texttt{chmod}, \texttt{stat}, \texttt{link}, \texttt{unlink}, \texttt{mknod}, \texttt{mount}, \texttt{umount};
+\item Allocate inode: \texttt{creat}, \texttt{mknod}, \texttt{unlink};
+\item Attributes: \texttt{chown}, \texttt{chmod}, \texttt{stat};
+\item I/O: \texttt{read}, \texttt{write}, \texttt{seek};
+\item File system structure management: \texttt{mount}, \texttt{umount}, \texttt{chdir}, \texttt{chroot}.
+\end{itemize}
+
+\paragraph{open} \texttt{int fd = open(char* pathname, int flags, mode\_t mode);}
+
+It returns a \emph{file descriptor} associated to \texttt{pathname}. The parameter \texttt{flags} must include one of the access modes: \texttt{O\_RDONLY}, \texttt{O\_WRONLY} or \texttt{O\_RDWR} standing for read-only, write-only or read write, respectively. In addition, zero or more file creation flags and file status flags can be bitwise-or'd in \texttt{flags}, e.g.\@ create file if not existing, truncate it, append the content, no writing delay, exclusive access.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.4]{images/file_system/open_system_call.jpg}
+\caption{UNIX open system call}
+\end{figure}
+
+\paragraph{read} \texttt{ssize\_t number = read(int fd, void* buffer, size\_t count);}
+
+It attempts to read up to \texttt{count} bytes from file descriptor \texttt{fd} into the buffer starting at \texttt{buf}. When the functions completes with success, it returns the number of bytes read, and the file position is advanced by this number. The while \texttt{count} cycle ends:
+\begin{itemize}
+\item because \texttt{count} is satisfied;
+\item because of \emph{EOF}, different than reading a block with zero pointer in its node;
+\item because of read error from the device;
+\item because of error during the copy to the user buffer.
+\end{itemize}
+The I/O parameters are copied in the user area:
+\begin{itemize}
+\item \emph{mode}: read or write;
+\item \emph{count}: number of bytes to be read or written;
+\item \emph{offset}: where to begin the I/O operation;
+\item \emph{address}: source or destination;
+\item \emph{flag}: kernel or user space;
+\item flag directory;
+\item possible changed root.
+\end{itemize}
+If more than one process have to access the same file and one of them wants to access it in write mode, file and record locking have to be used to guarantee the mutual exclusion access.
+
+\subparagraph{Read ahead}
+While a process executes the system call \texttt{read} of two logical sequential blocks, the kernel assumes that all its successive calls will be sequential. At every iteration of the reading cycle, the kernel stores the next logical block number in the inode in memory and, in the next iteration, it tests if the current block number is equal to the saved one. If they are equal, the kernel computes the physical block number for the read ahead using \texttt{bmap} routine and stores its value in the user area so that it can be used by \texttt{breada}.
+
+\paragraph{write}
+\texttt{ssize\_t write(int fd, const void *buf, size\_t count);}
+
+It writes up to \texttt{count} bytes to the file referenced by the file descriptor \texttt{fd} from the buffer starting at \texttt{buf}. On success, the number of bytes written are returned (zero indicates nothing was written). On error, -1 is returned.
+
+If the write offset does not correspond to an already allocated block, the kernel allocates a new block and updates the pointer structure, possibly allocating one or more indirect blocks. If, instead, the kernel has to write only part of a block, it must read the block from disk. Delayed write is particularly suited to pipes and temporary files.
+
+\paragraph{lseek}
+\texttt{off\_t lseek(int fd, off\_t offset, int whence);}
+
+It repositions the file offset of the open file associated with the file descriptor \texttt{fd} to the argument \texttt{offset} according to the directive \texttt{whence} as follows:
+\begin{itemize}
+\item \texttt{SEEK\_SET}: The file offset is set to \texttt{offset} bytes.
+\item \texttt{SEEK\_CUR}: The file offset is set to its current location plus \texttt{offset} bytes.
+\item \texttt{SEEK\_END}: The file offset is set to the size of the file plus \texttt{offset} bytes.
+\end{itemize}
+It allows the file offset to be set beyond the end of the file,but this does not change the size of the file. If data is later written at this point, subsequent reads of the data in the gap (a \emph{hole}) return null bytes until data is actually written into the gap. Upon successful completion, it returns the resulting offset location as measured in bytes from the beginning of the file.  On error, the value -1 is returned.
+
+\paragraph{close}
+\texttt{int close(int fd);}
+
+It closes a file descriptor, so that it no longer refers to any file and may be reused. Any record locks held on the file it was associated with, and owned by the process, are removed (regardless of the file descriptor that was used to obtain the lock). If \texttt{fd} is the last file descriptor referring to the underlying open file description, the resources associated with the open file description are freed; if the file descriptor was the last reference to a file which has been removed using \texttt{unlink}, the file is deleted. It returns zero on success. On error, -1 is returned.
+
+If the inode reference count is greater than one, it decrements the counter and return. If the inode reference count is one, the kernel releases, by means of \texttt{iput}, the inode allocated in memory by the \texttt{open} system call, the corresponding entry in the inode table and the entry in the user file description tables. When a process exits, the kernel closes all its file descriptor still open. 
+
+\paragraph{creat}
+\texttt{int creat(const char *pathname, mode\_t mode);}
+
+It is equivalent to calling \texttt{open} with flags equal to \texttt{O\_CREAT | O\_WRONLY | O\_TRUNC}. If the file does not exist, it is create with the specified name and mode. The kernel analyzes the pathname by means of \texttt{namei} and when the last component is parsed, it allocates a free inode, it stores the name in the first free entry of the last parsed directory name and opens the file. If the file exists, parsing it pathname, the kernel finds its inode, it initializes the file dimension to 0 and releases all its data blocks.
+
+If the process calling \texttt{creat} has the write permission, and the file exists, the file owner and the access permission do not change. The kernel does not verify that the parent directory of existing file has the write permission because the directory content does not change.
+
+\paragraph{mknod}
+\texttt{int mknod(const char *pathname, mode\_t mode, dev\_t dev);}
+
+It creates a filesystem node (file, device special file, or named pipe) named \texttt{pathname}, with attributes specified by \texttt{mode} and \texttt{dev}. The \texttt{mode} argument specifies both the file mode to use and the type of node to be created and it should be a combination (using bitwise OR) of one of the file types listed below and zero or more of the file mode bits. The file type must be one of \texttt{S\_IFREG}, \texttt{S\_IFCHR}, \texttt{S\_IFBLK}, \texttt{S\_IFIFO}, or \texttt{S\_IFSOCK} to specify a regular file (which will be created empty), character special file, block special file, FIFO (named pipe), or UNIX domain socket, respectively. If the file type is \texttt{S\_IFCHR} or \texttt{S\_IFBLK}, then \texttt{dev} specifies the major and minor numbers of the newly created device special file; otherwise it is ignored. It returns zero on success, or -1 if an error occurred.
+
+It may be used to create named pipes which are pipes remaining in the file system and permit communication among processes which are not parent and child.
+
+\paragraph{chdir}
+\texttt{int chdir(const char *pathname);}
+
+It shall cause the directory named by the pathname pointed to by the \texttt{pathname} argument to become the current working directory; the starting point for \texttt{pathname} searches for pathnames not beginning with \texttt{/}. Upon successful completion, 0 shall be returned. Otherwise, -1 shall be returned and the current working directory shall remain unchanged. 
+
+The kernel decrements the reference count, releases the old directory inode and stores the inode of the new directory in the user area. The current directory inode is released after the process exits or calls again \texttt{chdir}.
+
+\paragraph{chroot}
+\texttt{int chroot(const char *pathname);}
+
+It changes the root directory of the calling process to that specified in \texttt{path}. This directory will be used for pathnames beginning with /. The root directory is inherited by all children of the calling process. On success, zero is returned. On error, -1 is returned. Only privileged process can call \texttt{chroot}.
+
+The kernel keeps a global variable pointer to the root inode. This call does not change the current working directory and does not close open file descriptors.
+
+\paragraph{chown - chmod}
+These operations change the inode, not the file content. To change the file owner or permissions, the process must be owner of the file or have superuser privileges. These system calls both return zero on success and -1 on error.
+\\
+\texttt{int chown(const char *pathname, uid\_t owner, gid\_t group);}
+
+It changes the owner and group of a file specified by \texttt{pathname}.
+\\
+\texttt{int chmod(const char *pathname, mode\_t mode);}
+
+It changes the permissions of a file specified by \texttt{pathname}.
+
+\paragraph{stat - fstat} These functions return information about a file. No permissions are required on the file itself. These system calls both return zero on success and -1 on error.
+\\
+\texttt{int stat(const char *pathname, struct stat *buf);}
+
+It stats the file pointed to by \texttt{pathname} and fills in \texttt{buf}.
+\\
+\texttt{int fstat(int fd, struct stat *buf);}
+
+It is identical to \texttt{stat}, except that the file to be stat-ed is specified by the file descriptor \texttt{fd}.
+
+The \texttt{stat} structure is defined in \texttt{stat.h} as follows:
+
+\begin{verbatim}
+struct stat {
+  dev_t     st_dev;     /* ID of device containing file */
+  ino_t     st_ino;     /* inode number */
+  mode_t    st_mode;    /* protection */
+  nlink_t   st_nlink;   /* number of hard links */
+  uid_t     st_uid;     /* user ID of owner */
+  gid_t     st_gid;     /* group ID of owner */
+  dev_t     st_rdev;    /* device ID (if special file) */
+  off_t     st_size;    /* total size, in bytes */
+  blksize_t st_blksize; /* blocksize for file system I/O */
+  blkcnt_t  st_blocks;  /* number of 512B blocks allocated */
+  time_t    st_atime;   /* time of last access */
+  time_t    st_mtime;   /* time of last modification */
+  time_t    st_ctime;   /* time of last status change */
+};
+\end{verbatim}
+
 \end{document}
