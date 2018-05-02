@@ -44,7 +44,7 @@ The boot loader's link and load addresses match perfectly. There is a rather lar
 User application access to a wide variety of different devices is accomplished through layering and through encapsulating all the device-specific code into device drivers, while application layers are presented with a common interface for all (or at least large general categories of) devices. Most devices can be characterized as either block I/O, character I/O, memory mapped file access or network sockets. A few devices are special, such as time-of-day clock and the system timer. Most operating systems also have an escape, or back door, which allows applications to sens command directly to device drivers if needed. In UNIX this is \texttt{ioctl()} system call. \texttt{ioctl()} takes three arguments: the file descriptor for the device driver being accessed, an integer indicating the desired function to be performed and an address used for communicating or transferring additional information.
 
 \subsection{Block and Character Devices}
-Block devices are accessed one block at a time, and are indicated by a \texttt{b} as the first character in a long listing on UNIX systems. Operations supported include \texttt{read}, \texttt{write} and \texttt{seek}. Accessing blocks on a hard drive directly, without going through the file system structure, is called \emph{raw I/O} and can speed up certain operation by bypassing the buffering and locking normally introduced by the OS, i.e.\@ it becomes the application's responsibility to manage those issues. A new alternative is \emph{direct I/O}, which uses the normal file system access, but which disables buffering and locking operations. Memory mapped file I/O can be layered on top of block-device drivers. Rather than reading the entire file, it is mapped to a range of memory addresses and then paged into memory as needed using the virtual memory mechanism. Access to the file is then accomplished through normal memory access, i.e.\@ pointers, rather than through \texttt{read} and \texttt{write} system calls. This approach is commonly used for executable program code.
+Block devices are accessed one block at a time, and are indicated by a \texttt{b} as the first character in a long listing on UNIX systems. Operations supported include \texttt{read}, \texttt{write} and \texttt{seek}. Accessing blocks on a hard drive directly, without going through the filesystem structure, is called \emph{raw I/O} and can speed up certain operation by bypassing the buffering and locking normally introduced by the OS, i.e.\@ it becomes the application's responsibility to manage those issues. A new alternative is \emph{direct I/O}, which uses the normal filesystem access, but which disables buffering and locking operations. Memory mapped file I/O can be layered on top of block-device drivers. Rather than reading the entire file, it is mapped to a range of memory addresses and then paged into memory as needed using the virtual memory mechanism. Access to the file is then accomplished through normal memory access, i.e.\@ pointers, rather than through \texttt{read} and \texttt{write} system calls. This approach is commonly used for executable program code.
 
 \begin{figure}[hbtp]
 \centering
@@ -54,21 +54,20 @@ Block devices are accessed one block at a time, and are indicated by a \texttt{b
 
 Character devices are accessed one byte at a time, and are indicated by a \texttt{c} in UNIX systems. Supported operations include \texttt{get} and \texttt{put}, with more advanced functionality such as reading an entire line supported by higher-level library routines.
 
-\subsection{File system data structures}
-In the original UNIX file system, the physical disks is divided into logical disks called \emph{partitions}. Each partition is a standalone file system. Each device in the system is characterized by its own major device number and each partition has an associated minor device number which the device drivers uses to access the raw file system. The major/minor device number combination is used as an handle into device switch table. In particular, the major number acts as an index, and the minor number is passed as an argument to the driver routines so that they can recognize the specific instance of a device.
+\subsection{Filesystem data structures}
+In the original UNIX filesystem, the physical disks is divided into logical disks called \emph{partitions}. Each partition is a standalone filesystem. Each device in the system is characterized by its own major device number and each partition has an associated minor device number which the device drivers uses to access the raw filesystem. The major/minor device number combination is used as an handle into device switch table. In particular, the major number acts as an index, and the minor number is passed as an argument to the driver routines so that they can recognize the specific instance of a device.
 
-
-Each file system contains:
+Each filesystem contains:
 \begin{itemize}
-\item a \emph{boot block} located in the first few sectors of a file system. The boot block contains the initial bootstrap program used to load the operating system. Typically, the first sector contains a bootstrap program that reads in a larger bootstrap program from the next few sector, and so forth;
-\item a \emph{superblock} describes the state of the file system: the total size of the partition, the block size, pointers to a list of free blocks, the i-node number of the root directory, magic number, etc.;
+\item a \emph{boot block} located in the first few sectors of a filesystem. The boot block contains the initial bootstrap program used to load the operating system. Typically, the first sector contains a bootstrap program that reads in a larger bootstrap program from the next few sector, and so forth;
+\item a \emph{superblock} describes the state of the filesystem: the total size of the partition, the block size, pointers to a list of free blocks, the i-node number of the root directory, magic number, etc.;
 \item a linear \emph{array of i-nodes}. There is a one to one mapping of files to i-nodes and viceversa. An i-node is identified by its \emph{i-node number}, which  contains the information needed to find the i-node itself on the disk. Thus, while users think of files in terms of file names, UNIX thinks of files in terms of i-nodes.
 \item a \emph{data blocks} containing the actual content of files.
 \end{itemize}
 
-System calls like \texttt{mkfs} can be used to create (format) the file system (partition). Indeed, it creates the superblock, the i-node list, the list of free blocks and the root node for the new file system. Other system calls like \texttt{fsck}, instead, are used to check and repair the file system.
+System calls like \texttt{mkfs} can be used to create (format) the filesystem (partition). Indeed, it creates the superblock, the i-node list, the list of free blocks and the root node for the new filesystem. Other system calls like \texttt{fsck}, instead, are used to check and repair the filesystem.
 
-Therefore, it is simple to understand that there is a similarity between normal files and device in a UNIX file system: both are characterized by an i-node.
+Therefore, it is simple to understand that there is a similarity between normal files and device in a UNIX filesystem: both are characterized by an i-node.
 
 \begin{figure}[hbtp]
 \centering
@@ -165,7 +164,7 @@ output: number of bytes copied in the user buffer
 \subsection*{Block read: \texttt{bread}}
 \begin{verbatim}
 procedure bread
-input:  file system block number (blockno)
+input:  filesystem block number (blockno)
 output: buffer containing requested block
 {
   buffer = getblock(block blockno);
@@ -251,8 +250,8 @@ output: none
 \subsection*{Block read ahead: \texttt{breada}}
 \begin{verbatim}
 procedure breada
-input:  file system block number for immediate read (blkno1)
-        file system block number for asynchronous read (blockno2)
+input:  filesystem block number for immediate read (blkno1)
+        filesystem block number for asynchronous read (blockno2)
 output: buffer containing data from immediate read (buffer1)
 {
   if(buffer with blkno1 not present in buffer cache) {
@@ -275,5 +274,3 @@ output: buffer containing data from immediate read (buffer1)
   return buffer1;
 }
 \end{verbatim}
-
-
