@@ -1,0 +1,63 @@
+\chapter{Introduction}
+Microsoft Windows is installed in 90\% of the machines, including all version still in use. Windows API is a very difficult one, because there are a lot of versions that are still used and therefore many functions are there to guarantee backward compatibility.
+
+Windows operating systems have all features required for 64-bit architecture and multi-core systems. Essential features include:
+\begin{itemize}
+\item Physical and virtual memory;
+\item File systems (I/O, files, directories);
+\item Multi-tasking (concurrency) with processes and threads;
+\item Communication and synchronization;
+\item Security.
+\end{itemize}
+Windows does support many standards. C library is always available but you cannot fully exploit Windows with it. For example, it is not possible to lock a file or a part of it, mapping a file into main memory and organize inter-process communication.
+
+\section{Programming principles}
+Windows APIs are defined in C language, going beyond standard C therefore reducing code portability but increasing code functionality. They are different from other standard, they require their own coding style and technique and use threads, not processes, as a basic unit of execution.
+
+Including \texttt{windows.h}, most of the required data are already included. Windows contains many functions to perform the same or similar operations, each one with numerous parameters and flags and occasional artifacts from 16-bit versions.
+
+\paragraph{Windows names}
+\begin{itemize}
+\item Function names are long and descriptive;
+\item Variables are long and descriptive, often use "Hungarian" notation.
+\item Symbolic constants and flags explain their meaning.
+\end{itemize}
+
+Nearly every resource is a \emph{kernel object}. Objects are identified and referenced by handle. Handle objects are of type \texttt{HANDLE}, similar to UNIX file descriptor or process id. \texttt{HANDLE}s are gray boxes, hence they must be manipulated by Windows APIs and theyinclude files, pipes, processes, threads, etc.
+
+Predefined and descriptive data types are expressed in upper case (\texttt{BOOL}, \texttt{DWORD}, etc.) avoiding the \texttt{*} operator and making name distinctions (\texttt{LPTSTR}, i.e.\@ Long Pointer To STRing defined as \texttt{TCHAR*}).
+
+\paragraph{Coding systems}
+Windows supports executable code built in 16 (Win16), 32 (Win32) and 64 (Win64) bits. 16-bit versions are only for backward compatibility, while 32-bit versions run on 64-bit architecture but cannot exploit the larger address space. Most of the difference concern the pointer size. 
+
+Four different coding strategies are possible:
+\begin{itemize}
+\item 8-bit only;
+\item Unicode only;
+\item 8-bit and Unicode with generic code;
+\item 8-bit and Unicode with run-time selection.
+\end{itemize}
+To assume maximum flexibility and source portability, define all characters and strings using generic type \texttt{TCHAR} and calculate lengths using \texttt{sizeof(TCHAR)}. In fact, \texttt{TCHAR} is automatically mapped on ANSI ASCII coding when it is on 8-bits or Unicode UTF-16 coding when it is mapped on 16-bits.
+
+\subparagraph{Generic strings}
+Constant strings are expressed in one of the three forms:
+\begin{itemize}
+\item \textbf{ANSI C}: \texttt{"8-bit characters"};
+\item \textbf{ANSI C}: \texttt{L"16-bit characters"};
+\item \textbf{A macro}: \texttt{\_T("Generic characters")}; The \texttt{TEXT} macro is the same as \texttt{\_T}.
+\end{itemize}
+
+To select coding system include \texttt{\#define UNICODE} to get \texttt{WCHAR} in all source modules, before including \texttt{<windows.h>}.
+\begin{verbatim}
+#ifdef UNICODE
+  #define TCHAR WCHAR
+#else
+  #define TCHAR CHAR
+#endif
+\end{verbatim}
+To make available a wide class of string processing and I/O functions include \texttt{\#define \_UNICODE} consistently with \texttt{UNICODE}. To get generic C library text macros and functions include \texttt{\#include <tchar.h>} after \texttt{<windows.h>} and use the \emph{generic C} library for all string functions.
+
+\paragraph{Main program definition}
+Pay attention on how the main header is defined. To ensure correct operations in all combination use \texttt{int \_tmain(int argc, LPTSTR argv[])}. This is expanded to \texttt{main} or \texttt{wmain} depending on definition of \texttt{\_UNICODE}.
+
+Directive \texttt{\#define \_CRT\_SECURE\_NO\_WARNINGS} removes annoying warnings from project in Visual Studio.
