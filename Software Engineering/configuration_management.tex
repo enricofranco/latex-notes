@@ -98,7 +98,7 @@ One can change at a time. Thus, no parallel work and delays. Problems if locker 
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{images/lock_modify_unlock.png}
+\includegraphics[scale=0.4]{images/lock_modify_unlock.png}
 \caption{Lock modify unlock}
 \label{img:lock_modify_unlock}
 \end{figure}
@@ -108,16 +108,16 @@ Many change in parallel, the merge. It is more flexible but requires care to res
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{images/copy_modify_merge.png}
+\includegraphics[scale=0.4]{images/copy_modify_merge.png}
 \caption{Copy modify merge}
 \label{img:copy_modify_merge}
 \end{figure}
 
 \paragraph{CMS approaches}
 \begin{itemize}
-\item Local: RCS;
-\item Centralized: CSV, Subversion;
-\item Distributed: Git, Mercurial, Bazaar.
+\item Local: a simple database that kept all the changes to files under revision control, e.g.\@ RCS;
+\item Centralized: a single server that contains all the versioned files, and a number of clients that check out files from that central place, e.g.\@ CSV, Subversion;
+\item Distributed: clients fully mirror the repository, e.g.\@ Git, Mercurial, Bazaar.
 \end{itemize}
 
 Very often, it is needed to proceed with \emph{parallel versions}, while keeping trace of common origin, as shown in figure~\ref{img:branches_merges}. For example, when some developers work on branch to fix defect, while other work to add functionalities.
@@ -125,7 +125,7 @@ Very often, it is needed to proceed with \emph{parallel versions}, while keeping
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.5]{images/branches_merges.png}
-\caption{Copy modify merge}
+\caption{Branches}
 \label{img:branches_merges}
 \end{figure}
 
@@ -139,6 +139,123 @@ Systems are normally represented for building by specifying the filename to be p
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{images/dependencies.png}
+\includegraphics[scale=0.4]{images/dependencies.png}
 \caption{Example of dependencies}
 \end{figure}
+
+\section{Git}
+\subsection{Configuration management system}
+A \emph{configuration management system} is a system that records changes to a file or set of files over time so that specific versions can be recalled later. Its functionalities are:
+\begin{itemize}
+\item Revert files back to a previous state;
+\item Revert the entire project back to a previous state;
+\item Compare changes over time;
+\item Monitor who last modified something that might causing a problem;
+\item Monitor who introduced an issue and when.
+\end{itemize}
+
+\paragraph{Data management models}
+\begin{description}
+\item [\textbf{Differences}] Information is kept as a set of files and the changes made to each file over time.
+\item [\textbf{Snapshots}] Every commit, a picture of what all the files look like at a moment, is taken and the system stores a reference to that snapshot. If files have not changed, system store just a link to the previous identical file.
+\end{description}
+
+\subsection{Introduction}
+Git is a distributed CMS that uses snapshots. It exploits local operation and provides integrity. In fact, everything is check-summed before it is stored and is referred to by that checksum. No untracked changes of any file or directory are possible. Git only adds data. Each file has tree states:
+\begin{itemize}
+\item \textbf{Committed}: data is safely stored in local database;
+\item \textbf{Modified}: the file has changed but it is not committed to the database yet;
+\item \textbf{Staged}: a modified file is marked in its current version to go into next commit.
+\end{itemize}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.4]{images/cms_distribution.png}
+\caption{CMS distribution}
+\end{figure}
+
+\paragraph{Sections}
+\begin{description}
+\item [\textbf{Git directory}] stores the metadata and object database for the project. It is what is copied when a repository is cloned from another computer.
+\item [\textbf{Working directory}] is a single checkout of one version of the project. These files are pulled out of the compressed database in the Git directory and placed on disk to use or modify.
+\item [\textbf{Staging area}] stores information about what will go into next commit. Sometimes referred to as the \emph{index}.
+\end{description}
+
+\paragraph{Typical workflow}
+\begin{enumerate}
+\item Modify files in working directory;
+\item Stage the files, adding snapshots of them to the staging area;
+\item Do a commit, which takes the files as they are in the staging area and stores that snapshots permanently to the Git directory.
+\end{enumerate}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.4]{images/file_lifecycle.png}
+\caption{Lifecycle of files}
+\end{figure}
+
+\emph{Github} is an online code hosting service built on top of git, mainly used by OSS projects but commercial use is growing. Nowadays, it is used by PayPal, SAP, vimeo and others.
+
+\subsection{Basic commands}
+\paragraph{Recording changes}
+\begin{description}
+\item [\texttt{git status}] determine which files are in which state.
+\item [\texttt{git add}] track a new file.
+\item [\texttt{git diff}] know exactly what is changed.
+\item [\texttt{git commit}] commit changes.
+\item [\texttt{git rm}] remove a file from the tracked files and also from the working directory.
+\item [\texttt{git mv}] rename a file. Git doesn't explicitly track file movement. If a file is renamed in Git, no metadata is stored in it that tells the file has been renamed.
+\end{description}
+
+\paragraph{Commit history}
+\begin{description}
+\item [\texttt{git log}] look back to see what has happened in a repository.
+\end{description}
+
+\paragraph{Working with remotes}
+\begin{description}
+\item [\texttt{git pull}] automatically fetch and then merge a remote branch into your current branch.
+\item [\texttt{git push}] share the changes, i.e.\@ transfer them on the server.
+\end{description}
+
+\subsection{Branching}
+Git stores a commit object that contains a pointer to the snapshot of the context staged and pointers to the commit or commits that directly cam before this commits, i.e.\@ its parent or parents. Staging the files, Git checksums each one, stores that version of the file (blobs) and adds that checksum to the staging area.
+
+\paragraph{Branches}
+A branch in Git is simply a lightweight movable pointer to one these commits. The default branch name in Git is \texttt{master}. Every commit, it moves forward automatically. \texttt{HEAD} pointer points to the current local branch.
+
+Figure~\ref{img:git_branches} shows the status of commands:
+\begin{enumerate}
+\item \texttt{git branch testing} which creates a branch named \texttt{testing} but does not switch to that branch;
+\item \texttt{git checkout testing} moves the \texttt{HEAD} pointer to that branch;
+\item \texttt{git commit}.
+\end{enumerate}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.4]{images/git_branches.png}
+\caption{Git branches}
+\label{img:git_branches}
+\end{figure}
+
+\subparagraph{Switching branches}
+Switching branches revert the files in working directory back to the snapshot that \texttt{master} points to. The changes made from this point forward will diverge from an older version of the project. Files in the working directory changes.
+
+\subparagraph{Merging branches}
+Figure~\ref{img:git_branches_merges} shows the status of commands:
+\begin{enumerate}
+\item \texttt{git merge hostfix} merges \texttt{hostfix} with \texttt{master}, assuming that current branch is \texttt{hostfix};
+\item \texttt{git commit} on \texttt{iss53};
+\item \texttt{git merge iss53} merges \texttt{iss53} with \texttt{master}.
+\end{enumerate}
+\begin{figure}[hbtp]
+
+\centering
+\includegraphics[scale=0.4]{images/git_branches_merges.png}
+\caption{Git merge}
+\label{img:git_branches_merges}
+\end{figure}
+
+Instead of just moving the branch pointer forward, Git creates new snapshot that results from this three-way merge and automatically creates a new commit that points to it. This is referred to as \emph{merge commit}, and is special in that is has more than one parent.
+
+Git determines the best common ancestor to use for its merge base. Conflicts are possible, in this case merging is not done until conflicts are managed, as for commits.
