@@ -1,0 +1,236 @@
+\chapter{File and directory}
+\section{File and directory management}
+\subsection{Delete a file}
+Delete a file by specifying a file name. It does not work with an open file or with a directory.
+
+\begin{verbatim}
+BOOL DeleteFile(
+  LPCTSTR lpFileName
+);
+\end{verbatim}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item \texttt{TRUE} if and only if the delete operation succeeds;
+\item \texttt{FALSE} otherwise.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{lpFileName}] relative or absolute pathname.
+\end{description}
+
+\subsection{Rename or move a file}
+\texttt{MoveFileEx} is the extended version, not supported by earlier Windows versions. Use \texttt{MoveFileEx} to overwrite existing files or move files on different drivers, implemented on a copy and then a delete operation.
+
+\begin{Parallel}{}{}
+\ParallelLText{
+\begin{verbatim}
+BOOL MoveFile (
+  LPCTSTR lpExisting,
+  LPCTSTR lpNew
+);
+\end{verbatim}}
+\ParallelRText{
+\begin{verbatim}
+BOOL MoveFile (
+  LPCTSTR lpExisting,
+  LPCTSTR lpNew,
+  DWORD dwFlags
+);
+\end{verbatim}}
+\end{Parallel}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item \texttt{TRUE} if it succeeds;
+\item \texttt{FALSE} if it fails.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{lpExisting}] the name of the existing file or directory.
+\item [\texttt{lpNew}] the name of the new file or directory. In general:
+\begin{itemize}
+\item Wildcards are not allowed in files or directories names;
+\item Directory must be on the same drive;
+\item If \texttt{lpNew} is \texttt{NULL} the file or directory is deleted.
+\end{itemize}
+\item [\texttt{dwFlags}]:
+\begin{description}
+\item [\texttt{MOVEFILE\_REPLACE\_EXISTING}] Replace an existing file.
+\item [\texttt{MOVEFILE\_WRITE\_THROUGH}] Do not return until the copied file is flushed through to the disk.
+\item [\texttt{MOVEFILE\_COPY\_ALLOWS}] Need to be used to copy on a new volume. When copying to a different volume, copy then delete old file.
+\item [\texttt{MOVEFILE\_DELAY\_UNTIL\_REBOOT}] Administration: copy when restart the OS.
+\end{description}
+\end{description}
+
+\section{Directory management}
+\subsection{Create directory}
+Create a new empty directory.
+
+\begin{verbatim}
+BOOL CreateDirectory (
+  LPCTSTR lpPath,
+  LPSECURITY_ATTRIBUTES lpsa
+);
+\end{verbatim}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item \texttt{TRUE} if it succeeds;
+\item \texttt{FALSE} if it fails.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{lpPath}] points to a \texttt{NULL}-terminated string with the directory name to be created.
+\item [\texttt{lpsa}] security attributes, \texttt{NULL} for now.
+\end{description}
+
+\subsection{Remove directory}
+Remove a directory, which must be empty.
+
+\begin{verbatim}
+BOOL RemoveDirectory (
+  LPCTSTR lpPath
+);
+\end{verbatim}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item \texttt{TRUE} if it succeeds;
+\item \texttt{FALSE} if it fails.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{lpPath}] points to a \texttt{NULL}-terminated string with the directory name to be removed.
+\end{description}
+
+\subsection{Set current directory}
+Each \emph{process} has a current working directory. There is a current directory for each drive. Programs can set and get the current directory.
+
+The current directory is \textbf{global} to a process and is shared by all threads in a process. Hence, concurrent threads cannot set different directories, they have to use absolute paths.
+
+\begin{verbatim}
+BOOL SetCurrentDirectory (
+  LPCTSTR lpCurDir
+);
+\end{verbatim}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item \texttt{TRUE} if it succeeds;
+\item \texttt{FALSE} if it fails.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{lpCurDir}] the path to the new current directory, it can be a relative or an absolute path.
+\end{description}
+
+\subsection{Get current directory}
+It gets the full current pathname, and it returns it into the specified buffer.
+
+\begin{verbatim}
+BOOL FetCurrentDirectory (
+  DWORD cchCurDir,
+  LPTSTR lpCurDir
+);
+\end{verbatim}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item The string length of the returned pathname;
+\item The required buffer size if the buffer is not large enough, this includes the space for the \texttt{NULL} string terminator;
+\item Zero if the function fails.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{cchCurDir}] character length of the buffer for the directory name. Windows uses this technique whenever the result's length is not known.
+\item [\texttt{lpCurDir}] points to the buffer to receive the pathname string. Be sure the buffer is really as long as it is declared to be. Potential buffer overflow.
+\end{description}
+
+\section{File and directory processing}
+Reading a directory content can be done following the same logic used to read a file. It is required to:
+\begin{enumerate}
+\item Open the directory, i.e.\@ generate a search handle satisfying specific requirements;
+\item Read the directory content;
+\item End the reading operation, i.e.\@ close the directory.
+\end{enumerate}
+
+\subsection{File searching}
+\subsubsection{First file}
+A file search requires a \emph{search handle}.
+\begin{verbatim}
+HANDLE FindFirstFile (
+  LPCTSTR lpSearchFile,
+  LPWIN32_FIND_DATA lpffd
+);
+\end{verbatim}
+\texttt{FindFirstFile} examines all entries of the current directory, looking for a file match with \texttt{lpSearchFile}. It evaluates a search handle required for subsequent operation and a pointer to a data structure containing information on the entry itself.
+
+\paragraph{Returned value}
+\begin{itemize}
+\item A ``search handle'': the handle can be used to obtain information on the current entry;
+\item The constant value \texttt{INVALID\_HANDLE\_VALUE} when has been a failure.
+\end{itemize}
+
+\paragraph{Parameters}
+\begin{description}
+\item [\texttt{lpSearchFile}] points to directory or pathname. Wildcards can be used (\texttt{*} and \texttt{?}).
+\item [\texttt{lpffd}] points to a \texttt{WIN32\_FIND\_DATA} structure. The structure contains information on the entry.
+\end{description}
+
+\subsubsection{Next files}
+Once the \texttt{HANDLE} given by \texttt{FindFirstFile} is available, \texttt{FindNextFile} may obtain the data info for subsequent entry.
+
+\begin{verbatim}
+BOOL FindNextFile (
+  HANDLE hFindFile,
+  LPWIN32_FIND_DATA lpffd
+);
+\end{verbatim}
+
+\paragraph{Returned value}
+\begin{itemize}
+\item \texttt{TRUE} when the search can go on.
+\item \texttt{FALSE} when no more files satisfy the search pattern.
+\end{itemize}
+
+\subsubsection{Close search}
+When the search is complete, close the search handle. The directory \texttt{HANDLE} is not closed with \texttt{CloseHandle}.
+\begin{verbatim}
+BOOL FindClose (
+  HANDLE hFindFile
+);
+\end{verbatim}
+
+\subsection{WIN32\_FIND\_DATA Structure}
+\begin{verbatim}
+typedef struct _WIN32_FIND_DATA {
+  DWORD dwFileAttributes;
+  FILETIME ftCreationTime;
+  FILETIME ftLastAccessTime;
+  FILETIME ftLastWriteTime;
+  DWORD nFileSizeHigh;
+  DWORD nFileSizeLow;
+  DWORD dwReserved0;
+  DWORD dwReserved1;
+  TCHAR cFileName[MAX_PATH];
+  TCHAR cAlternateFileName[14];
+} WIN32_FIND_DATA;
+\end{verbatim}
+
+\begin{description}
+\item [\texttt{dwFileAttributes}] see \texttt{CreateFile} attributes.
+\item [\texttt{ftCreationTime}] 64-bit integer.
+\item [\texttt{ftLastAccessTime}] 64-bit integer.
+\item [\texttt{ftLastWriteTime}] 64-bit integer.
+\item [\texttt{dwReserved0}] reserved for future use.
+\item [\texttt{dwReserved1}] reserved for future use.
+\item [\texttt{cFileName}] filename.
+\item [\texttt{cAlternateFileName}] MS-DOS filename. Limited to 8 characters for filename and 3 characters for extension.
+\end{description}
