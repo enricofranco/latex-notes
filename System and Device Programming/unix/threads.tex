@@ -1,7 +1,7 @@
 \chapter{Threads}
 Processes do not share memory and they can only communicate through a file, i.e.\@ a pipe. The child can communicate exiting status to the parent (just a single byte). The creation of a child process is a costly operation in terms of space, which has to be duplicated, and time, because it is a slow operation. The management of multiple processes requires scheduling and an expensive context switching.
 
-A thread is a \textit{lightweight process}. The thread model allows a program to control multiple different flows of operations that overlap in time. Threads creation and management require a reduced costs with respect a process implementation, they share a single address space (i.e.\@ variables) and the context switch among threads is faster.
+A thread is a \textit{lightweight process}. The thread model allows a program to control multiple different flows of operations overlapped in time. Threads creation and management require a reduced cost with respect to the process implementation, they share a single address space (variables) and the context switch is faster.
 
 A thread is statically represented by a function, it has its own stack and therefore its own variables declared inside it.
 
@@ -24,7 +24,7 @@ Pthreads library defines more than 60 functions. The most important and used are
 A process, with all its threads, terminates if
 \begin{itemize}
 \item Its thread calls \texttt{exit};
-\item The main thread execute \texttt{return} which is compiled as an \texttt{exit};
+\item The main thread executes \texttt{return} which is compiled as an \texttt{exit};
 \item The main thread receives a signal whose action is to terminate.
 \end{itemize}
 A single thread can terminate without affecting the other process threads
@@ -34,7 +34,4 @@ A single thread can terminate without affecting the other process threads
 \item Receiving a cancellation request performed by another thread.
 \end{itemize}
 
-The kernel does not distinguish which
-function executed the \texttt{exit} statement, so whichever thread calls \texttt{exit} will cause the entire process termination.
-If the main wants to stop and keep alive
-other threads, it must perform a \texttt{pthread\_exit} rather than a \texttt{return}.
+The kernel does not distinguish which function executed the \texttt{exit} statement, so whichever thread calls \texttt{exit}, causes also the entire process termination. If the main wants to stop and keep alive other threads, it must perform a \texttt{pthread\_exit} rather than a \texttt{return}.

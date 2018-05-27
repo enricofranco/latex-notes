@@ -1,5 +1,5 @@
 \chapter{Synchronization}
-In concurrent programming where processes or threads cooperate and share data, race conditions may arise and there may be sections of not-reentrant code, it is needed to properly synchronize the cooperating actors to make their results not dependent on their relative speed.
+In concurrent programming, where processes or threads cooperate and share data, race conditions may arise and there may be sections of non-reentrant code, it is needed to properly synchronize the cooperating actors to make their results not dependent on their relative speed.
 
 A \emph{Critical Section} or \emph{Critical Region} is a section of code, common to multiple threads, in which they can access shared objects or in which they are competing for the use of shared resources. It is needed to ensure that when one thread is executing in its critical section, no other thread is allowed to execute in its critical section, therefore an access protocol must be established to enter the critical section in \textbf{mutual exclusion}:
 
@@ -10,27 +10,27 @@ A \emph{Critical Section} or \emph{Critical Region} is a section of code, common
 \item The release possibly unlocks another thread which was waiting in the ``reservation'' code of its CS.
 \end{itemize}
 
-In general, the \textbf{software solutions} to the problem of CS are complex and inefficient. In fact, test and set operations are ``invisible'' to the other threads and they are not atomic, thus a thread can react to the presumed value of a variable rather than to its current value. Furthermore, the solutions is not easily extensible to an arbitrary number of threads.
+In general, \textbf{software solutions} to the problem of CS are complex and inefficient. In fact, test and set operations are ``invisible'' to other threads and they are not atomic, thus a thread can react to the presumed value of a variable rather than to its current value. Furthermore, the solutions is not easily extensible to an arbitrary number of threads.
 
-The \textbf{hardware solutions} can be easily extensible to a larger number of threads but they introduce busy form of waiting with spin lock leading to possible starvation.
+Instead, \textbf{hardware solutions} can be easily extensible to a larger number of threads but they introduce busy form of waiting with spin lock, leading to possible starvation.
 
 \section{Semaphores}
-The hardware solution can be used to implement system calls that can be used for solving every kind of synchronization problem (not only the Mutual Exclusion) avoiding the busy form of waiting. These system calls rely on a data structure introduce by Dijkstra in 1965 called semaphore.
+Hardware solutions can be used to implement system calls useful to solve every kind of synchronization problem (not only the Mutual Exclusion) avoiding the busy form of waiting. These system calls rely on a data structure introduce by Dijkstra in 1965 called semaphore.
 
-A \emph{semaphore} is a shared structure including a counter, a waiting queue managed by the kernel both protected by a lock.
-The kernel offers a set of \textbf{atomic primitives} that allows a thread to be blocked on the semaphore or to wake up if it was locked.
+A \emph{semaphore} is a shared data structure including a counter and a waiting queue managed by the kernel, both protected by a lock.
+Kernel offers a set of \textbf{atomic primitives} that allows a thread to be blocked on the semaphore or to wake up if it was locked.
 
 \begin{description}
 \item \texttt{init(S, k)} defines and initializes semaphore \texttt{S} counter to value \texttt{k}. \texttt{k} is a positive value because the system calls manage the counter so that, if negative, its absolute value is the number of threads waiting on the semaphore queue.
-\item \texttt{wait(S)} decrements the counter and blocks the calling thread if the counter value of \texttt{S} is negative or zero.
-\item \texttt{signal(S)} increases the counter and made some blocked threads ready to run if the counter value of \texttt{S} is negative or zero.
+\item \texttt{wait(S)} decrements the counter and blocks the calling thread if the counter value of \texttt{S} is negative or zero. Originally called \texttt{p} operation.
+\item \texttt{signal(S)} increases the counter and makes some blocked threads ready to run if the counter value of \texttt{S} is negative or zero. Originally called \texttt{v} operation.
 \item \texttt{destroy(S)} releases semaphore \texttt{S} memory.
 \end{description}
 
-Semaphores can be used to solve any synchronization problem using an appropriate protocol, possibly adding more than one semaphore and additional share variables.
+Semaphores can be used to solve any synchronization problem using an appropriate protocol, possibly adding more than one semaphore and additional shared variables.
 
 \subsection{POSIX semaphores}
-POSIX semaphores define a set of kernel independent system calls, included in header file \texttt{semaphore.h} which return -1 on error.
+POSIX defines a set of kernel independent system calls to manage semaphores, included in header file \texttt{semaphore.h} which return -1 on error.
 
 \begin{description}
 \item \texttt{int sem\_init(sem\_t *sem, int pshared, usigned int value)} initializes the semaphore counter at value \texttt{value}. The \texttt{pshared} value identifies the type of semaphore. If it is equal to 0, the semaphore is local to the threads of current process, otherwise the semaphore can be shared between different processes.
@@ -41,7 +41,7 @@ POSIX semaphores define a set of kernel independent system calls, included in he
 
 \item \texttt{int sem\_getvalue(sem\_t *sem, int *valP)} allows obtaining the value of the semaphore counter. The value is assigned to \texttt{*valP}.
 
-\item \texttt{int sem\_destroy(sem\_t *sem)} destroys the semaphore at the address pointed by \texttt{sem}.
+\item \texttt{int sem\_destroy(sem\_t *sem)} destroys the semaphore pointed by \texttt{sem}.
 
 \item \texttt{int sem\_trywait(sem\_t *sem)} implements a non-blocking wait, i.e.\@ if the semaphore counter has a value greater than 0, it performs the decrement and returns 0 while, if the semaphore counter is negative or zero, it returns -1 instead of blocking the caller as \texttt{sem\_wait} does.
 \end{description}
@@ -53,7 +53,7 @@ Pthread mutex defines binary semaphores of type \texttt{pthread\_mutex\_t} by me
 
 \item \texttt{int pthread\_mutex\_lock(pthread\_mutex\_t *mutex)} blocks the caller if the \texttt{mutex} is locked or acquires the mutex lock if the \texttt{mutex} is unlocked.
 
-\item \texttt{int pthread\_mutex\_trylock(pthread\_mutex\_t *mutex)} is similar to a \texttt{lock}, but returns without blocking the caller if \texttt{mutex} is locked. It returns 0 if the lock has been successfully acquired or a \texttt{EBUSY} error if  the \texttt{mutex} was already locked.
+\item \texttt{int pthread\_mutex\_trylock(pthread\_mutex\_t *mutex)} is similar to \texttt{lock}, but it returns without blocking the caller if \texttt{mutex} is locked. It returns 0 if the lock has been successfully acquired or a \texttt{EBUSY} error if  the \texttt{mutex} was already locked.
 
 \item \texttt{int pthread\_mutex\_unlock(pthread\_mutex\_t *mutex)} releases the \texttt{mutex} lock.
 
@@ -72,6 +72,7 @@ This problem uses a circular buffer implementing a FIFO queue of size \texttt{MA
 
 \paragraph{Access functions}
 Functions without considering synchronization and concurrency.
+
 \begin{Parallel}{}{}
 \ParallelLText{
 \begin{verbatim}
@@ -171,7 +172,7 @@ Consumer() {
 \newpage
 
 \subsection{Readers \& Writers}
-This represents the typical problem of sharing a database between two sets of concurrent threads:
+\emph{Readers \& Writers} represents the typical problem of sharing a database between two sets of concurrent threads:
 \begin{itemize}
 \item Readers are allowed to access the database in concurrency;
 \item Writers must access the database in Mutual Exclusion with other Writers and Readers.
@@ -183,11 +184,8 @@ When a writer is writing in the database, several Readers and Writers processes 
 \textbf{Writers precedence}: at the end of a writing operation, favour the access of the waiting Writers rather than of the waiting Readers.
 
 \paragraph{Readers priority}
-Giving priority to the Readers means that a Reader does not wait unless a Writer is writing.
+Giving priority to the Readers means that a Reader does not wait unless a Writer is writing. While Readers are reading, new Readers are allowed to read and Writers are blocked. The first Reader blocks any Writer and, dually, when the last Reader terminates, a waiting Writer can access the database. The solution uses:
 
-While Readers are reading, new Readers are allowed to read and Writers are blocked. The first Reader blocks any Writer and, dually, when the last Reader terminates, a waiting Writer can access the database.
-
-The solution uses:
 \begin{itemize}
 \item A shared variable \texttt{nR} that counts the number of Readers inside the critical section;
 \item A Mutual Exclusion semaphore \texttt{meR} to protect variable \texttt{nR};
@@ -232,11 +230,8 @@ Writer() {
 \end{Parallel}
 
 \paragraph{Writers priority}
-Giving priority to the Writers means that a Writer has priority over all Readers.
+Giving priority to the Writers means that a Writer has priority over all Readers. A Writer trying to enter its critical section blocks \textit{new} Readers, but the Readers that are inside their critical section are allowed to complete their reading tasks. The solution uses:
 
-A Writer trying to enter its critical section blocks \emph{new} Readers, but the Readers that are inside their critical section are allowed to complete their reading task.
-
-The solution uses:
 \begin{itemize}
 \item Two shared variables \texttt{nR} and \texttt{nW} to count the Readers inside the critical section and the Writers that need to write (one of them possibly writing);
 \item Two Mutual Exclusion semaphores \texttt{meR} and \texttt{meW} to protect the variables \texttt{nR} and \texttt{nW};
@@ -299,10 +294,7 @@ A tunnel has a single lane, and cars can proceed only in alternate directions. T
 \caption{Single lane tunnel}
 \end{figure}
 
-
-This problem is similar the Readers \& Writers one, but for two sets of Readers. In its basic implementation can result in starvation of cars in one direction.
-
-The solution uses:
+This problem is similar the Readers \& Writers one, but for two sets of Readers. In its basic implementation can result in starvation of cars in one direction. The solution is perfectly symmetric and uses:
 \begin{itemize}
 \item Two shared count variables \texttt{n1} and \texttt{n2}, one for each travel direction;
 \item Two semaphores \texttt{s1} and \texttt{s2}, one for each travel direction;
@@ -352,7 +344,7 @@ right2left() {
 \end{Parallel}
 
 \subsection{Conditions}
-A \emph{condition} is a data structure containing a mutual exclusion lock, a condition variable and a data structure to protect because it require synchronization.
+A \emph{condition} is a data structure containing a mutual exclusion lock, a condition variable and a data structure requiring synchronization to protect.
 
 \begin{verbatim}
 typedef struct Cond {
@@ -368,30 +360,30 @@ typedef struct Cond {
 \item \texttt{i} is the variable to set or check.
 \end{description}
 
-Main thread has to define such a structure, allocate a global structure of that type, initialize its variables and create two threads A and B.
+The main thread has to define such a structure, allocate a global structure of that type, initialize its variables and create two threads A and B.
 
-Thread A does work until it needs to check a given condition by calling \texttt{pthread\_cond\_wait} to wait for a signal from thread B, unlocking the lock (otherwise, no one can change the variable content). When signaled, thread A wakes up with lock locked and, after explicitly unlocking the lock, can continues its work.
+\textit{Thread~A} does work until it needs to check a given condition. It locks the associated mutex and checks the value of a global variable. By calling \texttt{pthread\_cond\_wait}, it performs a non-blocking wait for a signal from Thread~B and automatically unlocks the mutex lock, so that it can be used by Thread~B. When signaled, Thread~A wakes up with mutex lock automatically locked and, after explicitly unlocking the mutex lock, it can continues its work.
 
-Thread B does work and locks the condition lock. It changes the value of the global variable associated to the waiting condition and, if thread A wait condition is true, it performs a \texttt{pthread\_cond\_signal}. After unlocking the condition lock, it can continue its work.
+\textit{Thread~B} does work and locks the condition lock. It changes the value of the global variable associated to the waiting condition and, if Thread~A waiting condition is true, it performs a \texttt{pthread\_cond\_signal}. After unlocking the condition lock, it can continue its work.
 
 \paragraph{Waiting on Condition Variables}
 \begin{description}
-\item \texttt{int pthread\_cond\_wait(pthread\_cond\_t *cond, \newline pthread\_mutex\_t *mutex)} blocks the calling thread until the specified condition is signaled. This system call should be called while \textit{lock} is locked, and it will automatically release the \textit{lock} while it waits.
+\item \texttt{int pthread\_cond\_wait(pthread\_cond\_t *cond, \newline pthread\_mutex\_t *mutex)} blocks the calling thread until the specified condition is signaled. This system call should be called while \texttt{mutex} is locked, and it will automatically release the \texttt{mutex} while it waits.
 
-After signal is received and thread is awakened, lock be automatically locked for use by the thread.
+After signal is received and thread is awakened, \texttt{mutex} will be automatically locked for use by the thread.
 
-The programmer is then responsible for unlocking lock when the thread does not more need it.
+The programmer is then responsible for unlocking \texttt{mutex} when the thread does not more need it.
 \end{description}
 
 \paragraph{Signaling on Condition Variables}
 \begin{description}
 \item \texttt{int pthread\_cond\_signal(pthread\_cond\_t *cond)} signals another thread which is waiting on the condition variable.
 
-It should be called with the \textit{lock} locked, and must unlock the \textit{lock} to allow \texttt{pthread\_cond\_wait} to complete.
+It should be called with the \texttt{mutex} locked, and must unlock it to allow \texttt{pthread\_cond\_wait} to complete.
 
-\item \texttt{int pthread\_cond\_broadcast(pthread\_cond\_t *cond)} \newline
-should be used if more than one thread is blocked on the same condition variable, rather than \texttt{pthread\_cond\_signal}. It is a logical error to call \texttt{pthread\_cond\_signal} before calling \texttt{pthread\_cond\_wait}.
+\item \texttt{int pthread\_cond\_broadcast(pthread\_cond\_t *cond)} should be used insted of \texttt{pthread\_cond\_signal} if more than one thread is blocked on the same condition variable.
 \end{description}
+Calling \texttt{pthread\_cond\_signal} before \texttt{pthread\_cond\_wait} is a logical error.
 
 \subsection{Precedence graphs}
 Goal is to implement a graph using the minimum number of semaphores remembering that signals are sent to a semaphore, not to a process and they are caught by the first process able to receive them.

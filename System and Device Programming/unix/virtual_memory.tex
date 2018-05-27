@@ -1,12 +1,12 @@
 \chapter{Virtual memory}
-\emph{Virtual memory} provides a separation of user logical memory from physical memory. Only part of the program needs to be in memory for execution, therefore logical address space can be much larger than physical address space. Virtual memory allows address spaces to be shared by several processes and it allows for ore efficient process creation. It can be implemented via demand paging or demand segmentation.
+\emph{Virtual memory} provides a separation of user logical memory from physical memory. Only part of the program needs to be in memory for execution, therefore logical address space can be much larger than physical address space. Virtual memory allows address spaces to be shared by several processes and it allows a more efficient process creation. It can be implemented via demand paging or demand segmentation.
 
 \section{Demand paging}
 \emph{Demand paging} consists of bringing a page into memory only when it is needed, leading to less input/output operations, less memory needed and faster response. An invalid reference causes an abort, while a not-in-memory fault causes a page fault exception.
 
-Demand paging works because of the locality model. In fact, process migrates from one locality to another. Those localities may overlap.
+Demand paging works because of the locality model. In fact, process migrates from one locality to another. These localities may overlap.
 
-Whit each entry in the page table, a valid-invalid bit is associated. Initially this bit is set to invalid (i.e.\@ not-in memory) on all entries. During address translation, if valid-invalid bit in page table entry is set to invalid a page fault occurs.
+With each entry in the page table, a valid-invalid bit is associated, initially set to invalid (i.e.\@ not-in memory) on all entries. During address translation, if valid-invalid bit in page table entry is set to invalid, a page fault occurs.
 
 A swapper that deals with pages is a \textbf{pager}.
 
@@ -31,7 +31,7 @@ If there is a reference to a page, first reference to that page will trap the op
 \caption{Page fault handling}
 \end{figure}
 
-$EAT = (1-p) t_{memory} + p (t_{page\ fault} + t_{swap\ out} + t_{swap\ in} + t_{restart})$ being $ 0 \le p \le 1 $, page fault ratio.
+$\text{EAT} = (1-p) t_{memory} + p (t_{page\ fault} + t_{swap\ out} + t_{swap\ in} + t_{restart})$ being $ 0 \le p \le 1 $, page fault ratio.
 
 \subsection{Page replacement}
 If there is no free frame, it is needed to find some page in memory not really in use and swap it out.
@@ -82,7 +82,7 @@ This algorithm is subjected to Belady's Anomaly: adding more frames will cause m
 \end{figure}
 
 \paragraph{Least Recently Used Algorithm}
-Every page entry has a counter where the clock; every time page is referenced through this entry, the clock is copied into the counter. When a page needs to be changed, look at the counters to determine which are to change.
+Every page entry has a counter; every time page is referenced through this entry, the clock is copied into the counter. When a page needs to be changed, look at the counters to determine which are to change.
 
 \begin{center}
 \begin{tabular}{l|cccccccccccc}
@@ -110,7 +110,7 @@ A possible implementation is the \textbf{stack implementation} which keeps a sta
 \end{itemize}
 \item No search for replacement.
 \end{itemize}
-This implementation causes a large overhead and therefore it is unfeasible and it is not used in reality.
+This implementation causes a large overhead and therefore is unfeasible and not used in reality.
 
 \subparagraph{Least Recently Used Stack}
 Adding a new page cannot increase the number of page faults. In fact, the old ``stack'' is the same and it can keep a new page.
@@ -155,20 +155,16 @@ Select a page which has not been referred for a certain amount of time, i.e.\@ s
 \subsection{Allocation of frames}
 Each process needs \emph{minimum} number of pages. Two major allocation schemes:
 \begin{description}
-\item [Fixed allocation] Allocation can be equal (i.e.\@ assign an equal number of frames among the processes) or proportional (i.e.\@ assign a number of frames according to the size of process).
-\item [Priority allocation] Use a proportional allocation scheme using priority numbers rather than size. If a process generates a page fault, select for replacement one of its frame or select for replacement a frame from a process with lower priority number.
+\item [Fixed allocation] Allocation can be equal (i.e.\@ assign an equal number of frames among processes) or proportional (i.e.\@ assign a number of frames according to the size of process).
+\item [Priority allocation] Use a proportional allocation scheme using priority numbers rather than size. If a process generates a page fault, select for replacement one of its frames or select for replacement a frame from a process with lower priority number.
 \end{description}
-Two strategies are possible from page replacement:
-\begin{itemize}
-\item \textbf{Global replacement}: each process selects a replacement frame from the set of all frames; one process can take a frame from another;
-\item \textbf{Local replacement}: each process selects from only its own set of allocated frames.
-\end{itemize}
-If a process does not have ``enough'' pages, the page-fault rate is very high, leading to:
-\begin{itemize}
-\item Low CPU utilization;
-\item Operating system thinks that it needs to increase the degree of multiprogramming;
-\item Adding another process.
-\end{itemize}
+Two strategies are possible for page replacement:
+\begin{description}
+\item [Global replacement] Each process selects a replacement frame from the set of all frames; one process can take a frame from another.
+\item [Local replacement] Each process selects from only its own set of allocated frames.
+\end{description}
+If a process does not have ``enough'' pages, page-fault rate is very high, leading to low CPU utilization which makes the operating system thinking that it needs to increase the degree of multiprogramming, therefore a new process is added which cause an even lower CPU utilization.
+
 \textbf{Thrashing} means that a process is busy swapping pages in and out.
 
 \begin{figure}[hbtp]
@@ -178,7 +174,7 @@ If a process does not have ``enough'' pages, the page-fault rate is very high, l
 \end{figure}
 
 \subsection{Working-Set Model}
-Defining $\Delta$ as the working-set windows (i.e.\@ a fixed number of page references), it is possible to define ${WSS}_i$ as the working set of process $P_{i}$ (i.e.\@ hence the total number of pages referenced in the most recent $\Delta$).
+Defining $\Delta$ as the working-set windows (i.e.\@ a fixed number of page references), it is possible to define ${WSS}_i$ as the working set of process $P_{i}$ (i.e.\@ the total number of pages referenced in the most recent $\Delta$).
 \begin{itemize}
 \item If $\Delta$ is too small, it will not encompass entire locality;
 \item If $\Delta$ is too large, it will encompass several localities;
@@ -187,12 +183,10 @@ Defining $\Delta$ as the working-set windows (i.e.\@ a fixed number of page refe
 The working-set strategy has a variable \emph{resident set}, $\overline{RT} = \dfrac{1}{T} \sum_{t=1}^T RS(t,\Delta)$.
 
 \subsection{Page-Fault Frequency Scheme}
-Establish ``acceptable'' page-fault rate ($1/c$ where $c$ is the time between two page faults).
-
-If actual rate is too low, the process loses frame. On the other hand, if actual rate is too high, process gains frame.
+It is needed to establish ``acceptable'' page-fault rate ($1/c$ where $c$ is the time between two page faults). If actual rate is too low, the process loses frame. On the other hand, if actual rate is too high, process gains frame.
 
 \paragraph{Strategy}
-Run at each page fault, not at every reference. Is controlled by the time interval between page faults.
+Run at each page fault, not at every reference. It is controlled by the time interval between page faults.
 \begin{itemize}
 \item If $\tau < c$, i.e.\@ the measured page fault frequency is greater than the one acceptable, a page has to e added to the Resident Set of the process issuing this page fault;
 \item If $\tau > c$, all pages not referred in that interval by the current process are eliminated from its Resident Set. The reference bit of all pages in the Resident Set are cleared.
