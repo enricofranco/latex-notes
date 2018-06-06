@@ -1,0 +1,116 @@
+\appendix
+\chapter{GUI Testing with Expresso}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|}
+\hline 
+GUI Graphics & Visual GUI Testing \\ 
+\hline 
+GUI Definition (XML files) & Layout/Property based testing \\ 
+\hline 
+App behavior & Lower level testing \\ 
+\hline 
+\end{tabular}
+\caption{Android GUI abstractions}
+\end{table}
+
+\emph{Espresso} is a JUnit-based framework for performing Automated GUI Testing of Android applications. It is developed internally by Google, and its code is open source. It is part of the \textbf{Android Support Repository} from December 2015. Espresso is defined as a ``grey-box'' testing framework:
+\begin{itemize}
+\item Test cases are written in the same environment of the development, so application code is available;
+\item Test cases are based on properties of the widgets composing the user interfaces, thus providing a level of abstraction over the application features. Only details about the definition of the GUI are needed to perform interactions with the app verify the results.
+\end{itemize}
+
+\paragraph{Benefits}
+\begin{itemize}
+\item (Most times) automatic synchronization with the app, i.e.,\@ tests wait for the execution of the device;
+\item (Relatively) easy and fast for developing test cases;
+\item (Partial) support for multiple activity testing, or WebViews testing.
+\end{itemize}
+
+Several similar layout-based frameworks for test automation are available, each with its own benefits and drawbacks, e.g.,\@ Robotium, UI Automator, Appium, Selendroid.
+
+\section{Main components}
+onView.(ViewMatcher).perform(ViewAction).check(ViewAssertion)
+
+\begin{description}
+\item [ViewMatcher] ``Find something'': it provides ways to find an element on the screen, that matches a given criteria.
+\item [ViewAction] ``Do something'': it provides instructions to perform actions on the identified elements of the GUI.
+\item [ViewAssertion] ``Check something'': it allows to check if the state of an identified view object matches a given criteria.
+\end{description}
+These three commands are provided but are not mandatory. It is possible to use only partial combinations of them. With these command it should be possible to interact with the application emulating a human user.
+
+\subsection{ViewMatcher}
+\paragraph{User properties}
+\begin{description}
+\item [withId(int id)] Identifies a view with a given identifier in the layout description.
+\item [withText(String t)] Identifies a view containing text \emph{t}.
+\item [withContextDescription(String c)] Identifies a view whose content description is equal to \emph{c}.
+\end{description}
+
+\paragraph{UI properties}
+\begin{description}
+\item [isDisplayed(...)] The view is currently displayed on the screen.
+\item [isEnabled(...)] The view is displayed and can be interacted by the user.
+\item [isClickable(...)] The view is clickable by the user.
+\item [isChecked(...)] The view, e.g.,\@ a Radio Button, is currently checked. 
+\end{description}
+
+\paragraph{allOf, anyOf}
+ViewMatchers can be combined using the \emph{allOf} or \emph{anyOf} operators.
+\begin{description}
+\item [allOf(Matchers)] Select the view satisfying all the conditions expressed by matchers.
+\item [allOn(Matchers)] Select a view satisfying at least one condition expressed by the provided matchers.
+\end{description}
+
+\subsection{ViewActions}
+\paragraph{Tap actions}
+\begin{description}
+\item [click()] Perform a single tap on the view.
+\item [doubleClick()] Perform a double tap on the view.
+\item [longClick()] Perform a prolonged single tap.
+\end{description}
+
+\paragraph{Text actions}
+\begin{description}
+\item [typeText(String t)] Type text \emph{t} on the current view, only for \emph{EditText} views.
+\item [clearText()] Clear text inside selected view.
+\item [replaceText(String t)] Clear text and put text \texttt{t} in the current view .
+\end{description}
+
+\paragraph{Special actions}
+\begin{description}
+\item [closeSoftKeyboard()] Close the software keyboard provided by the Android system.
+\item [pressMenyKey()] Press the menu button if present in the current screen.
+\item [pressIMEActionButton()] Press customized carriage return in the keyboard, e.g.,\@ search.
+\item [pressBack()] Press back button in current screen.
+\end{description}
+
+\subsection{ViewAssertions}
+\begin{description}
+\item [matches(Matcher)] Check that the given view satisfies the condition specified by the matcher.
+\item [doesNotExist()] Check that the view is not present in the hierarchy of the layout.
+\end{description}
+
+\section{How to find view properties}
+To write Espresso test cases it is needed to find properties of the widgets that can identify them unambiguously, because if the same ViewMatcher finds more than a single view, the test case will crash. Several ways are possible:
+
+\begin{itemize}
+\item Manual inspection of layout files;
+\item Android Studio Layout Inspector;
+\item UIAutomator Viewer;
+\item Espresso Test Recorder.
+\end{itemize}
+
+When there is absolutely no other way to unambiguously identify a view, find its parent and perform a click on the exact coordinates. It is possible to retrieve both the parent and the coordinates from UIAutomator Viewer.
+\begin{verbatim}
+onView(withId(R.id.toolbar)).perform(clickXY(x : 1032, y : 131));
+\end{verbatim}
+Needs a non-predefined piece of code.
+
+\section*{Research opportunities}
+\begin{itemize}
+\item Integration and translation between second generation (layout-based) and third generation (visual) GUI testing;
+\item Code enhancement for better testability of Android apps;
+\item Automated repair of broken layout-based test code;
+\item Improvement of Visual GUI testing techniques, e.g.,\@ OCR modules. 
+\end{itemize}
