@@ -1,5 +1,5 @@
 \chapter{Structured exception handling}
-\emph{Structured Exception Handling (SEH)} provides a robust mechanism for application to respond to unexpected events, e.g.\@ hardware faults, addressing exceptions, system errors or user generated exception. It assures the ability to free resources, i.e.\@ it performs clean-up, and simplifies program logic.
+\emph{Structured Exception Handling (SEH)} provides a robust mechanism for application to respond to unexpected events, e.g.,\@ hardware faults, addressing exceptions, system errors or user generated exception. It assures the ability to free resources, i.e.,\@ it performs clean-up, and simplifies program logic.
 
 \section{Exception handlers}
 \paragraph{Try and except blocks}
@@ -70,13 +70,12 @@ VOID RaiseException (
 \begin{description}
 \item [\texttt{dwExceptionCode}] An application-defined exception code of the exception being raised. Typical value is \texttt{0xE0000006}. Refer to table~\ref{tab:dwExceptionCode}.
 \item [\texttt{dwExceptionFlags}] \texttt{EXCEPTION\_NONCONTINUABLE} specifies that filter expression should not generate \texttt{EXCEPTION\_CONTINUE\_EXECUTION}.
-\item [\texttt{cArguments}] The number of arguments in the \texttt{lpArguments} array. This value must not exceed \texttt{EXCEPTION\_MAXIMUM\_PARAMETERS}, i.e.\@ 15.
+\item [\texttt{cArguments}] The number of arguments in the \texttt{lpArguments} array. This value must not exceed \texttt{EXCEPTION\_MAXIMUM\_PARAMETERS}, i.e.,\@ 15.
 \item [\texttt{lpArguments}] Pointer to an array of \texttt{cArguments} elements. These arguments can contain any application-defined data that needs to be passed to the filter expression of the exception handler.
 \end{description}
 
 \begin{table}
 \centering
-\label{tab:dwExceptionCode}
 \begin{tabular}{|c|c|c|c|}
 \hline 
 31 - 30 & 29 & 28 & 27 ... 0 \\ 
@@ -91,6 +90,7 @@ VOID RaiseException (
 \hline
 \end{tabular} 
 \caption{dwExceptionCode}
+\label{tab:dwExceptionCode}
 \end{table}
 
 \begin{verbatim}

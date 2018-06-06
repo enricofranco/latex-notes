@@ -15,15 +15,15 @@ Names cannot use ASCII codes 1-31 or any <, >, :, '', |. They can have blanks, t
 As in UNIX, ``.'' indicates the current directory, while ``..'' indicates the parent directory.
 
 \paragraph{ASCII encoding}
-All data are stored using some king of encoding system on a computer. The ASCII is one of the de-facto standard for encoding characters. It encodes 128 specified characters into 7-bit.
+All data are stored using some king of encoding system on a computer. ASCII is one of the de-facto standard for encoding characters. It encodes 128 specified characters into 7-bit.
 
 Extended ASCII is 8-bit long and includes the standard 7-bit ASCII characters plus other symbols.
 
 \paragraph{Unicode}
-An industry standard for the consistent encoding, representation and handling of text expressed in most the world's writing systems. In contains a repertoire of more than 110000 characters, covering 100 scripts and multiple symbol sets. It can be implemented by different encodings:
+An industry standard for the consistent encoding, representation and handling of text expressed in most the world's writing systems. It contains a repertoire of more than 110000 characters, covering 100 scripts and multiple symbol sets. It can be implemented by different encodings:
 \begin{itemize}
-\item UTF-8: an 8-bit variable-width encoding, using from one to four 8-bit units.The first 128 characters coincides with ASCII.
-\item UTF-16: a 16-bit variable-width encoding, using one or two 16-bit units. It is the most unit because it represents a good tradeoff between the number of symbols represented and the space efficiency.
+\item UTF-8: an 8-bit variable-width encoding, using from one to four 8-bit units.The first 128 characters coincides with ASCII;
+\item UTF-16: a 16-bit variable-width encoding, using one or two 16-bit units. It is the most unit because it represents a good tradeoff between the number of symbols represented and the space efficiency;
 \item UTF-32: a 32-bit fixed-width encoding, permitting easy indexing but space inefficient.
 \end{itemize}
 
@@ -31,8 +31,8 @@ An industry standard for the consistent encoding, representation and handling of
 
 A file is essentially a series of bytes stored one after the other on a physical device. However, most people classify files in two categories:
 \begin{itemize}
-\item \textbf{Text (ASCII or Unicode)}: binary files storing ASCII codes, usually line-oriented. A newline is a set of bytes which convince the computer to go at the beginning of the next row.
-\item \textbf{Binary}: files not ``byte'' oriented where the smallest unit is a bit. Besides standard written characters and newlines there are other symbols as well. They are used for compactness.
+\item \textbf{Text (ASCII or Unicode)}: binary files storing ASCII codes, usually line-oriented. A newline is a set of bytes which convinces the computer to go at the beginning of the next row.
+\item \textbf{Binary}: files not ``byte oriented'', where the smallest unit is a bit. Besides standard written characters and newlines there are other symbols as well. They are used for compactness.
 \end{itemize}
 
 \paragraph{Serialization}
@@ -41,7 +41,7 @@ In the context of data storage, \emph{serialization} is the process of translati
 \section{File Input/Output}
 \subsection{Create a file}
 \begin{verbatim}
-HANDLE CreateFile(
+HANDLE CreateFile (
   LPCTSTR lpName,
   DWORD dwAccess,
   DWORD dwShareMode,
@@ -62,37 +62,37 @@ There is an \texttt{OpenFile} function but it is obsolete, for 16-bit applicatio
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpName}] is a pointer to the filename. Length delimited by \texttt{MAX\_PATH}.
-\item [\texttt{dwAccess}] specifies the read and write access using constants \texttt{GENERIC\_READ} or \texttt{GENERIC\_WRITE} possibly combined using OR operator ``\texttt{|}''.
-\item [\texttt{dwShareMode}] file sharing mode. Bit-wise OR of flags:
+\item [\texttt{lpName}] Pointer to the filename. Length delimited by \texttt{MAX\_PATH}.
+\item [\texttt{dwAccess}] Access mode. \texttt{GENERIC\_READ} or \texttt{GENERIC\_WRITE}, possibly bit-wise orred.
+\item [\texttt{dwShareMode}] File sharing mode. Bit-wise OR of flags:
 \begin{description}
-\item [\texttt{0}] cannot be shared.
-\item [\texttt{FILE\_SHARED\_READ}] other processes can read concurrently.
-\item [\texttt{FILE\_SHARED\_WRITE}] other processes can write concurrently.
+\item [\texttt{0}] Not shared.
+\item [\texttt{FILE\_SHARED\_READ}] Other processes can read concurrently.
+\item [\texttt{FILE\_SHARED\_WRITE}] Other processes can write concurrently.
 \end{description}
-\item [\texttt{lpsa}] usually NULL. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
-\item [\texttt{dwCreate}] create a file, overwrite existing file, etc. There is no append mode, pointer has to be set to the end of file. Possible values are:
+\item [\texttt{lpsa}] Usually \texttt{NULL}. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
+\item [\texttt{dwCreate}] Create a file, overwrite existing file, etc. There is no append mode, pointer has to be set to the end of file. Possible values are:
 \begin{description}
-\item [\texttt{CREATE\_NEW}] fails if the file exists.
-\item [\texttt{CREATE\_ALWAYS}] an existing file will be overwritten.
-\item [\texttt{OPEN\_EXISTING}] fail if the file does not exist.
-\item [\texttt{OPEN\_ALWAYS}] open the file or create it if it doesn't exist.
-\item [\texttt{TRUNCATE\_EXISTING}] file length will be set to zero.
+\item [\texttt{CREATE\_NEW}] Fails if the file exists.
+\item [\texttt{CREATE\_ALWAYS}] Existing file will be overwritten.
+\item [\texttt{OPEN\_EXISTING}] Fail if the file does not exist.
+\item [\texttt{OPEN\_ALWAYS}] Open the file or create it if it does not exist.
+\item [\texttt{TRUNCATE\_EXISTING}] File length will be set to zero.
 \end{description}
-\item [\texttt{dwAttrsAndFlags}] attributes are properties of the files themselves. The main flags are:
+\item [\texttt{dwAttrsAndFlags}] Attributes are properties of the files themselves. Main flags are:
 \begin{description}
-\item [\texttt{FILE\_ATTRIBUTE\_NORMAL}] no other attributes are set.
-\item [\texttt{FILE\_ATTRIBUTE\_READONLY}] cannot write or delete.
-\item [\texttt{FILE\_FLAG\_OVERLAPPED}] for asynchronous I/O.
-\item [\texttt{FILE\_FLAG\_SEQUENTIAL\_SCAN}] provide performance hints.
-\item [\texttt{FILE\_FLAG\_RANDOM\_ACCESS}] provide performance hints.
+\item [\texttt{FILE\_ATTRIBUTE\_NORMAL}] No other attributes are set.
+\item [\texttt{FILE\_ATTRIBUTE\_READONLY}] Cannot write or delete.
+\item [\texttt{FILE\_FLAG\_OVERLAPPED}] Asynchronous I/O.
+\item [\texttt{FILE\_FLAG\_SEQUENTIAL\_SCAN}] Performance hints.
+\item [\texttt{FILE\_FLAG\_RANDOM\_ACCESS}] Performance hints.
 \end{description}
-\item [\texttt{hTemplateFile}] usually NULL. It can be a handle of an open file, opened in \texttt{GENERIC\_READ} mode. It forces \texttt{CreateFile} to use the same attribute of that file to create the new file.
+\item [\texttt{hTemplateFile}] Usually \texttt{NULL}. It can be a handle of an open file, opened in \texttt{GENERIC\_READ} mode. It forces \texttt{CreateFile} to use the same attribute of that file to create the new file.
 \end{description}
 
 \subsection{Read a file}
 \begin{verbatim}
-BOOL ReadFile(
+BOOL ReadFile (
   HANDLE hFile,
   LPVOID lpBuffer,
   DWORD nNumberOfBytesToRead,
@@ -103,23 +103,23 @@ BOOL ReadFile(
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE} if the read succeeds, even if no bytes were read dye to an attempt to read past the end of file;
+\item \texttt{TRUE} if the read succeeds, even if no bytes were read due to an attempt to read past the end of file;
 \item \texttt{FALSE} indicates an invalid handle.
 \end{itemize}
 
 \paragraph{Parameters}
 \label{par:read_parameters}
 \begin{description}
-\item [\texttt{hFile}] file handle with \texttt{GENERIC\_READ} access.
-\item [\texttt{lpBuffer}] memory buffer to receive the input data.
-\item [\texttt{nNumberOfBytesToRead}] number of bytes expecting to read.
-\item [\texttt{*lpNumberOfBytesRead}] actual number of bytes transferred. Zero indicates end of file.
-\item [\texttt{lpOverlapped}] points to \texttt{OVERLAPPED} structure. Often NULL, eventually not \texttt{NULL} for random file access.
+\item [\texttt{hFile}] File handle with \texttt{GENERIC\_READ} access.
+\item [\texttt{lpBuffer}] Memory buffer to receive the input data.
+\item [\texttt{nNumberOfBytesToRead}] Number of bytes expecting to read.
+\item [\texttt{*lpNumberOfBytesRead}] Actual number of bytes transferred. Zero indicates end of file.
+\item [\texttt{lpOverlapped}] Pointer to \texttt{OVERLAPPED} structure. Often \texttt{NULL}, eventually not \texttt{NULL} for random file access.
 \end{description}
 
 \subsection{Write a file}
 \begin{verbatim}
-BOOL WriteFile(
+BOOL WriteFile (
   HANDLE hFile,
   LPCVOID *lpBuffer,
   DWORD nNumberOfBytesToWrite,
@@ -154,12 +154,12 @@ This function is general purpose and will be used to close handles to many diffe
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{hObject}] handle to close.
+\item [\texttt{hObject}] Handle to close.
 \end{description}
 
 \subsection*{Copy a file}
 \begin{verbatim}
-BOOL CopyFile(
+BOOL CopyFile (
   LPCTSTR lpExistingFile,
   LPCTSTR lpNewFile,
   BOOL fFailIfExists
@@ -176,17 +176,17 @@ This is a ``convenience function''. In fact it is easier to use, it provides bet
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpExistingFile}] existing filename.
-\item [\texttt{lpNewFile}] new filename.
-\item [\texttt{fFailIfExists}] if \texttt{FALSE}, the source file will replace an existing file.
+\item [\texttt{lpExistingFile}] Existing filename.
+\item [\texttt{lpNewFile}] New filename.
+\item [\texttt{fFailIfExists}] If \texttt{FALSE}, source file will replace an existing file.
 \end{description}
 
 \section{Console Input/Output}
-Console I/O can be performed using \texttt{ReadFile} and \texttt{WriteFile} but it is simpler to use \texttt{ReadConsole} and \texttt{WriteConsole}, specifying how characters are processes, i.e.\@ as bytes or as \texttt{TCHAR}. Like in UNIX, standard input, output and error are standard devices. UNIX refers to them with descriptors 0, 1 and 2, while Windows refers to them using \texttt{HANDLE}s.
+Console I/O can be performed using \texttt{ReadFile} and \texttt{WriteFile} but it is simpler to use \texttt{ReadConsole} and \texttt{WriteConsole}, specifying how characters are processes, i.e.,\@ as bytes or as \texttt{TCHAR}s. Like in UNIX, standard input, output and error are standard devices. UNIX refers to them with descriptors 0, 1 and 2, while Windows refers to them using \texttt{HANDLE}s.
 
 \subsection{Standard devices}
 \begin{verbatim}
-HANDLE GetStdHandle(
+HANDLE GetStdHandle (
   DWORD nStdHandle
 );
 \end{verbatim}
@@ -201,13 +201,11 @@ Given a device, it returns its handle.
 
 \paragraph{Parameter}
 \begin{description}
-\item [\texttt{nStdHandle}] must be one of \texttt{STD\_INPUT\_HANDLE}, \texttt{STD\_OUTPUT\_HANDLE},
-
-\texttt{STD\_ERROR\_HANDLE}.
+\item [\texttt{nStdHandle}] One of \texttt{STD\_INPUT\_HANDLE}, \texttt{STD\_OUTPUT\_HANDLE} or \\ \texttt{STD\_ERROR\_HANDLE}.
 \end{description}
 
 \begin{verbatim}
-HANDLE SetStdHandle(
+HANDLE SetStdHandle (
   DWORD nStdHandle,
   HANDLE hHandle
 );
@@ -223,10 +221,8 @@ It assigns a standard device to a handle.
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{nStdHandle}] must be one of \texttt{STD\_INPUT\_HANDLE}, \texttt{STD\_OUTPUT\_HANDLE},
-
-\texttt{STD\_ERROR\_HANDLE}.
-\item [\texttt{hHandle}] specifies an open file to be used as a standard device.
+\item [\texttt{nStdHandle}] One of \texttt{STD\_INPUT\_HANDLE}, \texttt{STD\_OUTPUT\_HANDLE} or \\ \texttt{STD\_ERROR\_HANDLE}.
+\item [\texttt{hHandle}] Open file to be used as a standard device.
 \end{description}
 
 \section{File pointers and random access}
@@ -240,7 +236,7 @@ In Windows it is possible to explicitly modify file pointers to perform random w
 
 \subsection{Setting file pointers}
 \begin{verbatim}
-DOWRD SetFilePointer(
+DOWRD SetFilePointer (
   HANDLE hFile,
   LONG lDistanceToMove,
   PLONG lpDistanceToMoveHigh,
@@ -256,19 +252,19 @@ DOWRD SetFilePointer(
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{hFile}] handle of an open file with read and/or write access.
+\item [\texttt{hFile}] Handle of an open file with read and/or write access.
 \item [\texttt{lDistanceToMove}] \texttt{LONG} (32 bits) signed distance to move or unsigned file position.
-\item [\texttt{*lpDistanceToMoveHigh}] high-order position of the move distance. It can be \texttt{NULL} for ``small'' files.
-\item [\texttt{dwModeMethod}] specifies one of the following modes:
+\item [\texttt{*lpDistanceToMoveHigh}] High-order position of the move distance. It can be \texttt{NULL} for ``small'' files.
+\item [\texttt{dwModeMethod}] One of the following modes:
 \begin{description}
-\item [\texttt{FILE\_BEGIN}] position from the start of file.
-\item [\texttt{FILE\_CURRENT}] move pointer forward or backward.
-\item [\texttt{FILE\_END}] position backward (or forward) from end of file.
+\item [\texttt{FILE\_BEGIN}] Position from the start of file.
+\item [\texttt{FILE\_CURRENT}] Move pointer forward or backward.
+\item [\texttt{FILE\_END}] Position backward (or forward) from end of file.
 \end{description}
 \end{description}
 
 \begin{verbatim}
-DOWRD SetFilePointerEx(
+DOWRD SetFilePointerEx (
   HANDLE hFile,
   LARGE_INTEGER lDistanceToMove,
   PLARGE_INTEGER lpNewFilePointer,
@@ -278,8 +274,8 @@ DOWRD SetFilePointerEx(
 
 Similar to \texttt{SetPointerEx} but requires:
 \begin{description}
-\item [\texttt{lDistanceToMove}] a large integer to set the required position.
-\item [\texttt{lpNewFilePointer}] a large integer pointer to return the actual position.
+\item [\texttt{lDistanceToMove}] Large integer to set the required position.
+\item [\texttt{lpNewFilePointer}] Large integer pointer to return the actual position.
 \end{description}
 
 \subsection{File pointer with 64-bit arithmetic}
@@ -325,15 +321,15 @@ typedef struct _OVERLAPPED {
 \end{verbatim}
 
 \begin{description}
-\item [\texttt{Internal} and \texttt{InternalHigh}] are reserved and they are not to be used.
-\item [\texttt{Offset} and \texttt{OffsetHigh}] are low order and high order address.
-\item [\texttt{hEvent}] is used with asynchronous I/O, it must be \texttt{NULL}.
+\item [\texttt{Internal} and \texttt{InternalHigh}] Reserved and they are not to be used.
+\item [\texttt{Offset} and \texttt{OffsetHigh}] Low order and high order address.
+\item [\texttt{hEvent}] Used with asynchronous I/O, it must be \texttt{NULL}.
 \end{description}
 
 \section{File locking}
 All previous input/operations are \emph{thread-synchronous}, meaning that the thread waits until input/output completes. To allow a thread to continue without waiting for an input/output operation to complete, it is necessary to use asynchronous system calls. An important aspect of concurrent programming is synchronization of access to shared objects such as files. File locking is a limited form of synchronization.
 
-It is possible to lock file so that no other process or thread can access the same file area. More specifically, in Windows it is possible to lock an entire file or part of it and obtain a shared (i.e.\@ multiple reader) access or an exclusive (i.e.\@ single reader-writer) access.
+It is possible to lock a file so that no other process or thread can access the same file area. More specifically, in Windows it is possible to lock an entire file or part of it and obtain a shared (i.e.,\@ multiple reader) access or an exclusive (i.e.,\@ single reader-writer) access.
 
 Lock belongs to a process, any attempt to access part of a file in violation of a lock will fail.
 
@@ -353,26 +349,26 @@ BOOL LockFileEx (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE}, i.e.\@ non-zero value, if it succeeds;
-\item \texttt{FALSE}, i.e.\@ zero value, if it fails.
+\item \texttt{TRUE} if it succeeds;
+\item \texttt{FALSE} if it fails.
 \end{itemize}
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{hFile}] handle of an open file. The file must have an access such as \texttt{GENERIC\_READ} or \texttt{GENERIC\_WRITE}.
-\item [\texttt{dwFlags}] lock mode and how to wait for the lock to become available. It may get one or more of the following values:
+\item [\texttt{hFile}] Handle of an open file. It must have an access such as \texttt{GENERIC\_READ} or \texttt{GENERIC\_WRITE}.
+\item [\texttt{dwFlags}] Lock mode and how to wait for the lock to become available. It may get one or more of the following values:
 \begin{description}
-\item [\texttt{LOCKFILE\_EXCLUSIVE\_LOCK}] If present, the request is for an exclusive lock. Otherwise, the request is for a shared lock.
-\item [\texttt{LOCKFILE\_FAIL\_IMMEDIATELY}] If present, it specifies that the function should return immediately with a \texttt{FALSE} if the lock cannot be acquired. Otherwise, the call blocks unitl the lock becomes available.
+\item [\texttt{LOCKFILE\_EXCLUSIVE\_LOCK}] Request for an exclusive lock. Otherwise, the request is for a shared lock.
+\item [\texttt{LOCKFILE\_FAIL\_IMMEDIATELY}] The function should return immediately with a \texttt{FALSE} if the lock cannot be acquired. Otherwise, the call blocks until the lock becomes available.
 \end{description}
-\item [\texttt{dwFlagsReserved}] is reserved and must be set to zero.
-\item [\texttt{nNumberOfBytesToLockLow}] low-order 32 bits of the length of the byte range to lock.
-\item [\texttt{nNumberOfBytesToLockHigh}] high-order 32 bits of the length of the byte range to lock.
-\item [\texttt{lpOverlapped}] points to an \texttt{OVERLAPPED} data structure containing the offset of the beginning of the lock range.
+\item [\texttt{dwFlagsReserved}] Reserved, must be set to zero.
+\item [\texttt{nNumberOfBytesToLockLow}] Low-order 32 bits of the length of the byte range to lock.
+\item [\texttt{nNumberOfBytesToLockHigh}] High-order 32 bits of the length of the byte range to lock.
+\item [\texttt{lpOverlapped}] Pointer to an \texttt{OVERLAPPED} data structure containing the offset of the beginning of the lock range.
 \begin{itemize}
 \item \texttt{Offset} is the low part offset;
 \item \texttt{OffsetHigh} is the high part offset;
-\item \texttt{HANDLE hEvent} should be set to 0.
+\item \texttt{hEvent} should be set to \texttt{0}.
 \end{itemize}
 \end{description}
 
@@ -393,7 +389,7 @@ The unlock must use exactly the same range as a preceding lock. Returned value a
 \paragraph{Repeated lock request}
 A new lock is issued when a previous lock is present.
 \begin{center}
-\begin{tabular}{|l|l|l|}
+\begin{tabular}{|l|c|c|}
 \hline 
 \multirow{2}{*}{Existing lock} &  \multicolumn{2}{c|}{Requested lock type} \\\cline{2-3}
  & Shared lock & Exclusive lock \\
@@ -413,7 +409,7 @@ A thread/process issues a R/W operation on a region where there is a lock, or mo
 \begin{tabularx}{\textwidth}{|l|X|X|}
 \hline 
 \multirow{2}{*}{Existing lock} &  \multicolumn{2}{c|}{Requested I/O operation} \\\cline{2-3}
- & Read & Write \\
+ & \multicolumn{1}{c|}{Read} & \multicolumn{1}{c|}{Write} \\
 \hline 
 None & Succeeds & Succeeds \\ 
 \hline 

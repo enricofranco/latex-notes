@@ -1,13 +1,13 @@
 \chapter{File and directory}
 \section{File and directory management}
 \subsection{Delete a file}
-Delete a file by specifying a file name. It does not work with an open file or with a directory.
-
 \begin{verbatim}
 BOOL DeleteFile(
   LPCTSTR lpFileName
 );
 \end{verbatim}
+
+Delete a file by specifying a file name. It does not work with an open file or with a directory.
 
 \paragraph{Returned value}
 \begin{itemize}
@@ -17,7 +17,7 @@ BOOL DeleteFile(
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpFileName}] relative or absolute pathname.
+\item [\texttt{lpFileName}] Relative or absolute pathname.
 \end{description}
 
 \subsection{Rename or move a file}
@@ -33,7 +33,7 @@ BOOL MoveFile (
 \end{verbatim}}
 \ParallelRText{
 \begin{verbatim}
-BOOL MoveFile (
+BOOL MoveFileEx (
   LPCTSTR lpExisting,
   LPCTSTR lpNew,
   DWORD dwFlags
@@ -43,20 +43,20 @@ BOOL MoveFile (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE} if it succeeds;
-\item \texttt{FALSE} if it fails.
+\item \texttt{TRUE} on success;
+\item \texttt{FALSE} on fail.
 \end{itemize}
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpExisting}] the name of the existing file or directory.
-\item [\texttt{lpNew}] the name of the new file or directory. In general:
+\item [\texttt{lpExisting}] Name of the existing file or directory.
+\item [\texttt{lpNew}] Name of the new file or directory. In general:
 \begin{itemize}
 \item Wildcards are not allowed in files or directories names;
 \item Directory must be on the same drive;
 \item If \texttt{lpNew} is \texttt{NULL} the file or directory is deleted.
 \end{itemize}
-\item [\texttt{dwFlags}]:
+\item [\texttt{dwFlags}]
 \begin{description}
 \item [\texttt{MOVEFILE\_REPLACE\_EXISTING}] Replace an existing file.
 \item [\texttt{MOVEFILE\_WRITE\_THROUGH}] Do not return until the copied file is flushed through to the disk.
@@ -67,8 +67,6 @@ BOOL MoveFile (
 
 \section{Directory management}
 \subsection{Create directory}
-Create a new empty directory.
-
 \begin{verbatim}
 BOOL CreateDirectory (
   LPCTSTR lpPath,
@@ -76,6 +74,8 @@ BOOL CreateDirectory (
 );
 \end{verbatim}
 
+Create a new empty directory.
+
 \paragraph{Returned value}
 \begin{itemize}
 \item \texttt{TRUE} if it succeeds;
@@ -84,19 +84,19 @@ BOOL CreateDirectory (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpPath}] points to a \texttt{NULL}-terminated string with the directory name to be created.
-\item [\texttt{lpsa}] security attributes, \texttt{NULL} for now.
+\item [\texttt{lpPath}] Pointer to a \texttt{NULL}-terminated string with the directory name to be created.
+\item [\texttt{lpsa}] Usually \texttt{NULL}. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
 \end{description}
 
 \subsection{Remove directory}
-Remove a directory, which must be empty.
-
 \begin{verbatim}
 BOOL RemoveDirectory (
   LPCTSTR lpPath
 );
 \end{verbatim}
 
+Remove a directory, which must be empty.
+
 \paragraph{Returned value}
 \begin{itemize}
 \item \texttt{TRUE} if it succeeds;
@@ -105,13 +105,13 @@ BOOL RemoveDirectory (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpPath}] points to a \texttt{NULL}-terminated string with the directory name to be removed.
+\item [\texttt{lpPath}] Pointer to a \texttt{NULL}-terminated string with the directory name to be removed.
 \end{description}
 
 \subsection{Set current directory}
 Each \emph{process} has a current working directory. There is a current directory for each drive. Programs can set and get the current directory.
 
-The current directory is \textbf{global} to a process and is shared by all threads in a process. Hence, concurrent threads cannot set different directories, they have to use absolute paths.
+The current directory is \textbf{global} to a process and it is shared by all threads in a process. Hence, concurrent threads cannot set different directories, they have to use absolute paths.
 
 \begin{verbatim}
 BOOL SetCurrentDirectory (
@@ -127,18 +127,18 @@ BOOL SetCurrentDirectory (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpCurDir}] the path to the new current directory, it can be a relative or an absolute path.
+\item [\texttt{lpCurDir}] Path to the new current directory, it can be a relative or an absolute path.
 \end{description}
 
 \subsection{Get current directory}
-It gets the full current pathname, and it returns it into the specified buffer.
-
 \begin{verbatim}
 BOOL FetCurrentDirectory (
   DWORD cchCurDir,
   LPTSTR lpCurDir
 );
 \end{verbatim}
+
+It gets the full current pathname, and it returns it into the specified buffer.
 
 \paragraph{Returned value}
 \begin{itemize}
@@ -149,16 +149,16 @@ BOOL FetCurrentDirectory (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{cchCurDir}] character length of the buffer for the directory name. Windows uses this technique whenever the result's length is not known.
-\item [\texttt{lpCurDir}] points to the buffer to receive the pathname string. Be sure the buffer is really as long as it is declared to be. Potential buffer overflow.
+\item [\texttt{cchCurDir}] Character length of the buffer for the directory name. Windows uses this technique whenever the result's length is not known.
+\item [\texttt{lpCurDir}] Pointer to the buffer to receive the pathname string. Be sure the buffer is really as long as it is declared to be. Potential buffer overflow.
 \end{description}
 
 \section{File and directory processing}
 Reading a directory content can be done following the same logic used to read a file. It is required to:
 \begin{enumerate}
-\item Open the directory, i.e.\@ generate a search handle satisfying specific requirements;
+\item Open the directory, i.e.,\@ generate a search handle satisfying specific requirements;
 \item Read the directory content;
-\item End the reading operation, i.e.\@ close the directory.
+\item End the reading operation, i.e.,\@ close the directory.
 \end{enumerate}
 
 \subsection{File searching}
@@ -180,8 +180,8 @@ HANDLE FindFirstFile (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpSearchFile}] points to directory or pathname. Wildcards can be used (\texttt{*} and \texttt{?}).
-\item [\texttt{lpffd}] points to a \texttt{WIN32\_FIND\_DATA} structure. The structure contains information on the entry.
+\item [\texttt{lpSearchFile}] Pointer to directory or pathname. Wildcards can be used (\texttt{*} and \texttt{?}).
+\item [\texttt{lpffd}] Pointer to a \texttt{WIN32\_FIND\_DATA} structure. The structure contains information on the entry.
 \end{description}
 
 \subsubsection{Next files}
@@ -225,12 +225,12 @@ typedef struct _WIN32_FIND_DATA {
 \end{verbatim}
 
 \begin{description}
-\item [\texttt{dwFileAttributes}] see \texttt{CreateFile} attributes.
+\item [\texttt{dwFileAttributes}] Refer to \texttt{CreateFile} attributes.
 \item [\texttt{ftCreationTime}] 64-bit integer.
 \item [\texttt{ftLastAccessTime}] 64-bit integer.
 \item [\texttt{ftLastWriteTime}] 64-bit integer.
-\item [\texttt{dwReserved0}] reserved for future use.
-\item [\texttt{dwReserved1}] reserved for future use.
-\item [\texttt{cFileName}] filename.
+\item [\texttt{dwReserved0}] Reserved for future use.
+\item [\texttt{dwReserved1}] Reserved for future use.
+\item [\texttt{cFileName}] Filename.
 \item [\texttt{cAlternateFileName}] MS-DOS filename. Limited to 8 characters for filename and 3 characters for extension.
 \end{description}

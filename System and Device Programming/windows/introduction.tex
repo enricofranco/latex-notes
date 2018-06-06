@@ -9,26 +9,26 @@ Windows operating systems have all features required for 64-bit architecture and
 \item Communication and synchronization;
 \item Security.
 \end{itemize}
-Windows does support many standards. C library is always available but you cannot fully exploit Windows with it. For example, it is not possible to lock a file or a part of it, mapping a file into main memory and organize inter-process communication.
+Windows does support many standards. C library is always available but Windows is not fully exploited with it. For example, it is not possible to lock a file or a part of it, mapping a file into main memory and organize inter-process communication.
 
 \section{Programming principles}
-Windows APIs are defined in C language, going beyond standard C therefore reducing code portability but increasing code functionality. They are different from other standard, they require their own coding style and technique and use threads, not processes, as a basic unit of execution.
+Windows APIs are defined in C language, going beyond standard C therefore reducing code portability but increasing code functionality. They are different from other standards, they require their own coding style and technique and use threads, not processes, as a basic unit of execution.
 
 Including \texttt{windows.h}, most of the required data are already included. Windows contains many functions to perform the same or similar operations, each one with numerous parameters and flags and occasional artifacts from 16-bit versions.
 
 \paragraph{Windows names}
 \begin{itemize}
 \item Function names are long and descriptive;
-\item Variables are long and descriptive, often use "Hungarian" notation.
+\item Variables are long and descriptive, often use ``Hungarian'' notation.
 \item Symbolic constants and flags explain their meaning.
 \end{itemize}
 
-Nearly every resource is a \emph{kernel object}. Objects are identified and referenced by handle. Handle objects are of type \texttt{HANDLE}, similar to UNIX file descriptor or process id. \texttt{HANDLE}s are gray boxes, hence they must be manipulated by Windows APIs and theyinclude files, pipes, processes, threads, etc.
+Nearly every resource is a \emph{kernel object}. Objects are identified and referenced by handles. Handle objects are of type \texttt{HANDLE}, similar to UNIX file descriptor or process id. \texttt{HANDLE}s are gray boxes, hence they must be manipulated by Windows APIs and they include files, pipes, processes, threads, etc.
 
 Predefined and descriptive data types are expressed in upper case (\texttt{BOOL}, \texttt{DWORD}, etc.) avoiding the \texttt{*} operator and making name distinctions (\texttt{LPTSTR}, i.e.\@ Long Pointer To STRing defined as \texttt{TCHAR*}).
 
 \paragraph{Coding systems}
-Windows supports executable code built in 16 (Win16), 32 (Win32) and 64 (Win64) bits. 16-bit versions are only for backward compatibility, while 32-bit versions run on 64-bit architecture but cannot exploit the larger address space. Most of the difference concern the pointer size. 
+Windows supports executable code built in 16 (Win16), 32 (Win32) and 64 (Win64) bits. 16-bit versions are only for backward compatibility, while 32-bit versions run on 64-bit architecture but cannot exploit the larger address space. Most of the differences concern the pointer size. 
 
 Four different coding strategies are possible:
 \begin{itemize}

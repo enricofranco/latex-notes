@@ -1,5 +1,5 @@
 \chapter{Threads}
-Threads in a process share data (global variable) and code. Each threads has its own stack for function calls. Each thread can allocate its own \emph{Thread Local Storage} (TLS), which represent a way to share data which are private to the thread.
+Threads in a process share data (global variable) and code. Each thread has its own stack for function calls. Each thread can allocate its own \emph{Thread Local Storage} (TLS), which represents a way to share data which are private to the thread.
 
 \begin{figure}[hbtp]
 \centering
@@ -12,7 +12,7 @@ Threads are scheduled and run independently. Windows works with threads as atomi
 Benefits:
 \begin{itemize}
 \item Simpler program models;
-\item Faster code, in many cases, when it is possible to exploit multiple processors or inherent application parallelism, i.e.\@ concurrency can catch real concurrency;
+\item Faster code, in many cases, when it is possible to exploit multiple processors or inherent application parallelism, i.e.,\@ concurrency can catch real concurrency;
 \item Reliable, understandable, maintainable code.
 \end{itemize}
 Risks:
@@ -23,7 +23,7 @@ Risks:
 \end{itemize}
 
 \section{Creating a thread}
-Specify the thread's start address within the process' code, specify the stack size and the stack consume space within the process' address space, 
+Thread creation needs to specify the thread's start address within the process' code, the stack size and the stack consume space within the process' address space, 
 
 \begin{verbatim}
 HANDLE CreateThread (
@@ -44,17 +44,17 @@ HANDLE CreateThread (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpsa}] security attributes structure, use \texttt{NULL}.
-\item [\texttt{cbStack}] byte size for the new thread's stack. Use 0 to default to the primary thread's stack size (1 MB).
-\item [\texttt{lpStartAddr}] points to the function to be executed. Actually it is the function name, which accepts a single pointer argument and returns a 32-bit \texttt{DWORD} exit code. The thread can interpret the argument as a \texttt{DWORD} or a pointer.
-\item [\texttt{lpvThreadParm}] pointer passed as the thread argument.
-\item [\texttt{dwCreate}] if zero, the thread is immediately ready to run; if \texttt{CREATE\_SUSPENDED}, the new thread will be in suspended state, requiring a \texttt{ResumeThread} function call to move the thread to the ready state.
-\item [\texttt{lpIDThread}] points to a \texttt{DWORD} that receives the new thread's identifier; \texttt{NULL} is ok on W2000/NT.
+\item [\texttt{lpsa}] Usually \texttt{NULL}. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
+\item [\texttt{cbStack}] Byte size for the new thread's stack. Use \texttt{0} to default to the primary thread's stack size (1~MB).
+\item [\texttt{lpStartAddr}] Pointer to the function to be executed. Actually it is the function name, which accepts a single pointer argument and returns a 32-bit \texttt{DWORD} exit code. The thread can interpret the argument as a \texttt{DWORD} or a pointer.
+\item [\texttt{lpvThreadParm}] Pointer passed as the thread argument.
+\item [\texttt{dwCreate}] If \texttt{0}, the thread is immediately ready to run; if \texttt{CREATE\_SUSPENDED}, the new thread will be in suspended state, requiring a \texttt{ResumeThread} function call to move the thread to the ready state.
+\item [\texttt{lpIDThread}] Pointer to a \texttt{DWORD} that receives the new thread's identifier; \texttt{NULL} is ok on W2000/NT.
 \end{description}
 
 \subsection{The thread function}
 \begin{verbatim}
-DWORD WINAPI MyThreadFunction(PVOID pThreadParam) {
+DWORD WINAPI MyThreadFunction (PVOID pThreadParam) {
   ExitThread (ExitCode);
   /* return ExitCode; */
 }
@@ -74,12 +74,12 @@ A thread can simply return with its exit code. \texttt{ExitThread} is preferred 
 
 \paragraph{Parameter}
 \begin{description}
-\item [\texttt{dwExitCode}] the exit code for the thread.
+\item [\texttt{dwExitCode}] Exit code for the thread.
 \end{description}
 
 It is possible to terminate a thread with \texttt{TerminateThread} but it is dangerous because the thread's stack and other resources will not be deallocated, leading to possible leaks. In fact, it is better to let the thread terminate itself.
 
-A thread will remain in the system until the last handle to it is closed, using \texttt{CloseHandle}~\footnote{Similar to UNIX zombies}, then the thread will be deleted.
+A thread will remain in the system until the last handle to it is closed, using \texttt{CloseHandle}\footnote{Similar to UNIX zombies.}, then the thread will be deleted.
 
 \subsection{Thread exit codes}
 Any other thread can retrieve the exit code.
@@ -92,18 +92,18 @@ BOOL GetExitCodeThread (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE} if the function succeeds, i.e.\@ if it is possible to retrieve the exit code;
+\item \texttt{TRUE} if the function succeeds, i.e.,\@ if it is possible to retrieve the exit code;
 \item \texttt{FALSE} otherwise.
 \end{itemize}
 
 \paragraph{Parameter}
 \begin{description}
-\item [\texttt{hThread}] handle to the thread.
-\item [\texttt{lpdwExitCode}] contains the thread's exit code. It could be \texttt{STILL\_ACTIVE} if the thread is running.
+\item [\texttt{hThread}] Handle to the thread.
+\item [\texttt{lpdwExitCode}] Thread's exit code. It could be \texttt{STILL\_ACTIVE} if the thread is running.
 \end{description}
 
 \section{Thread identities}
-A thread has a permanent \texttt{ThreadId} and it usually accessed by \texttt{HANDLE}. An \emph{ID} can be converted to a \texttt{HANDLE}.
+A thread has a permanent \texttt{ThreadId} and it is usually accessed by \texttt{HANDLE}. An \texttt{ID} can be converted to a \texttt{HANDLE}.
 
 \begin{verbatim}
 HANDLE GetCurrentThread (VOID);
@@ -117,15 +117,15 @@ HANDLE OpenThread (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An open \texttt{HANDLE} to the specified thread, if the function succeeds;
-\item \texttt{NULL}, if it fails.
+\item An open \texttt{HANDLE} to the specified thread if the function succeeds;
+\item \texttt{NULL} if it fails.
 \end{itemize}
 
 \paragraph{Parameter}
 \begin{description}
-\item [\texttt{dwDesiredAccess}] the access to the thread object.
-\item [\texttt{InheritableHandle}] if \texttt{TRUE}, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.
-\item [\texttt{ThreadId}] the identifier of the thread to be opened.
+\item [\texttt{dwDesiredAccess}] Access to the thread object.
+\item [\texttt{InheritableHandle}] If \texttt{TRUE}, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.
+\item [\texttt{ThreadId}] Identifier of the thread to be opened.
 \end{description}
 
 \section{Suspend \& resume threads}
@@ -140,17 +140,17 @@ DWORD SuspendThread (HANDLE hThread);
 
 \paragraph{Returned value}
 \begin{itemize}
-\item The previous suspend count, if the function succeeds;
-\item \texttt{0xFFFFFFFF}, if it fails.
+\item The previous suspend count if the function succeeds;
+\item \texttt{0xFFFFFFFF} if it fails.
 \end{itemize}
 
 \paragraph{Parameter}
 \begin{description}
-\item [\texttt{hThread}] a handle to the thread to be restarted or suspended.
+\item [\texttt{hThread}] Handle to the thread to be restarted or suspended.
 \end{description}
 
 \section{Waiting for thread termination}
-There is no specific function to wait for thread termination. In fact, wait for a thread to terminate using general purpose wait functions, which wait for the thread handle to become signaled.
+There is no specific function to wait for thread termination. In fact, wait for a thread to terminate is done using general purpose wait functions, which wait for the thread handle to become signaled.
 \begin{itemize}
 \item \texttt{ExitThread} and \texttt{TerminateThread} set the object to the signaled state, releasing all other threads waiting on the object;
 \item \texttt{ExitProcess} sets the process' state and all it threads' states to signaled.
@@ -165,11 +165,11 @@ DWORD WaitForSingleObject (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{hHandle}] a handle to the object.
-\item [\texttt{dwTimeOut}] timeout interval in milliseconds.
+\item [\texttt{hHandle}] Handle to the object.
+\item [\texttt{dwTimeOut}] Timeout interval in milliseconds.
 \begin{description}
-\item [\texttt{0}] means the functions returns immediately after testing the state of the specified object;
-\item [\texttt{INFINITE}] for no timeout. Wait forever for a thread to terminate.
+\item [\texttt{0}] Function returns immediately after testing the state of the specified object;
+\item [\texttt{INFINITE}] No timeout. Wait forever for a thread to terminate.
 \end{description}
 \end{description}
 
@@ -184,16 +184,16 @@ DWORD WaitForMultipleObjects (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{cObjects}] is the number of handles in the array pointed to by \texttt{lphObjects}. It cannot exceed \texttt{MAXIMUM\_WAIT\_OBJECTS}, i.e.\@ 64.
-\item [\texttt{lphObjects}] is an array of object handles.
+\item [\texttt{cObjects}] Number of handles in the array pointed to by \texttt{lphObjects}. It cannot exceed \texttt{MAXIMUM\_WAIT\_OBJECTS}, i.e.,\@ 64.
+\item [\texttt{lphObjects}] Array of object handles.
 \item [\texttt{fWaitAll}]
 \begin{description}
 \item [\texttt{TRUE}] indicates to wait for all the threads to terminate.
 \end{description}
-\item [\texttt{dwTimeOut}] timeout interval in milliseconds.
+\item [\texttt{dwTimeOut}] Timeout interval in milliseconds.
 \begin{description}
-\item [\texttt{0}] means the functions returns immediately after testing the state of the specified object;
-\item [\texttt{INFINITE}] for no timeout. Wait forever for a thread to terminate.
+\item [\texttt{0}] Functions returns immediately after testing the state of the specified object;
+\item [\texttt{INFINITE}] No timeout. Wait forever for a thread to terminate.
 \end{description}
 \end{description}
 
@@ -207,16 +207,16 @@ DWORD WaitForMultipleObjects (
 \end{itemize}
 
 \section{The C library and threads}
-Nearly all programs and thread functions use the C library, which is normally not ``thread safe'' because it uses global variables for the process, i.e.\@ for all threads and not for the single thread. The C function \texttt{\_beginthreadex} has exactly the same parameters as \texttt{CreateThread}.
+Nearly all programs and thread functions use the C library, which is normally not ``thread safe'' because it uses global variables for the process, i.e.,\@ for all threads and not for the single thread. The C function \texttt{\_beginthreadex} has exactly the same parameters as \texttt{CreateThread}.
 
 Cast \texttt{\_beginthreadex} return value to \texttt{(HANDLE)} and use \texttt{\_endthreadex} in place of \texttt{ExitThread}, included in \texttt{process.h}.
 
 \section{Synchronization objects}
-A thread can wait for another to terminate (using \texttt{ExitThread} by waiting on the thread handle using \texttt{WaitForSingleObject} or \texttt{WaitForMultipleObjects}. A process can wait for another process to terminate (using \texttt{ExitProcess}) in the same way. Other common methods are reading from a pipe or socket that allows one process or thread to wait for another to write to the pipe or socket. File locks are specially for synchronizing file access.
+A thread can wait for another to terminate (using \texttt{ExitThread}) by waiting on the thread handle using \texttt{WaitForSingleObject} or \texttt{WaitForMultipleObjects}. A process can wait for another process to terminate (using \texttt{ExitProcess}) in the same way. Other common methods are reading from a pipe or socket that allows one process or thread to wait for another to write to the pipe or socket. File locks are specially for synchronizing file access.
 
-Windows provides for other objects specifically designed for thread and process synchronization. Three are kernel objects (they have \texttt{HANDLE}s):
+Windows provides four other objects specifically designed for thread and process synchronization. Three are kernel objects (they have \texttt{HANDLE}s):
 \begin{itemize}
-\item Events, i.e.\@ specific synchronization primitive for Windows. There is no equivalence in UNIX systems;
+\item Events, i.e.,\@ specific synchronization primitive for Windows. There is no equivalence in UNIX systems;
 \item Semaphores;
 \item Mutexes.
 \end{itemize}
@@ -239,18 +239,18 @@ VOID TryCriticalSection (
 \begin{itemize}
 \item \texttt{EnterCriticalSection} blocks a thread if another thread is in the section;
 \item \texttt{TryCriticalSection} simply tests if the critical section is busy, avoiding blocking;
-\item \texttt{LeaveCriticalSection} unblocks waiting thread when the ``owning'' thread executes it.
+\item \texttt{LeaveCriticalSection} unblocks waiting thread when the ``owning'' one executes it.
 \end{itemize}
 Common usage is to allow threads to access global variable, which should be declared \texttt{volatile}.
 
-\texttt{CRITICAL\_SECTION}s test in user-space, therefore they are faster because there is no kernel call. Usually they are faster than Mutexes but not always because performance is affected by different factors, e.g.\@ number of threads, number of processes and amount of thread contention.
+\texttt{CRITICAL\_SECTION}s test in user-space, therefore they are faster because there is no kernel call. Usually they are faster than mutexes but not always because performance is affected by different factors, e.g.,\@ number of threads, number of processes and amount of thread contention.
 
 \subsection{Mutuxes}
-Mutexes can be named and have \texttt{HANDLE}s, i.e.\@ they are kernel objects. They can be used for interprocess synchronization and they are owned by a thread rather than a process.
+\emph{Mutexes} can be named and have \texttt{HANDLE}s, i.e.,\@ they are kernel objects. They can be used for interprocess synchronization and they are owned by a thread rather than a process.
 
 Threads gain mutex ownership by waiting on mutex handle with standard \texttt{WaitForSingleObject} or \texttt{WaitForMultipleObjects}. Threads release ownership with \texttt{ReleaseMutex}.
 
-A thread can acquire a specific mutex several times but must release the mutex the same number of times, e.g.\@ with nested transactions. A mutex becomes ``abandoned'' if its owning thread terminates.
+A thread can acquire a specific mutex several times but must release the mutex the same number of times, e.g.,\@ with nested transactions. A mutex becomes ``abandoned'' if its owning thread terminates.
 
 \begin{verbatim}
 HANDLE CreateMutex (
@@ -268,9 +268,9 @@ HANDLE CreateMutex (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpsa}] security attributes structure, use \texttt{NULL}.
-\item [\texttt{fInitialOwner}] if \texttt{TRUE}, it gives the calling thread immediate ownership of the new mutex.
-\item [\texttt{lpszMutexName}] points to a null-terminated pathname. Mutexes are unnamed if it is \texttt{NULL}.
+\item [\texttt{lpsa}] Usually \texttt{NULL}. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
+\item [\texttt{fInitialOwner}] If \texttt{TRUE}, it gives the calling thread immediate ownership of the new mutex.
+\item [\texttt{lpszMutexName}] Pointer to a \texttt{NULL}-terminated pathname. Mutexes are unnamed if it is \texttt{NULL}.
 \end{description}
 
 \begin{verbatim}
@@ -278,19 +278,18 @@ BOOL ReleaseMutex (
   HANDLE hMutex
 );
 \end{verbatim}
-It frees a mutex that the calling thread owns and it fails if the thread does not own it.
 
-If a mutex is abandoned, a wait will return \texttt{WAIT\_ABANDONED\_0}.
+It frees a mutex that the calling thread owns and it fails if the thread does not own it. If a mutex is abandoned, a wait will return \texttt{WAIT\_ABANDONED\_0}.
 
-\subsubsection{Mutex naming}
+\paragraph{Mutex naming}
 Naming a mutex permits to use it in more than one process. It is not necessary to name a mutex used in a single process. Named mutex can be opened using \texttt{OpenMutex}.
 
 \subsection{Events}
 \emph{Events} can release multiple threads from a wait simultaneously when a single event in signaled, with either \texttt{PulseEvent} or \texttt{SetEvent}.
 
 \begin{itemize}
-\item A \textit{manual-reset} event can signal several threads simultaneously and must be reset by the thread;
-\item A \textit{auto-reset} event signals a single thread, and the event is reset automatically.
+\item A \emph{manual-reset} event can signal several threads simultaneously and must be reset by the thread;
+\item A \emph{auto-reset} event signals a single thread, and the event is automatically reset.
 \end{itemize}
 
 \begin{verbatim}
@@ -304,15 +303,16 @@ HANDLE CreateEvent (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An \texttt{HANDLE} to the created event object, if the function succeeds;
-\item \texttt{NULL}, if it fails.
+\item An \texttt{HANDLE} to the created event object if the function succeeds;
+\item \texttt{NULL} if it fails.
 \end{itemize}
 
+\paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpsa}] security attributes structure, use \texttt{NULL}.
-\item [\texttt{fManualReset}] if \texttt{TRUE}, the function creates a manual-reset event object; if \texttt{FALSE}, the function creates an auto-reset event object.
-\item [\texttt{fInitialState}] if \texttt{TRUE}, the initial state of the event object is signaled; otherwise, it is non-signaled.
-\item [\texttt{lpszEventName}] points to a null-terminated pathname. Events are unnamed if it is \texttt{NULL}.
+\item [\texttt{lpsa}] Usually \texttt{NULL}. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
+\item [\texttt{fManualReset}] If \texttt{TRUE}, the function creates a manual-reset event object; if \texttt{FALSE}, the function creates an auto-reset event object.
+\item [\texttt{fInitialState}] If \texttt{TRUE}, the initial state of the event object is signaled; otherwise, it is non-signaled.
+\item [\texttt{lpszEventName}] Pointer to a \texttt{NULL}-terminated pathname. Events are unnamed if it is \texttt{NULL}.
 \end{description}
 It is possible to open a named event with \texttt{OpenEvent}, possibly from another process.
 
@@ -339,16 +339,16 @@ When using \texttt{WaitForMultipleEvents}, wait for all events to become signale
 \hline
 & \multicolumn{1}{c|}{AutoReset} & \multicolumn{1}{c|}{ManualReset} \\
 \hline
-\texttt{SetEvent} & Exactly on e thread is released. If none are currently waiting on the event, the next thread to wait will be released. & All currently waiting threads released. The event remains signaled until reset by some thread. \\
+\texttt{SetEvent} & Exactly one thread is released. If none is currently waiting on the event, the next thread to wait will be released. & All currently waiting threads are released. The event remains signaled until reset by some thread. \\
 \hline
-\texttt{PulseEvent} & Exactly one thread is release, but only if a thread is currently waiting on the event. & All currently waiting threads released, and the event is then reset. \\
+\texttt{PulseEvent} & Exactly one thread is released, but only if a thread is currently waiting on the event. & All currently waiting threads are released, and the event is then reset. \\
 \hline
 \end{tabularx}
 \caption{Events}
 \end{table}
 
 \subsection{Semaphores}
-A \emph{semaphore} combines event and mutex behavior. It can be emulated with one of each and a counter. Semaphores maintain a counter in such a way that multiple processes/threads can ``enter'' the semaphore and decrement\footnote{\texttt{P} operation} or increment\footnote{\texttt{V} operation} its counter, therefore there is no ownership.
+A \emph{semaphore} combines event and mutex behavior. It can be emulated with one of each and a counter. Semaphores maintain a counter in such a way that multiple processes/threads can ``enter'' the semaphore and decrement\footnote{\texttt{P} operation.} or increment\footnote{\texttt{V} operation.} its counter, therefore there is no ownership.
 
 It is possible, with care, to achieve mutual exclusion with a semaphore if it is used in binary mode and release operation is performed \emph{only when} its actually owned.
 
@@ -363,15 +363,16 @@ HANDLE CreateSemaphore (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An \texttt{HANDLE} to the semaphore object, if the function succeeds;
-\item \texttt{NULL}, if it fails.
+\item An \texttt{HANDLE} to the semaphore object if the function succeeds;
+\item \texttt{NULL} if it fails.
 \end{itemize}
 
+\paragraph{Parameters}
 \begin{description}
-\item [\texttt{lpsa}] security attributes structure, use \texttt{NULL}.
-\item [\texttt{cSemInitial}] the initial count for the semaphore object. This value must be greater than or equal to zero and less than or equal to \texttt{cSemMax}.
-\item [\texttt{cSemMax}] the maximum count for the semaphore object.
-\item [\texttt{lpszEventName}] points to a null-terminated pathname. Events are unnamed if it is \texttt{NULL}.
+\item [\texttt{lpsa}] Usually \texttt{NULL}. It points to a \texttt{SECURITY\_ATTRIBUTES} structure.
+\item [\texttt{cSemInitial}] Initial counter for the semaphore object. This value must be greater than or equal to zero and less than or equal to \texttt{cSemMax}.
+\item [\texttt{cSemMax}] Maximum counter for the semaphore object.
+\item [\texttt{lpszEventName}] Pointer to a \texttt{NULL}-terminated pathname. Semaphores are unnamed if it is \texttt{NULL}.
 \end{description}
 
 \begin{verbatim}
@@ -384,12 +385,13 @@ BOOL ReleaseSemaphore (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An \texttt{TRUE}, if the function succeeds;
-\item \texttt{FALSE}, if it fails.
+\item \texttt{TRUE} if the function succeeds;
+\item \texttt{FALSE} if it fails.
 \end{itemize}
 
+\paragraph{Parameters}
 \begin{description}
-\item [\texttt{hSemaphore}] handle to the semaphore object.
-\item [\texttt{cReleaseCount}] the amount by which the counter is to be increased. The value must be greater than zero. If the specified amount would cause the counter to exceed the maximum count, the count is not changed and the function returns FALSE.
-\item [\texttt{lpPreviousCount}] a pointer to a variable to receive the previous count for the semaphore. This parameter can be \texttt{NULL} if the previous count is not required.
+\item [\texttt{hSemaphore}] Handle to the semaphore object.
+\item [\texttt{cReleaseCount}] Amount by which the counter has to be increased. The value must be greater than zero. If the specified amount would cause the counter to exceed the maximum count, the count is not changed and the function returns \texttt{FALSE}.
+\item [\texttt{lpPreviousCount}] Pointer to a variable to receive the previous count for the semaphore. This parameter can be \texttt{NULL} if the previous count is not required.
 \end{description}
