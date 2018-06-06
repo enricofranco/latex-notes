@@ -6,7 +6,7 @@
 
 Demand paging works because of the locality model. In fact, process migrates from one locality to another. These localities may overlap.
 
-With each entry in the page table, a valid-invalid bit is associated, initially set to invalid (i.e.\@ not-in memory) on all entries. During address translation, if valid-invalid bit in page table entry is set to invalid, a page fault occurs.
+With each entry in the page table, a valid-invalid bit is associated, initially set to invalid (i.e.,\@ not-in memory) on all entries. During address translation, if valid-invalid bit in page table entry is set to invalid, a page fault occurs.
 
 A swapper that deals with pages is a \textbf{pager}.
 
@@ -59,15 +59,15 @@ Replace page that will not be used for longest period of time. Used for measurin
 \paragraph{FIFO Algorithm}
 \begin{center}
 \begin{tabular}{l|cccccccccccc}
-\hline 
-Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ 
-\hline 
-String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\ 
-\hline 
-Fault & • & • & • & • & • & • & • &  &  & • & • &  \\ 
-\hline 
-Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 5 & 5 & 2 & 1 & 1 \\ 
-Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 3 & 3 & 5 & 2 & 2 \\ 
+\hline
+Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+\hline
+String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
+\hline
+Fault & • & • & • & • & • & • & • &  &  & • & • &  \\
+\hline
+Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 5 & 5 & 2 & 1 & 1 \\
+Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 3 & 3 & 5 & 2 & 2 \\
 Frame 3 &  &  & \textbf{4} & \textbf{3} & \textbf{2} & \textbf{1} & 4 & 4 & \textbf{4} & \textbf{3} & 5 & 5 \\
 \hline
 \end{tabular}
@@ -86,18 +86,18 @@ Every page entry has a counter; every time page is referenced through this entry
 
 \begin{center}
 \begin{tabular}{l|cccccccccccc}
-\hline 
-Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ 
-\hline 
-String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\ 
-\hline 
-Fault & • & • & • & • & & & • & & & • & • & • \\ 
-\hline 
-Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\ 
-Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 \\ 
-Frame 3 & & & \textbf{4} & \textbf{3} & \textbf{2} & \textbf{1} & 4 & 3 & \textbf{5} & \textbf{4} & 3 & 2 \\ 
-\hline 
-\end{tabular} 
+\hline
+Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+\hline
+String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
+\hline
+Fault & • & • & • & • & & & • & & & • & • & • \\
+\hline
+Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
+Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 \\
+Frame 3 & & & \textbf{4} & \textbf{3} & \textbf{2} & \textbf{1} & 4 & 3 & \textbf{5} & \textbf{4} & 3 & 2 \\
+\hline
+\end{tabular}
 \[ f = 10/12 = 83 \% \]
 \end{center}
 
@@ -116,25 +116,25 @@ This implementation causes a large overhead and therefore is unfeasible and not 
 Adding a new page cannot increase the number of page faults. In fact, the old ``stack'' is the same and it can keep a new page.
 \begin{center}
 \begin{tabular}{l|cccccccccccc}
-\hline 
-Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\ 
-\hline 
-String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\ 
-\hline 
-Fault & • & • & • & • & • & • & • & & & • & • & • \\ 
-\hline 
-Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\ 
-Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 \\ 
-Frame 3 & & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 \\ 
-Frame 4 & & & & 4 & 3 & \textbf{2} & 1 & 1 & \textbf{1} & \textbf{5} & \textbf{4} & 3 \\ 
 \hline
-\end{tabular} 
+Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
+\hline
+String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
+\hline
+Fault & • & • & • & • & • & • & • & & & • & • & • \\
+\hline
+Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
+Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 \\
+Frame 3 & & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 \\
+Frame 4 & & & & 4 & 3 & \textbf{2} & 1 & 1 & \textbf{1} & \textbf{5} & \textbf{4} & 3 \\
+\hline
+\end{tabular}
 \[ f = 8/12 = 75 \% \]
 \end{center}
 
 \paragraph{LRU Approximation Algorithms}
 \subparagraph{Reference bit}
-Select a page which has not been referred for a certain amount of time, i.e.\@ since the last page fault.
+Select a page which has not been referred for a certain amount of time, i.e.,\@ since the last page fault.
 \begin{itemize}
 \item With each page associate a bit, initially set to zero;
 \item When page is referenced bit is set to 1;
@@ -155,7 +155,7 @@ Select a page which has not been referred for a certain amount of time, i.e.\@ s
 \subsection{Allocation of frames}
 Each process needs \emph{minimum} number of pages. Two major allocation schemes:
 \begin{description}
-\item [Fixed allocation] Allocation can be equal (i.e.\@ assign an equal number of frames among processes) or proportional (i.e.\@ assign a number of frames according to the size of process).
+\item [Fixed allocation] Allocation can be equal (i.e.,\@ assign an equal number of frames among processes) or proportional (i.e.,\@ assign a number of frames according to the size of process).
 \item [Priority allocation] Use a proportional allocation scheme using priority numbers rather than size. If a process generates a page fault, select for replacement one of its frames or select for replacement a frame from a process with lower priority number.
 \end{description}
 Two strategies are possible for page replacement:
@@ -174,7 +174,7 @@ If a process does not have ``enough'' pages, page-fault rate is very high, leadi
 \end{figure}
 
 \subsection{Working-Set Model}
-Defining $\Delta$ as the working-set windows (i.e.\@ a fixed number of page references), it is possible to define ${WSS}_i$ as the working set of process $P_{i}$ (i.e.\@ the total number of pages referenced in the most recent $\Delta$).
+Defining $\Delta$ as the working-set windows (i.e.,\@ a fixed number of page references), it is possible to define ${WSS}_i$ as the working set of process $P_{i}$ (i.e.,\@ the total number of pages referenced in the most recent $\Delta$).
 \begin{itemize}
 \item If $\Delta$ is too small, it will not encompass entire locality;
 \item If $\Delta$ is too large, it will encompass several localities;
@@ -188,7 +188,7 @@ It is needed to establish ``acceptable'' page-fault rate ($1/c$ where $c$ is the
 \paragraph{Strategy}
 Run at each page fault, not at every reference. It is controlled by the time interval between page faults.
 \begin{itemize}
-\item If $\tau < c$, i.e.\@ the measured page fault frequency is greater than the one acceptable, a page has to e added to the Resident Set of the process issuing this page fault;
+\item If $\tau < c$, i.e.,\@ the measured page fault frequency is greater than the one acceptable, a page has to e added to the Resident Set of the process issuing this page fault;
 \item If $\tau > c$, all pages not referred in that interval by the current process are eliminated from its Resident Set. The reference bit of all pages in the Resident Set are cleared.
 \end{itemize}
 

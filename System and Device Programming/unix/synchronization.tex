@@ -35,15 +35,15 @@ POSIX defines a set of kernel independent system calls to manage semaphores, inc
 \begin{description}
 \item \texttt{int sem\_init(sem\_t *sem, int pshared, usigned int value)} initializes the semaphore counter at value \texttt{value}. The \texttt{pshared} value identifies the type of semaphore. If it is equal to 0, the semaphore is local to the threads of current process, otherwise the semaphore can be shared between different processes.
 
-\item \texttt{int sem\_wait(sem\_t *sem)} implements the standard wait, i.e.\@ if the counter is negative or zero, the calling thread is blocked.
+\item \texttt{int sem\_wait(sem\_t *sem)} implements the standard wait, i.e.,\@ if the counter is negative or zero, the calling thread is blocked.
 
-\item \texttt{int sem\_post(sem\_t *sem)} implements the standard signal, i.e.\@ increments the counter and wakes up a blocking thread if the counter is negative or zero.
+\item \texttt{int sem\_post(sem\_t *sem)} implements the standard signal, i.e.,\@ increments the counter and wakes up a blocking thread if the counter is negative or zero.
 
 \item \texttt{int sem\_getvalue(sem\_t *sem, int *valP)} allows obtaining the value of the semaphore counter. The value is assigned to \texttt{*valP}.
 
 \item \texttt{int sem\_destroy(sem\_t *sem)} destroys the semaphore pointed by \texttt{sem}.
 
-\item \texttt{int sem\_trywait(sem\_t *sem)} implements a non-blocking wait, i.e.\@ if the semaphore counter has a value greater than 0, it performs the decrement and returns 0 while, if the semaphore counter is negative or zero, it returns -1 instead of blocking the caller as \texttt{sem\_wait} does.
+\item \texttt{int sem\_trywait(sem\_t *sem)} implements a non-blocking wait, i.e.,\@ if the semaphore counter has a value greater than 0, it performs the decrement and returns 0 while, if the semaphore counter is negative or zero, it returns -1 instead of blocking the caller as \texttt{sem\_wait} does.
 \end{description}
 
 \subsection{Pthread mutex}
@@ -93,7 +93,7 @@ void dequeue(int *val) {
 \end{Parallel}
 
 \paragraph{Concurrent access}
-Initially, a consumer has to wait and a producer has to produce, i.e.\@ it has not to be blocked. Therefore, a consumer has to wait on full, initialized to 0 and a producer has to produce at most \texttt{MAX} elements. Both signal when an elements is enqueued or dequeued.
+Initially, a consumer has to wait and a producer has to produce, i.e.,\@ it has not to be blocked. Therefore, a consumer has to wait on full, initialized to 0 and a producer has to produce at most \texttt{MAX} elements. Both signal when an elements is enqueued or dequeued.
 \begin{verbatim}
 init(full, 0);
 init(empty, MAX);

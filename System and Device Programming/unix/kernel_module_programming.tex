@@ -22,8 +22,8 @@ UNIX has a monolitic kernel compiled using a set modules always present. Micro k
 \paragraph{Commands}
 \begin{itemize}
 \item \texttt{lsmod} provides the entire list of installed modules;
-\item \texttt{insmod} or \texttt{modprobe} permit to install a modules. They require as a parameter a \texttt{ko} file, i.e.\@ kernel object;
-\item \texttt{depmode} builds a list of module dependencies. It require as a parameter a \texttt{ko} file, i.e.\@ kernel object.
+\item \texttt{insmod} or \texttt{modprobe} permit to install a module. They require as a parameter a \texttt{ko} file, i.e.\@ kernel object;
+\item \texttt{depmode} builds a list of module dependencies. It require as a parameter a \texttt{ko} file, i.e.,\@ kernel object.
 \item \texttt{rmmod} removes a module.  It requires as a parameter the name of an installed module.
 \end{itemize}
 
@@ -52,13 +52,13 @@ struct file_operations fops = {
 \texttt{struct file\_operations} is defined in \texttt{/usr/src/linux/include/fs.h}.
 
 \paragraph{Registering a device driver}
-Registering a device driver means assigning a major and minor number during the initialization of a module. It is possible to ask the kernel to assign a dynamic major number by using \\
+Registering a device driver means assigning major and minor numbers during the initialization of a module. It is possible to ask the kernel to assign a dynamic major number by using \\
 \texttt{alloc\_chrdev\_region(\&dev\_no, firstminor, num\_minors, DEVICE\_NAME)}.
 
 In order create the device file, it is needed to get the major number dynamically assigned. Device file has to be created by hand, by reading the new assigned major number in \texttt{/var/log/messages} printed by the driver or by using the entry created in \texttt{/proc/devices}.
 
 \paragraph{Unregistering a device driver}
-A kernel module cannot be removed if a device driver is opened by a process because a successive system call would be directed to a memory location where the appropriate function does not exist any more. The \texttt{cleanup\_module} has \texttt{void} type, thus it cannot return -1. The third field in \texttt{/proc/modules} is a counter of the number of processes that are using a module. The counter is managed by means of \texttt{try\_module\_get(THIS\_MODULE)} to increment the count and \texttt{module\_put(THIS\_MODULE)} to decrement the count.
+A kernel module cannot be removed if a device driver is opened by a process because a successive system call would be directed to a memory location where the appropriate function does not exist any more. The \texttt{cleanup\_module} has \texttt{void} type, thus it cannot return -1. The third field in \texttt{/proc/modules} is a counter of the number of processes that using the module. The counter is managed by means of \texttt{try\_module\_get(THIS\_MODULE)} to increment the count and \texttt{module\_put(THIS\_MODULE)} to decrement the count.
 
 \paragraph{Moving data between user and kernel space}
 \texttt{put} and \texttt{get} are seen from the kernel point of view:
@@ -71,6 +71,6 @@ A kernel module cannot be removed if a device driver is opened by a process beca
 \paragraph{\texttt{/proc} filesystem}
 The \texttt{/proc} filesystem contains a directory for each active process. It is an additional mechanism for the kernel and its modules to give information of processes. 
 \begin{itemize}
-\item \texttt{/proc/modules}
-\item \texttt{/proc/meminfo}
+\item \texttt{/proc/modules};
+\item \texttt{/proc/meminfo}.
 \end{itemize}

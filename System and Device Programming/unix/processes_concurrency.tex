@@ -10,7 +10,7 @@ A \emph{process} is a sequence of operations performed by a program in execution
 \item [Text] contains the code. This part of memory cannot be modified;
 \item [Data] contains global variables;
 \item [Heap] contains dynamic variables. It grows ``upward'';
-\item [Stack] contains local variables and return addresses of functions. The \emph{Stack Pointer} points to the top of the stack. It grows ``downward'', i.e.\@ in the opposite direction to the Heap.
+\item [Stack] contains local variables and return addresses of functions. The \emph{Stack Pointer} points to the top of the stack. It grows ``downward'', i.e.,\@ in the opposite direction to the Heap.
 \end{description}
 
 It is possible to conceptually imagine the \textbf{trace} of a process as a table containing values of variables and registers (stack pointer and program counter, too) at any time, that is knowing the state of the process after any instruction. In this way it is possible to perform \textbf{context switching}, the operation performed by the kernel which moves the attention of the CPU from a process to a different one, restoring its state as if it was never interrupted.
@@ -25,7 +25,7 @@ uid_t getuid();    // Get the real user ID
 gid_t geteuid();   // Get the effective ID
 \end{verbatim}
 \section{Concurrency}
-Sequential processes are deterministic. \textit{Cooperating processes} have precedence constraints in order to guarantee a specific order in the process execution. Therefore, processes are not more independent and some typical issues arise, e.g.\@ deadlock and synchronization.
+Sequential processes are deterministic. \textit{Cooperating processes} have precedence constraints in order to guarantee a specific order in the process execution. Therefore, processes are not more independent and some typical issues arise, e.g.,\@ deadlock and synchronization.
 
 \subsection{Process creation}
 System call \texttt{fork} creates a new \textbf{child} process which is a perfect clone of the parent process. These processes have the same initial value of variables, share code and file pointers of open files (pointers to the kernel memory). Instead, they do have different stacks, heaps and data sections.
