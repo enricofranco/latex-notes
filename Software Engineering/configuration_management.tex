@@ -1,5 +1,5 @@
 \chapter{Configuration management}
-A software is made of many parts (i.e.\@ documents, programs, etc.) with different instances (customer, platforms, etc.) and thousands of separate documents are generated for a large software system. A software system changes because of different instances of software for different customers and because the same software changes over time.
+A software is made of many parts (i.e.,\@ documents, programs, etc.) with different instances (customer, platforms, etc.) and thousands of separate documents are generated for a large software system. A software system changes because of different instances of software for different customers and because the same software changes over time.
 
 Therefore, it is needed to identify the history of a document (versioning), the correct set of documents for a specific need (configuration), who can access and change what (change control) and how the system is obtained (build). \emph{Configuration management} permits to identifiy and manage parts of software, control access and changes to parts and allow to rebuild previous version of software.
 
@@ -7,14 +7,14 @@ Therefore, it is needed to identify the history of a document (versioning), the 
 \emph{Versioning} permits to keep track of versions using same names or different version names in such a way that a user decides when to change version (commit operation) and that is always possible to recover a past version.
 
 \paragraph{Configuration item}
-A configuration item (CI) is an element under configuration control. It is characterized by a name and a version number and all its version numbers are kept. The user decides to change version number with specific operation (\textbf{commit}) and it is possible to retrieve any version.
+A \emph{configuration item} (CI) is an element under configuration control. It is characterized by a name and a version number and all its version numbers are kept. The user decides to change version number with specific operation (\textbf{commit}) and it is possible to retrieve any version.
 
-It is the basic unit for the configuration management system, e.g.\@ a work product or piece of software that is treated as a single entity for the purpose of configuration management. It may correspond to one or more documents or one or more programs.
+It is the basic unit for the configuration management system, e.g.,\@ a work product or piece of software that is treated as a single entity for the purpose of configuration management. It may correspond to one or more documents or one or more programs.
 
-Not all documents in a project become a configuration item. If all documents are considered configuration item, a large overhead is introduced but, on the other hand, if no documents are considered configuration item, no history is available and there is no information on configurations.
+Not all documents in a project become a configuration item. If all documents are considered configuration items, a large overhead is introduced but, on the other hand, if no document is considered configuration item, no history is available and there is no information on configurations.
 
 \paragraph{Configuration}
-Configuration items have depencencies among them, some a re syntactically defined (e.g.\@ \texttt{\#include} or \texttt{import} statements) but most are not such as requirement and test cases. This requires a way to treat sets of configuration items, i.e.\@ \emph{traceability}.
+Configuration items have depencencies among them, some a re syntactically defined (e.g.,\@ \texttt{\#include} or \texttt{import} statements) but most are not, such as requirement and test cases. This requires a way to treat sets of configuration items, i.e.,\@ \emph{traceability}.
 
 \begin{figure}[hbtp]
 \centering
@@ -22,7 +22,7 @@ Configuration items have depencencies among them, some a re syntactically define
 \caption{Dependency and traceability}
 \end{figure}
 
-A configuration is defined as a set of items, each in a specific version and, generally, it includes not only source code. The same configuration item may appear in different configuration. Therefore, also configuration has version. There are two main approaches to identify a configuration:
+A \emph{configuration} is defined as a set of items, each in a specific version and, generally, it includes not only source code. The same configuration item may appear in different configurations. Therefore, also a configuration has its version. There are two main approaches to identify a configuration:
 \begin{enumerate}
 \item ID for configuration, ID for configuration item: CVS;
 \item ID for configuration, same ID for all configuration items in the configuration: Subversion, Git.
@@ -47,10 +47,10 @@ Configuration number changes on every change. Items inherits the configuration n
 \end{figure}
 
 \paragraph{Version}
-A version is a particular instance of a configuration item at a certain point in time. Each instance as a unique number and each configuration has a unique number.
+A \emph{version} is a particular instance of a configuration item at a certain point in time. Each instance as a unique number and each configuration has a unique number.
 
 \paragraph{Baseline}
-A baseline identifies a configuration in a stable, frozen form. Not all configurations are baselines.
+A \emph{baseline} identifies a configuration in a stable, frozen form. Not all configurations are baselines.
 
 \section{Change control}
 Typically, a team develops a software. Hence, many people need to access parts of software contained in a common repository (shared folder) in such a way that all can read and write documents and programs.
@@ -63,10 +63,11 @@ Typically, a team develops a software. Hence, many people need to access parts o
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.3]{images/repository_workspace.png}
+\caption{Repository and workspaces}
 \end{figure}
 
 \subsection{Repository}
-It can implemented as a shared folder, containing shared files, on file server or using a CMS\footnote{Content Management System} tool with change control (check-in, check-out). Changes must be disciplined, it requires knowledge about who controls, what is controlled and how control is implemented.
+A \emph{repository} can implemented as a shared folder, containing shared files, on file server or using a CMS\footnote{Content Management System.} tool with change control (check-in, check-out). Changes must be disciplined, requiring knowledge about who controls, what is controlled and how control is implemented.
 
 A repository can be implemented exploiting different approaches:
 \begin{itemize}
@@ -82,14 +83,14 @@ A repository can be implemented exploiting different approaches:
 
 \begin{center}
 \begin{tabularx}{\textwidth}{X|X}
-Check in/out & File system \\ 
-\hline 
-Confiuration items are in repository & Files are in shared directory \\ 
-\hline 
+\textbf{Check in/out} & \textbf{File system} \\
+\hline
+Configuration items are in repository & Files are in shared directory \\
+\hline
 To read/write a configuration item, user needs to perform checkout & Any user can get copy of file, or work on original \\
-\hline 
+\hline
 After checkout, next user knows that configuration item is used by someone else & Users can work on copies of file without knowing that others are doing the same
-\end{tabularx} 
+\end{tabularx}
 \end{center}
 
 \paragraph{Scenarios}
@@ -104,7 +105,7 @@ One can change at a time. Thus, no parallel work and delays. Problems if locker 
 \end{figure}
 
 \subparagraph{Copy modify merge}
-Many change in parallel, the merge. It is more flexible but requires care to resolve the conflict. As shown in figure~\ref{img:copy_modify_merge}, the second check in signals conflict. User has to do manual merge of \emph{x+1} and \emph{x+1'} in \emph{x+2}.
+Many change in parallel, the merge. It is more flexible but requires care to resolve possible conflicts. As shown in figure~\ref{img:copy_modify_merge}, the second check in signals conflict. User has to do manual merge of \emph{x+1} and \emph{x+1'} in \emph{x+2}.
 
 \begin{figure}[hbtp]
 \centering
@@ -115,9 +116,9 @@ Many change in parallel, the merge. It is more flexible but requires care to res
 
 \paragraph{CMS approaches}
 \begin{itemize}
-\item Local: a simple database that kept all the changes to files under revision control, e.g.\@ RCS;
-\item Centralized: a single server that contains all the versioned files, and a number of clients that check out files from that central place, e.g.\@ CSV, Subversion;
-\item Distributed: clients fully mirror the repository, e.g.\@ Git, Mercurial, Bazaar.
+\item Local: a simple database that kept all the changes to files under revision control, e.g.,\@ RCS;
+\item Centralized: a single server that contains all the versioned files, and a number of clients that check out files from that central place, e.g.,\@ CSV, Subversion;
+\item Distributed: clients fully mirror the repository, e.g.,\@ Git, Mercurial.
 \end{itemize}
 
 Very often, it is needed to proceed with \emph{parallel versions}, while keeping trace of common origin, as shown in figure~\ref{img:branches_merges}. For example, when some developers work on branch to fix defect, while other work to add functionalities.
@@ -129,13 +130,13 @@ Very often, it is needed to proceed with \emph{parallel versions}, while keeping
 \label{img:branches_merges}
 \end{figure}
 
-\paragraph{CM Planning}
-\emph{CM plan} contains key CM related choices and policies in a project, i.e.\@ requirement and design documents, source files, test plan, test cases, configuration files, parameters, tools used in the production chain. It is needed to define which CM tool to use, what should and should not be a configuration item, control policies and who is the CM manager.
+\paragraph{CM planning}
+\emph{CM plan} contains key CM related choices and policies in a project, i.e.,\@ requirement and design documents, source files, test plan, test cases, configuration files, parameters, tools used in the production chain. It is needed to define which CM tool to use, what should and should not be a configuration item, control policies and who is the CM manager.
 
 \paragraph{Build}
-System building is the process of compiling and linking software components into an executable system. Different systems are built from different combinations of components.
+System \emph{building} is the process of compiling and linking software components into an executable system. Different systems are built from different combinations of components.
 
-Systems are normally represented for building by specifying the filename to be processed by building tools. Dependencies between these are described to the building tools (e.g.\@ Make, Ant, Maven). Mistakes can be made as users lose track of which objects are stored in which files. A system modelling language addresses this problem by using a logical rather than a physical system representation.
+Systems are normally represented for building by specifying the filename to be processed by building tools. Dependencies between these are described to the building tools (e.g.,\@ Make, Ant, Maven). Mistakes can be made as users lose track of which objects are stored in which files. A system modelling language addresses this problem by using a logical rather than a physical system representation.
 
 \begin{figure}[hbtp]
 \centering
@@ -157,7 +158,7 @@ A \emph{configuration management system} is a system that records changes to a f
 \paragraph{Data management models}
 \begin{description}
 \item [\textbf{Differences}] Information is kept as a set of files and the changes made to each file over time.
-\item [\textbf{Snapshots}] Every commit, a picture of what all the files look like at a moment, is taken and the system stores a reference to that snapshot. If files have not changed, system store just a link to the previous identical file.
+\item [\textbf{Snapshots}] Every commit, a picture of what all the files look like at a moment, is taken and the system stores a reference to that snapshot. If files have not changed, system stores just a link to the previous identical file.
 \end{description}
 
 \subsection{Introduction}
@@ -176,9 +177,9 @@ Git is a distributed CMS that uses snapshots. It exploits local operation and pr
 
 \paragraph{Sections}
 \begin{description}
-\item [\textbf{Git directory}] stores the metadata and object database for the project. It is what is copied when a repository is cloned from another computer.
-\item [\textbf{Working directory}] is a single checkout of one version of the project. These files are pulled out of the compressed database in the Git directory and placed on disk to use or modify.
-\item [\textbf{Staging area}] stores information about what will go into next commit. Sometimes referred to as the \emph{index}.
+\item [\textbf{Git directory}] It stores the metadata and object database for the project. It is what is copied when a repository is cloned from another computer.
+\item [\textbf{Working directory}] It is a single checkout of one version of the project. These files are pulled out of the compressed database in the Git directory and placed on disk to use or modify.
+\item [\textbf{Staging area}] It stores information on what will go into next commit. Sometimes referred to as the \emph{index}.
 \end{description}
 
 \paragraph{Typical workflow}
@@ -194,7 +195,7 @@ Git is a distributed CMS that uses snapshots. It exploits local operation and pr
 \caption{Lifecycle of files}
 \end{figure}
 
-\emph{Github} is an online code hosting service built on top of git, mainly used by OSS projects but commercial use is growing. Nowadays, it is used by PayPal, SAP, vimeo and others.
+\emph{Github} is an online code hosting service built on top of Git, mainly used by OSS projects but commercial use is growing. Nowadays, it is used by PayPal, SAP, vimeo and others.
 
 \subsection{Basic commands}
 \paragraph{Recording changes}
@@ -215,14 +216,14 @@ Git is a distributed CMS that uses snapshots. It exploits local operation and pr
 \paragraph{Working with remotes}
 \begin{description}
 \item [\texttt{git pull}] automatically fetch and then merge a remote branch into your current branch.
-\item [\texttt{git push}] share the changes, i.e.\@ transfer them on the server.
+\item [\texttt{git push}] share changes, i.e.,\@ transfer them on the server.
 \end{description}
 
 \subsection{Branching}
-Git stores a commit object that contains a pointer to the snapshot of the context staged and pointers to the commit or commits that directly cam before this commits, i.e.\@ its parent or parents. Staging the files, Git checksums each one, stores that version of the file (blobs) and adds that checksum to the staging area.
+Git stores a commit object that contains a pointer to the snapshot of the context staged and pointers to the commit or commits that directly cam before this commits, i.e.,\@ its parent or parents. Staging the files, Git checksums each one, stores that version of the file (blobs) and adds that checksum to the staging area.
 
 \paragraph{Branches}
-A branch in Git is simply a lightweight movable pointer to one these commits. The default branch name in Git is \texttt{master}. Every commit, it moves forward automatically. \texttt{HEAD} pointer points to the current local branch.
+A branch in Git is simply a lightweight movable pointer to commits. The default branch name in Git is \texttt{master}. Every commit, it moves forward automatically. \texttt{HEAD} pointer points to the current local branch.
 
 Figure~\ref{img:git_branches} shows the status of commands:
 \begin{enumerate}

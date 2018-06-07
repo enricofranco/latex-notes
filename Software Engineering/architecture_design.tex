@@ -1,14 +1,14 @@
 \chapter{Architecture and design}
-Requirements show what the system should do. \emph{Architecture and design} show \textbf{how} the system should be built. Architecture and design have the same flavour but they focus on different levels:
+Requirements show what the system should do. \emph{Architecture and design} show \textbf{how} the system should be built. Architecture and design have the same flavor but they focus on different levels:
 \begin{itemize}
 \item Architecture stands at high level and handles decisions about major components and communication framework;
 \item Design stands at lower level and handles decisions about internal structure of each component.
 \end{itemize}
-Most defects come from requirements and design, therefore it is essential to define, analyze and evaluate design choices early. If no design is defined, but code is immediately developed, choices are made implicitly and evaluate later. Doing design allows to make design choices \emph{explicit}, document and evaluate them. Given a set of requirements, in general, many different designs are possible corresponding to different design choices, but not all designs are equal. Transforming requirement to design is a creative process driven by skill and experience formalized in semi formal guidelines, i.e.\@ architectural styles (patterns) and design patterns.
+Most defects come from requirements and design, therefore it is essential to define, analyze and evaluate design choices early. If no design is defined, but code is immediately developed, choices are made implicitly and evaluate later. Doing design allows to make design choices \emph{explicit}, document and evaluate them. Given a set of requirements, in general, many different designs are possible corresponding to different design choices, but not all designs are the same. Transforming requirement to design is a creative process driven by skill and experience formalized in semi-formal guidelines, i.e.,\@ architectural styles (patterns) and design patterns.
 
 Design has two sides:
 \begin{itemize}
-\item \textbf{System design}: decisions about computing nodes and their connection. For embedded systems it includes also decisions about components and connections in other technologies, i.e.\@ electrical, electronic, mechanical, etc.
+\item \textbf{System design}: decisions about computing nodes and their connections. For embedded systems it includes also decisions about components and connections in other technologies, i.e.,\@ electrical, electronic, mechanical, etc.
 \item \textbf{Software design}: decisions about software components and their connections, within a given system design.
 \end{itemize}
 
@@ -23,18 +23,18 @@ Design has two sides:
 \item Design
 \begin{itemize}
 \item High level, about many classes: define classes and their interactions using design patterns;
-\item Lowe level, about one class.
+\item Low level, about one class.
 \end{itemize}
 \end{enumerate}
 
 \subsection{Design}
 Definition of classes can be done exploiting glossary or context diagram and considering design patterns.
-From glossary, it is needed to consider a class for each key entity in glossary, while from context diagram it is needed to consider a class for each actor, i.e.\@ physical device or subsystem and define GUI for each human actor.
+From glossary, it is needed to consider a class for each key entity in glossary, while from context diagram it is needed to consider a class for each actor, i.e.,\@ physical device or subsystem, and define GUI for each human actor.
 
 Low level design concerns a single class or two. For each attribute, define type and privacy. For each method, define return type, number and type of parameters, privacy and choose an algorithm if needed. Possibly define getters and setters. For each relationship with other class, choose an implementation. Persistence must be decided, too.
 
 \paragraph{Relationship}
-Relationships are not directly implemented in most programming languages. Representing a relationship is a design choice depending of the direction of the arrow, references, list, etc.
+Relationships are not directly implemented in most programming languages. Representing a relationship is a design choice depending on the direction of the arrow, references, list, etc.
 
 \section{Properties}
 Properties are split in two categories:
@@ -82,7 +82,7 @@ Not all properties can be satisfied. Design is also about deciding tradeoffs, wh
 \section{Notations for formalization of architecture}
 \subsection{Informal}
 \paragraph{Box and line diagrams}
-Very abstract technique. Boxes and lines do not  show the nature of component relationships nor the externally visible properties of the subsystems. However, this technique is useful for communication with stakeholders and for project planning.
+Very abstract technique. Boxes and lines do not show neither the nature of component relationships, nor the externally visible properties of the subsystems. However, this technique is useful for communication with stakeholders and for project planning.
 
 \subsection{Semiformal}
 \paragraph{UML diagrams}
@@ -96,7 +96,7 @@ UML helps in presenting structure in an organized and hierarchical way. UML can 
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{images/uml_sequence_diagram.png}
+\includegraphics[scale=0.55]{images/uml_sequence_diagram.png}
 \caption{Sequence diagram}
 \label{sequence_diagram}
 \end{figure}
@@ -118,7 +118,7 @@ Subsystems must exchange data. When large amounts of data have to be shared, the
 \begin{itemize}
 \item Efficient way to share large amounts of data;
 \item Subsystems need to be concerned with how data is produced;
-\item Centralized management e.g.\@ backup, security;
+\item Centralized management e.g.,\@ backup, security;
 \item Sharing model is published as the repository schema.
 \end{itemize}
 
@@ -131,13 +131,13 @@ Subsystems must exchange data. When large amounts of data have to be shared, the
 \end{itemize}
 
 \paragraph{Client-server model}
-Distributed system model which shows how data and processing is distributed across a range of components. A set of stand-alone servers providing specific services can be accessed by a set of clients which can call these service, through a network which allows clients to access servers.
+Distributed system model which shows how data and processing is distributed across a range of components. A set of standalone servers providing specific services can be accessed by a set of clients which can call these services, through a network which allows clients to access servers.
 
 \subparagraph{Advantages}
 \begin{itemize}
 \item Distribution of data is straightforward;
 \item Makes effective use of networked systems. May require cheaper hardware;
-\item Easy to add new servers or upgrade existing servers.
+\item Easy to add new servers or upgrade existing ones.
 \end{itemize}
 
 \subparagraph{Disadvantages}
@@ -147,18 +147,15 @@ Distributed system model which shows how data and processing is distributed acro
 \item No central register of names and services. Finding out what servers and services are available may be hard.
 \end{itemize}
 
-\textbf{Abstract machine model} is used to model the interfacing of subsystems. It organizes the system into a set of layers, i.e.\@ abstract machines, each of which provide a set of services in such a way that a layer uses only services from adjacent layers.
+\textbf{Abstract machine model} is used to model the interfacing of subsystems. It organizes the system into a set of layers, i.e.,\@ abstract machines, each one providing a set of services in such a way that a layer uses only services from adjacent layers.
 
-In design, each layer is about a problem, i.e.\@ separation of concerns. In evolution, when a layer interface changes, only the adjacent layer is affected. The main problem is that sometimes is artificial to structure systems in this way.
+In design, each layer is about a problem, i.e.,\@ separation of concerns. In evolution, when a layer interface changes, only the adjacent layer is affected. The main problem is that sometimes is artificial to structure systems in this way.
 
 \paragraph{Pipes \& Filters}
 This technique is useful when data streams have to be processed according to several steps in a sequential way. It must be possible to recombine steps, taking into account that non-adjacent steps do not share any information and that the user storing data after each step may result into errors and garbage.
 
 \paragraph{Other techniques}
 Other possible techniques to use are layers, broker, MVC and microkernel.
-
-%\subsection{Design patterns}
-%\subsection{Idioms}
 
 \section{Verification}
 \emph{Verification} must check both functional and non functional requirements.
@@ -172,6 +169,8 @@ Each scenario must be feasible. It is possible to define a sequence of calls to 
 
 \subsection{Non functional requirements}
 Non functional requirements concern mostly of performance. Thus, scenarios are enriched with time model.
+
+\newpage
 
 \subsection*{Bicycle example}
 \paragraph{Functional requirements}
@@ -194,21 +193,22 @@ Transport one person from place to place.
 
 \paragraph{Design vs requirements}
 \begin{center}
-\begin{tabularx}{\textwidth}{X|XXX}
- & Draisine & Velocipede & Dominant design \\ 
-\hline 
-Transport one person & Y & Y & Y \\ 
-\hline 
-Speed & < 10 km/h & Y & Y \\ 
-\hline 
-Torque at start & Y & N & Y \\ 
-\hline 
-Weight & Y & Y & Y \\ 
-\hline 
-Human power & Y & Y & Y \\ 
-\hline 
-Safety & Driver less high & Driver very high & Y \\ 
-\hline 
-Reduce speed & Feet on road & Negative force to pedal & Brakes \\ 
+\small
+\begin{tabularx}{\linewidth}{X|XXX}
+ & Draisine & Velocipede & Dominant design \\
+\hline
+Transport one person & Y & Y & Y \\
+\hline
+Speed & < 10 km/h & Y & Y \\
+\hline
+Torque at start & Y & N & Y \\
+\hline
+Weight & Y & Y & Y \\
+\hline
+Human power & Y & Y & Y \\
+\hline
+Safety & Driver less high & Driver very high & Y \\
+\hline
+Reduce speed & Feet on road & Negative force to pedal & Brakes \\
 \end{tabularx}
 \end{center}

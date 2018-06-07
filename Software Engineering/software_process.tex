@@ -1,44 +1,44 @@
 \chapter{The software process}
 The \emph{software process} is not new. It is just a matter of applying engineering approach to software production.
 
-The main difference with respect to tradition engineering is that software engineering is only 50 years old and it has limited theories and laws. Those issues affect the maturity of customers and managers which, nowadays, is very variable.
+The main difference with respect to tradition engineering is that software engineering is only 50 years old and it has limited theories and laws. These issues affect the maturity of customers and managers which, nowadays, is very variable.
 
 \section{Activities}
 Goal is to produce software, including documents, data and code, with defined, predictable process properties (cost, duration, \dots) and product properties which defines product quality (functionality, reliability, \dots).
 \begin{enumerate}
 \item Requirements: what the software should do;
 \item Design: definition and organization of physical (files and directories) and logical (functions, classes, packages, subsystems) units;
-\item Implementation: source code writing (and generation of executable code) and units integration.
+\item Implementation: source code writing, generation of executable code and units integration.
 \end{enumerate}
-Logically, each activity depends on the previous one. Those dependencies make software not soft.
+Logically, each activity depends on the previous one. These dependencies make software not soft.
 
-First approach is to do these activities in sequence. In practice, feedbacks and recycles must be provided. At the end of each activity, a document (or source code) is produced.
+First approach is to perform these activities in sequence. In practice, feedbacks and recycles must be provided. At the end of each activity, a document (or source code) is produced.
 
-\paragraph{The V \& V activities}
+\paragraph{V \& V activities}
 The software process may have a lot of defects. The idea is to find and fix them as soon as they are discovered. \emph{Verification and validation} activities control the correctness of:
 \begin{itemize}
-\item the requirements: customer needs are known and understood and the requirements document is consistent;
-\item the design: it is capable of supporting the requirements and it is consistent;
-\item the code: it is capable of supporting the requirements and the design and it is consistent (syntactic checks).
+\item The requirements: customer needs are known and understood and the requirements document is consistent;
+\item The design: it is capable of supporting the requirements and it is consistent;
+\item The code: it is capable of supporting the requirements and the design and it is consistent (syntactic checks).
 \end{itemize}
 
-\paragraph{The management activities}
+\paragraph{Management activities}
 \begin{itemize}
 \item Project management
 \begin{itemize}
-\item Assigns work and monitors progress;
-\item Estimates and control budget.
+\item Assign work and monitor progress;
+\item Estimate and control budget.
 \end{itemize}
 \item Configuration management
 \begin{itemize}
-\item Identifies and stores documents and units;
-\item Keeps track of relationships and history (version control).
+\item Identify and store documents and units;
+\item Keep track of relationships and history (version control).
 \end{itemize}
 \item Quality assurance
 \begin{itemize}
-\item Defines quality goals;
-\item Defines how work will be done;
-\item Controls results;
+\item Define quality goals;
+\item Define how work will be done;
+\item Control results;
 \item May repeat some V \& V activities.
 \end{itemize}
 \end{itemize}
@@ -59,7 +59,7 @@ Development is only the first part of the game.
 \end{figure}
 
 \paragraph{Operation}
-\emph{Operation} is made by the users until retirement. Companies try to keep software as long as possible, i.e.\@ tens of years. A software used for a short amount of time, is not a good one. 
+\emph{Operation} is made by the users until retirement. Companies try to keep software as long as possible, i.e.,\@ tens of years. A software used for a short amount of time is not a good one. 
 
 \paragraph{Maintenance}
 \emph{Maintenance} can be seen as a sequence of developments. It starts immediately after the first release and lasts until retirement.
@@ -70,6 +70,7 @@ First development is usually longer, next developments are constrained by previo
 \centering
 \includegraphics[scale=0.4]{images/iso_iec_12207.png}
 \caption{ISO/IEC 12207}
+\label{img:iso_iec_12207}
 \end{figure}
 
 \section{The system process}
@@ -78,7 +79,7 @@ First development is usually longer, next developments are constrained by previo
 \begin{enumerate}
 \item System requirements;
 \item System design;
-\item software development (requirements, design, implementation, test and integration);
+\item Software development (requirements, design, implementation, test and integration);
 \item System integration and test.
 \end{enumerate}
 

@@ -1,5 +1,5 @@
 \chapter{Verification \& Validation}
-Validation is the task that verifies if the software system is the right one according to its effectiveness, external, i.e.\@  versus user, and reliability. Verification is the task that verifies if the software system is right according to its efficiency, internal, i.e.\@ correctness of vertical transformations, and correctness.
+\emph{Validation} is the task that verifies if the software system is the right one according to its effectiveness, external, i.e.,\@  versus user, and reliability. \emph{Verification} is the task that verifies if the software system is right according to its efficiency, internal, i.e.,\@ correctness of vertical transformations, and correctness.
 
 \paragraph{Scenario 1}
 \begin{itemize}
@@ -10,12 +10,14 @@ Validation is the task that verifies if the software system is the right one acc
 \item Developers
 \begin{itemize}
 \item R1: compact car with 4 seats.
-\item Result: compact car with 4 seats.
-
-Verification passed, because the process is perfect for a compact car. Thus, translation from the requirement is ok.
-
-Validation not passed, because of an error in the requirement which does not fit the stakeholder real need.
 \end{itemize}
+\end{itemize}
+
+\subparagraph{Result}
+Compact car with 4 seats.
+\begin{itemize}
+\item Verification passed, because the process is perfect for a compact car. Thus, translation from the requirement is ok.
+\item Validation not passed, because of an error in the requirement which does not fit the stakeholder real need.
 \end{itemize}
 
 \paragraph{Scenario 2}
@@ -27,12 +29,14 @@ Validation not passed, because of an error in the requirement which does not fit
 \item Developers
 \begin{itemize}
 \item R1: big car with 6 seats.
-\item Result: big car with 6 seats.
-
-Verification passed.
-
-Validation passed.
 \end{itemize}
+\end{itemize}
+
+\subparagraph{Result}
+Big car with 6 seats.
+\begin{itemize}
+\item Verification passed.
+\item Validation passed.
 \end{itemize}
 
 \paragraph{Scenario 3}
@@ -44,12 +48,14 @@ Validation passed.
 \item Developers
 \begin{itemize}
 \item R1: big car with 6 seats.
-\item Result: compact car with 4 seats.
-
-Verification not passed.
-
-Validation passed on requirement document, not passed on the product.
 \end{itemize}
+\end{itemize}
+
+\subparagraph{Result}
+Compact car with 4 seats.
+\begin{itemize}
+\item Verification not passed.
+\item Validation passed on requirement document, not passed on the product.
 \end{itemize}
 
 Requirements are the root of all evils. Validation is external because it involves users (actors) which have to check that their needs and their will have been respected.
@@ -57,14 +63,14 @@ Requirements are the root of all evils. Validation is external because it involv
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.4]{images/v_v.png}
-\caption{Verifican and Validation}
+\caption{Verification and Validation}
 \end{figure}
 
 Cost of fixing defect increases incredibly during the software process from the requirement document to the complete system.
 
 \begin{description}
-\item [Failure] An execution event where the software behaves in an unexpected way. Visible to the end user, who clearly knows that something is wrong.
-\item [Fault] The feature of a software that causes a failure. May be due to an error in any part of the software, i.e.\@ incomplete/incorrect requirements, test cases, database, etc.
+\item [Failure] An execution event where the software behaves in an unexpected way. It is visible to the end user, who clearly knows that something is wrong.
+\item [Fault] The feature of a software that causes a failure. May be due to an error in any part of the software, i.e.,\@ incomplete/incorrect requirements, test cases, database, etc.
 \item [Defect] Generally speaking, a failure or a fault. A defect is characterized by an insertion activity and (hopefully) a removal activity. In fact, some defects may never be removed because they are minor or too much difficult to fix. It is needed to always assume that there are some defects and minimize the discovering time. The idea is to find as much defect as possible before software release.
 \end{description}
 
@@ -81,7 +87,7 @@ Verification and validation is an horizontal activity because it happens during 
 \caption{Insertion/removal by phase - Typical scenario}
 \end{figure}
 
-The longer the delay insert-remove, the higher the cost of removing defect. This is knows as \textbf{rework problem}, shown in figure~\ref{img:rework_problem} where red color represents a perfect process, with a bell shape, while yellow color represents actual rework which is more similar to an exponential.
+The longer the delay insert-remove, the higher the cost of removing defect. This is known as \textbf{rework problem}, shown in figure~\ref{img:rework_problem} where red color represents a perfect process, with a bell shape, while yellow color represents actual rework which is more similar to an exponential.
 
 \begin{figure}[hbtp]
 \centering
@@ -93,7 +99,7 @@ The longer the delay insert-remove, the higher the cost of removing defect. This
 \section{Techniques}
 \subsection{Static}
 \subsubsection{Inspections}
-\emph{Inspection} consist in reading documents and code by a group of people with goal of finding defects. Variants of inspections are reading techniques, walkthroughs or reviews. Many defects may be found, test phase concentrates one defect at a time.
+\emph{Inspection} consist of reading documents and code by a group of people with goal of finding defects. Variants of inspections are reading techniques, walkthroughs or reviews. Many defects may be found, test phase concentrates one defect at a time.
 
 \begin{figure}[hbtp]
 \centering
@@ -102,13 +108,13 @@ The longer the delay insert-remove, the higher the cost of removing defect. This
 \label{img:v_v_inspection}
 \end{figure}
 
-This technique can be applied to documents and code. It is very effective because it reuses experience and knowledge of people on domain and technologies, it has more global and dynamic groups can be used. However, it is more suitable for functional aspects and it requires time, i.e.\@ effort and calendar time. Inspection and testing are complementary techniques and both should be used in V \& V.
+This technique can be applied to documents and code. It is very effective because it reuses experience and knowledge of people on domain and technologies, therefore more global and dynamic groups can be used. However, it is more suitable for functional aspects and it requires time, i.e.,\@ effort and calendar time. Inspection and testing are complementary techniques and both should be used in V \& V.
 
 Early defect detection improves product quality and reduces avoidable rework down to 10-20\%.
 
 \paragraph{Roles in a group}
 \begin{itemize}
-\item \textbf{Moderator} leads inspection process and notably inspection meeting. It selects participants, prepares material. Usually, it is not from project that produces document to be inspected;
+\item \textbf{Moderator} leads inspection process and notably inspection meeting. It selects participants and prepares material. Usually, it is not from project that produces document to be inspected;
 \item \textbf{Readers} read document to be inspected;
 \item \textbf{Author} answers to questions that arise;
 \item \textbf{Scribe} writes inspection log.
@@ -119,12 +125,12 @@ Early defect detection improves product quality and reduces avoidable rework dow
 \item Planning: Select team, arrange materials, schedule dates;
 \item Overview: Quickly present inspection group goals and document to be inspected;
 \item Preparation: Important because inspectors are often unprepared. Read individually, applying inspection technique;
-\item Inspection meeting: Team analysis to find defects. Group reads, discusses issues, agrees on problems. Scribe logs problems. Moderator keeps focus, keeps space, stops long discussions;
+\item Inspection meeting: Team analysis to find defects. Group reads, discusses issues and agrees on problems. Scribe logs problems. Moderator keeps focus, keeps space and stops long discussions;
 \item Rework: Author fixes defects/problem;
 \item Follow-up: Repeat inspection or close and pass to next phase.
 \end{enumerate}
 
-Purpose of inspection is to find defects, not fix them. Group aims to produce best possible document avoiding ``kill the author'' game and ``relax and chat'' meetings.
+Purpose of inspection is to find defects, not to fix them. Group aims to produce best possible document avoiding ``kill the author'' game and ``relax and chat'' meetings.
 
 \subsubsection{Technique vs. document}
 \paragraph{Defect taxonomies for requirements}
@@ -166,25 +172,25 @@ Two levels
 Based on past defect information. Questions refine a defect taxonomy.
 
 \paragraph{Checklist for code}
-Depends on programming language and on previous results of inspections.
+Dependent on programming language and on previous results of inspections.
 
 \paragraph{Scenario-based reading}
-Ask inspectors to create an appropriate abstraction which helps to understand the product. Ask inspectors to answer a series of questions tailored to the abstraction. Inspectors follow different scenarios each focusing on specific issues.
+Ask inspectors to create an appropriate abstraction which helps to understand the product. Ask inspectors to answer to a series of questions tailored to the abstraction. Inspectors follow different scenarios each focusing on specific issues.
 
 \paragraph{Defect-based reading}
 A scenario-based reading technique to detect defects in requirements expressed in a formal notation. Each scenario focuses on a specific class of defects (data type inconsistency, incorrect functionality, ambiguity or missing functionality).
 
 \paragraph{Perspective-based scenario} Widespread technique. A scenario-based reading technique to detect defects in requirements expressed in natural language, extended later for design and source code. Each scenario focuses on reviewing the document from the point of view of a specific stakeholder.
 
-For each requirement and functional specification, generate a test or set of tests that allow you to ensure that an implementation of the system satisfies the requirement and functional specification. During the reading, the reader has to produce something, helping the reader to be careful and to keep focused.
+For each requirement and functional specification, generate a test or set of tests that allow to ensure that an implementation of the system satisfies the requirements and functional specifications. During the reading, the reader has to produce something, helping the reader to be careful and to keep focused.
 
 \subsection{Dynamic}
 \subsubsection{Testing}
-\emph{Testing} is a dynamic technique that requires execution of executable system or executable unit. The purpose of testing process is to find defects in the software products, a test is successful if it reveals a defect. In fact, it is easy to show that something works being very soft in its usage.
+\emph{Testing} is a dynamic technique that requires execution of executable system or executable unit. The purpose of testing process is to find defects in the software products, which means that a test is successful if it reveals a defect. Indeed, it is easy to show that something works being very soft in its usage.
 
 Testing is also the process of operating a system or component under specified conditions observing or recording the results to detect the differences between actual and required behavior.
 
-Defect testing and debugging are different activities, which may be performed by different roles in different times. Testing tries to find failures, while debugging searches for and removes the fault. Debugging, actually represent a short cycle of design and coding.
+Defect testing and debugging are different activities, which may be performed by different roles in different times. Testing tries to find failures, while debugging searches for and removes the fault. Debugging, actually, represents a short cycle of design and coding.
 
 \begin{figure}[hbtp]
 \centering
@@ -192,14 +198,15 @@ Defect testing and debugging are different activities, which may be performed by
 \caption{Debugging}
 \end{figure}
 
-A \textbf{test case} represents a stimulus applied to executable, system of unit, composed of name, input and expected output with defined constraints and context, e.g.\@ version and type of OS, DBMS, GUI, etc. \\
-A \textbf{test suite} is a set of related test cases. \\
-A \textbf{test case log} is composed by a test case reference, its time and date of application, its actual output and its result (passed or not passed).
-
+\begin{description}
+\item [Test case] Stimulus applied to executable, system or unit, composed by name, input and expected output with defined constraints and context, e.g.,\@ version and type of OS, DBMS, GUI, etc.
+\item [Test suite] Set of related test cases. 
+\item [Test case log] Composed by a test case reference, its time and date of application, its actual output and its result (passed or not passed).
+\end{description}
 Test activities:
 \begin{enumerate}
 \item Write test cases;
-\item Run test case (test suite);
+\item Run test cases (test suite);
 \item Record results.
 \end{enumerate}
 
@@ -221,7 +228,7 @@ The ideal condition would be to have an automatic \emph{oracle}, very difficult 
 
 A \emph{human oracle} is based on requirements specification or judgment.
 
-An \emph{automatic oracle} is a model generated from formal required specification, e.g.\@ the same software developed by other parties or previous version of program (possibly leading to regression).
+An \emph{automatic oracle} is a model generated from formal required specification, e.g.,\@ the same software developed by other parties or previous version of program (possibly leading to regression).
 
 \begin{figure}[hbtp]
 \centering
@@ -230,26 +237,26 @@ An \emph{automatic oracle} is a model generated from formal required specificati
 \end{figure}
 
 \paragraph{Correctness}
-\emph{Correctness}, in the sense of correct output for all possible input requires, exhaustive testing, which is unfeasible. Thus, goal of test are finding defects (not demonstrating that system is defect free) and assuring a \emph{good enough} level of confidence.
+\emph{Correctness}, in the sense of correct output for all possible input requires exhaustive testing, which is unfeasible. Thus, goal of test is to find defects (not demonstrating that system is defect free) and assure a \emph{good enough} level of confidence.
 
 \subparagraph{Dijkstra thesis} Testing can only reveal the presence of error, never their absence.
 
-\subparagraph{Weinberg's law} A developer is unsuitable to test his/her own code. Testing should be performed by a separate team or peers. If a developer misunderstand a problem, he cannot find such error.
+\subparagraph{Weinberg's law} A developer is unsuitable to test his/her own code. Testing should be performed by a separate team or peers. If a developer misunderstand a problem, he cannot find any error.
 
 \paragraph{Coverage} Test cases defined / Total test cases possible.
 
 100\% and no failures $\Rightarrow$ correct.
 
-\paragraph{Validity} A criterion is \emph{valid} if and only if whenever the produced output is incorrect, such a criterion selects at least one test set which is not successful for the output.
+\paragraph{Validity} A criterion is \emph{valid} if and only if, whenever the produced output is incorrect, such a criterion selects at least one test set which is not successful for the output.
 
-\paragraph{Reliability} A criterion is \emph{reliable} if and only if either every test selected by such a criterion is successful or no test selected is successful.
+\paragraph{Reliability} A criterion is \emph{reliable} if and only if, either every test selected by such a criterion is successful or no test selected is successful.
 
 \subsection{Test classification}
 \subsubsection{Testing per granularity level/phase}
 \begin{itemize}
 \item Unit tests: individual modules;
 \item Integration tests: modules when working together;
-\item System tests: the system as a whole, usable system.
+\item System tests: the system as a whole usable system.
 \end{itemize}
 
 \begin{figure}[hbtp]
@@ -259,12 +266,12 @@ An \emph{automatic oracle} is a model generated from formal required specificati
 \end{figure}
 
 \subsubsection{Testing per approach}
-Given an object to test, approach can be
+Given an object to test, approach can be:
 \begin{itemize}
 \item Requirements driven: are the requirements of the object satisfied?
 \item Structure: is the object built as it should?
-\item Reliability: does it satisfy the customer need?
-\item Risk: is it vulnerable to most likely risks?
+\item Reliability: does the object satisfy the customer need?
+\item Risk: is the object vulnerable to most likely risks?
 \end{itemize}
 
 \begin{table}
@@ -289,11 +296,12 @@ Given an object to test, approach can be
 
 \begin{table}
 \centering
+\small
 \begin{tabularx}{\textwidth}{|X|X|X|X|}
 \hline 
  & \multicolumn{3}{c|}{\textbf{Testing phase}} \\ 
 \hline
-\textbf{Approach} & \textbf{Unit testing} & \textbf{Integration testing} & \textbf{System testing} \\ 
+\textbf{Approach} & \textbf{Unit} & \textbf{Integration} & \textbf{System} \\ 
 \hline 
 \textbf{Requirements-driven} & 100\% unit requirements & 100\% product requirements & 100\% system requirements \\ 
 \hline 
@@ -308,19 +316,19 @@ Given an object to test, approach can be
 \end{table}
 
 \paragraph{Regression testing}
-All test used in the past must be performed and no more defects must be found in a newer version.
+All tests used in the past must be performed and no more defects must be found in a newer version.
 
 \section{Unit test}
 \subsection{Black box}
-Black box testing is a functional test of units (functions, classes) which generates test cases starting from the specification of the unit. Source code is not needed.
+\emph{Black box} testing is a functional test of units (functions, classes) which generates test cases starting from the specification of the unit. Source code is not needed.
 
 \subsubsection{Random}
 Random testing is independent of requirements but it requires many test cases. It is easy to define the inputs, but it requires an oracle to compute the expected output.
 
 \subsubsection{Equivalence classes partitioning}
-Input space is divided in partition that have similar behavior from the point of view of requirements for unit and a few test cases are performed for each partition. Boundary conditions must be defined to bound partitions and test cases are performed on the boundary, too.
+Input space is divided in partitions having similar behavior from the point of view of requirements for unit and a few test cases are performed for each partition. Boundary conditions must be defined to bound partitions and test cases are performed on the boundaries, too.
 
-\paragraph{Equivalence class} A class corresponds to set of valid or invalid inputs for a \emph{condition} on the input variables. If a test in a class has not success, the other tests in the same class may have the same behavior. Every equivalence class must be covered by a test case at least. Each test case for valid input classes must cover as many valid classes as possible.
+\paragraph{Equivalence class} A class corresponds to a set of valid or invalid inputs for a \emph{condition} on the input variables. If a test in a class has not success, the other tests in the same class should have the same behavior. Every equivalence class must be covered by a test case at least. Each test case for valid input classes must cover as many valid classes as possible.
 
 \begin{enumerate}
 \item Identify criteria, from requirements;
@@ -330,19 +338,18 @@ Input space is divided in partition that have similar behavior from the point of
 \item Define one test case per partition.
 \end{enumerate}
 
-When a module has state, the state hast to be considered to define the partitions. State may be difficult to read/create and it requires a sequence of calls. Typically, object oriented classes have state and many functions have to be tested. Criteria and equivalence classes have to be identified and applied to each function.
+When a module has a state, the state has to be considered to define partitions. State may be difficult to read/create and it requires a sequence of calls. Typically, object oriented classes have state and many functions have to be tested. Criteria and equivalence classes have to be identified and applied to each function.
 
 \subsection{White box}
-White box testing is structural and starts from the code, using several coverage objectives. White box testing is typically made in the development environment and supported by tools to compute coverage.
+\emph{White box} testing is structural and starts from the code, using several coverage objectives. White box testing is typically made in the development environment and supported by tools to compute coverage.
 
 \paragraph{Statement coverage} Try to execute all statements in the program. \emph{Coverage} is a property of unit and test suite.
 \[
 \text{statement coverage} = \dfrac{\text{\# statements covered}}{\text{\# statements}}
 \]
+The main problem is the concept of statement. Programs can be transformed in \textbf{control flow graphs}. A node represents an atomic instruction, i.e.,\@ line terminated by a semicolon, or a decision, while an edge represents the transfer of control. Sequential nodes can be collapsed in a basic block. Statements which cannot be reached are called \emph{dead code}.
 
-Problem is the concept of statement. Program can be transformed in \textbf{control flow}. A node represents an atomic instruction, i.e.\@ line terminated by a semicolon, or a decision, while an edge represents the transfer of control. Sequential nodes can be collapsed in a basic block. Statements which cannot be reached are called \emph{dead code}.
-
-\emph{Control flow graph} makes more understandable which are basic (atomic) statements.
+\emph{Control flow graph} makes more understandable which are the basic (atomic) statements.
 
 \paragraph{Node coverage} Evaluated for each test, considered cumulative for a test suite.
 \[
@@ -354,21 +361,18 @@ Problem is the concept of statement. Program can be transformed in \textbf{contr
 \text{decision coverage} = \dfrac{\text{\# decisions covered}}{\text{\# decisions}}
 \]
 
-\paragraph{Relationships}
-\begin{gather*}
-\text{Node coverage} \Leftrightarrow \text{Statement coverage} \\
-\text{Basic block coverage} \Leftrightarrow \text{Statement coverage} \\
-\text{Edge coverage} \Rightarrow \text{Node coverage} \\
-\text{Edge coverage} \nLeftarrow \text{Node coverage}
-\end{gather*}
-
 \paragraph{Condition coverage}
 \begin{itemize}
 \item Simple condition coverage: each condition is at least once true and at least once false, but the final decision may be the same;
 \item Multiple condition coverage: all the combinations must be tested. It may not be feasible in some cases.
 \end{itemize}
 
+\paragraph{Relationships}
 \begin{gather*}
+\text{Node coverage} \Leftrightarrow \text{Statement coverage} \\
+\text{Basic block coverage} \Leftrightarrow \text{Statement coverage} \\
+\text{Edge coverage} \Rightarrow \text{Node coverage} \\
+\text{Edge coverage} \nLeftarrow \text{Node coverage} \\
 \text{Multiple condition coverage} \Rightarrow \text{Decision coverage} \Rightarrow \text{Statement coverage} \\
 \text{Multiple condition coverage} \Rightarrow \text{Simple condition coverage} \nRightarrow \text{Decision coverage}
 \end{gather*}
@@ -376,7 +380,7 @@ Problem is the concept of statement. Program can be transformed in \textbf{contr
 \paragraph{Path coverage}
 A \emph{path} is a sequence of nodes in a graph. Test cases should be selected in such a way that every path in the graph is visited. It may not be feasible, because of a combinatorial explosion with cycles. Some approximations are possible:
 \begin{itemize}
-\item Path-n: loop 0 to n times in each loop;
+\item Path-n: loop from 0 to n times in each loop;
 \item Loop coverage: in each loop cycle 0, 1, > 1 times.
 \end{itemize}
 
@@ -393,7 +397,7 @@ Consider each loop separately and write three test cases: no enter the loop, cyc
 \item [Informal] Using keyboard or screen. No documentation of test case, nor test log.
 \item [Formal] Programming languages.
 \end{description}
-Tools are provided to write and run test cases (e.g.\@ JUnit) and to compute coverage (e.g.\@ Cobertura).
+Tools are provided to write and run test cases (e.g.,\@ JUnit) and to compute coverage (e.g.,\@ Cobertura).
 
 \subsection{Mutation testing}
 \emph{Mutation testing} consists in evaluating the goodness of test cases. The basic idea is to inject errors in program with single small change and to verify if test cases catch the injected errors. This approach is used both in software and hardware.
@@ -413,15 +417,14 @@ Tools are provided to write and run test cases (e.g.\@ JUnit) and to compute cov
 \item Delete a statement;
 \item Swap two statements;
 \item Replace arithmetic operations;
-\item Replace boolean relation;
+\item Replace boolean relations;
 \item Replace a variable;
-\item Replace boolean sub-expression with constant value.
+\item Replace boolean sub-expressions with constant value.
 \end{itemize}
-
 The main problem with mutation testing is time. In fact, many mutations are possible and a complete test suite is needed for each mutation.
 
 \section{Integration testing}
-Integration problems arise when more than one unit, possibly developed by different teams or in different time, interact together. In fact, it is possible that different conventions (i.e.\@ parameters order, parameter names, unit of measurement, etc.) have been used leading to unexpected results.
+Integration problems arise when more than one unit, possibly developed by different teams or in different time, interact together. In fact, it is possible that different conventions (i.e.,\@ parameters order, parameter names, unit of measurement, etc.) have been used, leading to unexpected results.
 
 \begin{figure}[hbtp]
 \centering
@@ -433,9 +436,9 @@ Integration problems arise when more than one unit, possibly developed by differ
 \emph{Dependency graph} shows dependencies among different units. It is useful to check if dependencies are correct.
 
 \paragraph{Stub and driver}
-A \emph{driver} is a unit (function or class) developed to pilot another unit. A \emph{stub} is a unit developed to substitute another unite, i.e.\@ fake unit. They are also called \textbf{mock ups}.
+A \emph{driver} is a unit (function or class) developed to pilot another unit. A \emph{stub} is a unit developed to substitute another unite, i.e.,\@ fake unit. They are also called \textbf{mock ups}.
 
-A stub must be simpler than the unit substituted, therefore it is needed to trade off simplicity and functionality, because a stub must be ``perfect'', i.e.\@ without defects.
+A stub must be simpler with respect to the substituted unit, therefore it is needed to trade off simplicity and functionality, because a stub must be ``perfect'', i.e.,\@ without defects.
 
 \subsection*{Big bang integration}
 Test is applied directly to the aggregate as if it was a single unit. This approach does not focus on the dependencies, therefore it is difficult to locate a defect when it is found. A defect can be generated by any function or by any interaction.
@@ -453,7 +456,7 @@ Goal is to add one unit at a time and to test the partial aggregate. In this way
 \emph{Bottom up integration} can start early in the development process and lower levels are directly observable, but it requires the definition of drivers for all lower level units.
 
 \subsection*{Hardware software integration}
-\emph{Hardware software integration} is suitable for embedded systems. Usually writing stubs for sensor or actuators implies defining a simulated model of the context of the software application, as defined by context diagram and system design.
+\emph{Hardware software integration} is suitable for embedded systems. Usually writing stubs for sensors or actuators implies defining a simulated model of the context of the software application, as defined by context diagram and system design.
 
 \begin{enumerate}
 \item Test software units with stubs replacing hardware;
@@ -461,7 +464,7 @@ Goal is to add one unit at a time and to test the partial aggregate. In this way
 \end{enumerate}
 
 \section{System testing}
-\emph{System testing} is applied to the software system as a whole. It aims at verifying the correspondence of the system to the requirements. Typically it is not performed by the development team, but by a test team. Functional requirements are tested by covering uses cases as listed in the requirement document and considering usage profile, i.e.\@ typical ways of using the system. Test s performed in conditions as far as possible close to working conditions.
+\emph{System testing} is applied to the software system as a whole. It aims at verifying the correspondence of the system to the requirements. Typically it is not performed by the development team, but by a test team. Functional requirements are tested by covering use cases as listed in the requirement document and considering usage profile, i.e.,\@ typical ways of using the system. Test is performed in conditions close, as far as possible, to the working ones.
 
 \begin{figure}[hbtp]
 \centering
@@ -471,25 +474,25 @@ Goal is to add one unit at a time and to test the partial aggregate. In this way
 
 \paragraph{Platform} The \emph{platform} is the environment where an application runs, defined by operating system, database, network, memory, CPU, libraries, etc.
 
-An element can be tested on
+An element can be tested on:
 \begin{itemize}
-\item Target platform: where the element will run for day by day use. It cannot be used for production because data may be corrupted and it may not be available;
-\item Production platform: where the element is produced. It cannot be, in most cases, equal to the target platform.
+\item \textbf{Target platform}: where the element will run for day by day use. It cannot be used for production because data may be corrupted and it may not be available;
+\item \textbf{Production platform}: where the element is produced. It cannot be, in most cases, equal to the target platform.
 \end{itemize}
-For an embedded system, production platform is typically a PC, with simulated/emulated external devices, while for an information system, is typically a PC or a workstation, whit a replicated database in a simplified form.
+For an embedded system, production platform is typically a PC, with simulated/emulated external devices, while for an information system, is typically a PC or a workstation, with a replicated database in a simplified form.
 
 \paragraph{Variants}
 System testing can be performed by end user (beta testing) or developer on development or target platform. \emph{Acceptance testing} is made by the user, possibly on both development and target platforms. Typically, it considers data and test cases provided by the customer on target platform.
 
 \medskip
 
-System testing test non functional requirements, which are usually emerging properties, in many cases testable only when the entire system is available, e.g.\@ efficiency, reliability.
+System testing tests non functional requirements, which are usually emerging properties, in many cases testable only when the entire system is available, e.g.,\@ efficiency, reliability.
 
 \paragraph{Non functional properties}
 \begin{itemize}
 \item Configuration: the commands and mechanisms to change the system;
 \item Recovery: the capability of the system to react to catastrophic events;
-\item Stress: reliability of the system under limit conditions, e.g.\@ huge number of users;
+\item Stress: reliability of the system under limit conditions, e.g.,\@ huge number of users;
 \item Security: resilience to non authorized accesses.
 \end{itemize}
 
@@ -514,7 +517,7 @@ Risks & & & • \\
 \end{table}
 
 \paragraph{Reliability testing}
-\emph{Reliability testing} aims at providing estimate of reliability, i.e.\@ probability of failure over a period of time. Other possible measures are $\text{defect rate} = \text{defect}/\text{time}$ or $\text{MTBF} = \text{time between defects}$. In order to estimate reliability, a large number of independent test cases are needed, and defect fix must not introduce other defect, i.e.\@ regression testing.
+\emph{Reliability testing} aims at providing estimation of reliability, i.e.,\@ probability of failure over a period of time. Other possible measures are $\text{defect rate} = \text{defect}/\text{time}$ or $\text{MTBF} = \text{time between defects}$. In order to estimate reliability, a large number of independent test cases are needed, and defect fix must not introduce other defect, i.e.,\@ regression testing.
 
 \begin{figure}[hbtp]
 \centering
@@ -537,20 +540,21 @@ Risks & & & • \\
 \item Rank them by frequency of usage;
 \item Test more more used profiles.
 \end{enumerate}
-This approach is typically adopted on widespread software, e.g.\@ MS Word.
+This approach is typically adopted on widespread software, e.g.,\@ MS Word.
 
 \paragraph{Regression testing}
-Tests previously defined are repeated after a change to assure that the change has not introduced defects. In general, it is applied to all objects, i.e.\@ unit tests, integration tests and acceptance tests.
+Tests previously defined are repeated after a change to assure that the change has not introduced defects. In general, it is applied to all objects, i.e.,\@ unit tests, integration tests and acceptance tests.
 
 \begin{table}
 \centering
+\small
 \begin{tabularx}{\textwidth}{|X|X|X|X|X|}
 \hline 
  & Functional / Non functional & Who tests & Platform & Techniques \\ 
 \hline
 \textbf{Unit test} & Functional / Structural & Developer or test group & Production  & BB, WB\\ 
 \hline 
-\textbf{Integration test} & Functional & Developer or test group & Production & Incremental~\footnote{Also called grey box, i.e.\@ internal testing but not so internal as white box.} TD or BU\\ 
+\textbf{Integration test} & Functional & Developer or test group & Production & Incremental\footnote{Also called grey box, i.e.,\@ internal testing but not so internal as white box.} TD or BU\\ 
 \hline 
 \textbf{System test} & Functional + Non functional & Developer or test group or user & Production, target & Requirement coverage, use case coverage \\ 
 \hline 
@@ -562,28 +566,27 @@ Tests previously defined are repeated after a change to assure that the change h
 %Non documenting test cases is a possible technique to perform informal and exploratory testing. 
 Representing test cases can be done:
 \begin{itemize}
-\item Informally: reading is easy, but test cases are not executable, e.g.\@ Word document;
+\item Informally: reading is easy, but test cases are not executable, e.g.,\@ Word document;
 \item Formally:
 \begin{itemize}
-\item Word/Excel document and translator to programming language, e.g.\@ FIT, Fitness;
-\item Programming language: executable and easily reusable (i.e.\@ regression testing) but less readable, e.g.\@ Eclipse + JUnit or similar.
+\item Word/Excel document and translator to programming language, e.g.,\@ FIT, Fitness;
+\item Programming language: executable and easily reusable (i.e.,\@ regression testing) but less readable, e.g.,\@ Eclipse + JUnit or similar.
 \end{itemize}
 \end{itemize}
-
 Test cases should be documented, so that they are not lost and can be reapplied and automated, so that application of test cases is fast and error free.
 
 \subsection{Testing tools}
 \paragraph{Table based testing}
-Test cases are written as tables in Word or Excel, and linked to application to be tested. In this way, end users are allowed to write tests, especially acceptance and black box ones, tests are independent of GUI and automation is possible. \emph{Fixtures} are needed to translate input from the table to the input of a coded function, to compare expected result to the actual one and to write the result. Using this approach, checking complex scenarios is difficult.
+Test cases are written as tables in Word or Excel, and linked to application ones the to be tested. In this way, end users are allowed to write tests, especially acceptance and black box ones, tests are independent of GUI and automation is possible. \emph{Fixtures} are needed to translate input from the table to the input of a coded function, to compare expected result to the actual one and to write the result. Using this approach, checking complex scenarios is difficult.
 
 \paragraph{FIT framework for integrated testing}
-Open source implementation of table based testing. User specifies tests in HTML tables, developer defines fixtures to parse tables and execute tests and Fit compares tables and actual results. \emph{FITnesse} is a standalone wiki allowing group to easily edit test files without worrying about ensuring the correct versions propagate out to all locations.
+Open source implementation of table based testing. User specifies tests in HTML tables, developer defines fixtures to parse tables and executes tests, while FIT compares tables and actual results. \emph{FITnesse} is a standalone wiki allowing group to easily edit test files without worrying about ensuring the correct versions are propagated out to all locations.
 
 \paragraph{Coverage}
-Show graphically and numerically coverage on source code, e.g.\@ Cobertura, Eclemma.
+Show graphically and numerically coverage on source code, e.g.,\@ Cobertura, Eclemma.
 
 \paragraph{Profilers}
-Trace time spent per function, given specific test execution, i.e.\@ performance test.
+Trace time spent per function, given specific test executions, i.e.,\@ performance test.
 
 \subsubsection{GUI testing tools}
 GUI testing is the practice of testing a GUI software through its user interface.
@@ -597,13 +600,13 @@ GUI testing is the practice of testing a GUI software through its user interface
 \begin{description}
 \item [Manual] Manual execution of test scenarios.
 \begin{itemize}
-\item Easy to setup, does not require tools;
+\item Easy to setup, not tools required;
 \item Error prone, hardly reproducible, expensive.
 \end{itemize}
 \item [Scripted] Development of test scripts using dedicated scripting languages.
 \begin{itemize}
 \item Scripts can be automatically executed and used for regression testing;
-\item Test scripts can be difficult to write, and hard to maintain during the evolution of the software.
+\item Test scripts can be difficult to write and hard to maintain during the evolution of the software.
 \end{itemize}
 \item [Capture \& replay] User inputs are given once to the user interface (CAPTURE) and then codified into a repeatable script (REPLAY).
 \begin{itemize}
@@ -611,7 +614,7 @@ GUI testing is the practice of testing a GUI software through its user interface
 \item Very fragile to the evolution of the user interface;
 \item Script must be enriched manually to perform complex operations.
 \end{itemize}
-\item [Model-based] Test cases are obtained based on models of the user interface (e.g.\@ oriented graphs or finite state machines).
+\item [Model-based] Test cases are obtained based on models of the user interface (e.g.,\@ oriented graphs or finite state machines).
 \begin{itemize}
 \item Allow automated execution and generation of use cases;
 \item Very high coverage of use cases and functionalities can be obtainable once a model is available;
@@ -635,29 +638,7 @@ GUI testing is the practice of testing a GUI software through its user interface
 \caption{Relationship among deliverables}
 \end{figure}
 
-\begin{Parallel}{0.45\textwidth}{0.45\textwidth}
-\ParallelLText{
-Planning and specification documents
-\begin{itemize}
-\item Master Test Plan;
-\item Test Plan;
-\item Test Design;
-\item Test Case;
-\item Test Procedure.
-\end{itemize}
-}
-\ParallelRText{
-Enactment documents
-\begin{itemize}
-\item Test Log;
-\item Anomaly Report;
-\item Interim Test Status Report;
-\item Test Report;
-\item Master Test Report.
-\end{itemize}
-}
-\end{Parallel}
-
+\subsubsection{Planning and specification documents}
 \paragraph{Master test plan}
 \emph{Master test plan} guides the management of testing, establishes a plan and schedule, defines the required resources and generic pass/fail criteria, identifies the test items and explains the nature and extent of each test.
 
@@ -665,10 +646,10 @@ Enactment documents
 \emph{Level test plan} defines testing activities (scope, approach, resources and schedule) and identifies items being tested, features to be tested, testing tasks to be performed, personnel responsible for each task and associated risks.
 
 \paragraph{Traceability matrix}
-\emph{Traceability matrix} maps tests to requirements and identifies which tests passed, and hence which requirements are satisfied. It may be part of test plan.
+\emph{Traceability matrix} maps tests to requirements and identifies which tests passed, and hence which requirements are satisfied. It may be part of the test plan.
 
 \paragraph{Test design specification}
-\emph{Test design specification} specifies, for one or more features to be tested, the details of the approach, i.e.\@ testing techniques, analysis of results, list of test cases and motivation, generic attributes.
+\emph{Test design specification} specifies, for one or more features to be tested, the details of the approach, i.e.,\@ testing techniques, analysis of results, list of test cases and motivation, generic attributes.
 
 \paragraph{Test case specification}
 \emph{Test case specification} specifies a test case in terms of goal, input data, expected output (oracle), test conditions (required hardware and software), special procedural requirements and inter-test dependencies. The test case is listed in a TDS document.
@@ -676,35 +657,36 @@ Enactment documents
 \paragraph{Test procedure specification}
 \emph{Test procedure specification} specifies how to execute one or more test cases. The test procedure defines how to prepare the execution of the test, how to start and conduct the execution, which measurement to collect, how to suspend the test in presence of unforeseen events and how to resume a suspended test.
 
+\subsubsection{Enactment documents}
+\paragraph{Execution deliverables}
+Test item transmittal report which must describe a test item delivered for test and include at least identification of software item, its status and physical location. Test log, which must be a complete, systematic and chronological report of all details relative to test execution.
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.3]{images/deliverables_execution.png}
 \caption{Execution deliverables}
 \end{figure}
 
-\paragraph{Execution deliverables}
-Test item transmittal report which must describe a test item delivered for test and include at least identification of software item, its status and physical location. Test log, which must be a complete, systematic and chronological report of all details relative to test execution.
-
 \paragraph{Level test log}
-\emph{Level test log} provides a chronological record of relevant details about test execution. An automated tool may capture all or part of this information. It must include relevant info, i.e.\@ execution description, procedure results, environment and anomalies.
+\emph{Level test log} provides a chronological record of relevant details about test execution. An automated tool may capture all or part of this information. It must include relevant info, i.e.,\@ execution description, procedure results, environment and anomalies.
 
 \paragraph{Anomaly report}
-\emph{Anomaly report} documents any event that occurs during the testing process that requires investigation, including information about its time, its context, its impact and a description of input, expected and actual output and anomalies.
+\emph{Anomaly report} documents any event that occurred during the testing process that requires investigation, including information about its time, its context, its impact and a description of input, expected and actual output and anomalies.
 
 \paragraph{Interim test status report}
 \emph{Interim test status report} summarizes the results of testing activities, including test status summary, changes from plans and test status metrics.
 
 \paragraph{Level test report}
-\emph{Level test report} summarizes the results of designated testing activities, including an overview of results, detailed results, i.e.\@ open and resolved anomalies, test executed and collected metrics and test assessment, and recommendations, i.e.\@ test items evaluation and suitability for production use.
+\emph{Level test report} summarizes the results of designated testing activities, including an overview of results, detailed results, i.e.,\@ open and resolved anomalies, test executed and collected metrics and test assessment, and recommendations, i.e.,\@ test items evaluation and suitability for production use.
 
 \paragraph{Master test report}
 \emph{Master test report} summarizes the results of all testing activities, including test tasks results, list of anomalies and resolutions, assessment of release quality and summary of collected metrics.
 
 \section{Static analysis techniques}
-This techniques are applied directly to the source code. Code is read by some tools without its execution.
+These techniques are applied directly to the source code. Code is read by some tools without its execution.
 
 \subsection{Compilation analysis}
-Compilers analyze the code checking for syntax, types and semantic correctness. The errors detected by a compiler strongly depend on the language, e.g.\@ loose or strongly typed.
+Compilers analyze the code checking for syntax, types and semantic correctness. The errors detected by a compiler strongly depend on the language, e.g.,\@ loose or strongly typed.
 
 \paragraph{MISRA-C}
 \emph{Motor Industry Software Reliability Association} defines some guidelines for C in order to limit possible but dangerous operations. For example:
@@ -715,7 +697,7 @@ Compilers analyze the code checking for syntax, types and semantic correctness. 
 \item Identifiers modified within the increment expression of a loop header shall not be modified inside the block controlled by that loop header;
 \item Relational operators shall not be applied to objects of pointer type except where both operands are of the same type and both point into the same object.
 \end{itemize}
-Each rule probably helps to have a more reliable software. Source code is parsed, checking if rules are violated.
+Each rule should help to have a more reliable software. Source code is parsed, checking if rules are violated.
 
 \paragraph{Bad smells}
 Some indicators are specified to possibly detect issues. Mostly, these are design issues not strictly related to the code and they are not automatically recognizable by a tool, hence they have to be manually checked.
