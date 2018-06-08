@@ -23,7 +23,7 @@ Risks:
 \end{itemize}
 
 \section{Creating a thread}
-Thread creation needs to specify the thread's start address within the process' code, the stack size and the stack consume space within the process' address space, 
+Thread creation needs to specify the thread's start address within the process' code, the stack size and the stack consume space within the process' address space,
 
 \begin{verbatim}
 HANDLE CreateThread (
@@ -39,7 +39,7 @@ HANDLE CreateThread (
 \paragraph{Returned value}
 \begin{itemize}
 \item A thread's identifier value and its handle;
-\item A \texttt{NULL} handle value indicates failure.
+\item \texttt{NULL} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -117,8 +117,8 @@ HANDLE OpenThread (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An open \texttt{HANDLE} to the specified thread if the function succeeds;
-\item \texttt{NULL} if it fails.
+\item An open \texttt{HANDLE} to the specified thread on success;
+\item \texttt{NULL} on failure.
 \end{itemize}
 
 \paragraph{Parameter}
@@ -140,8 +140,8 @@ DWORD SuspendThread (HANDLE hThread);
 
 \paragraph{Returned value}
 \begin{itemize}
-\item The previous suspend count if the function succeeds;
-\item \texttt{0xFFFFFFFF} if it fails.
+\item The previous suspend count on success;
+\item \texttt{0xFFFFFFFF} on failure.
 \end{itemize}
 
 \paragraph{Parameter}
@@ -262,8 +262,8 @@ HANDLE CreateMutex (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An open \texttt{HANDLE} to the newly created mutex object, if the function succeeds;
-\item \texttt{NULL}, if it fails.
+\item An open \texttt{HANDLE} to the newly created mutex object on success;
+\item \texttt{NULL} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -303,8 +303,8 @@ HANDLE CreateEvent (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An \texttt{HANDLE} to the created event object if the function succeeds;
-\item \texttt{NULL} if it fails.
+\item An \texttt{HANDLE} to the created event object on success;
+\item \texttt{NULL} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -363,8 +363,8 @@ HANDLE CreateSemaphore (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item An \texttt{HANDLE} to the semaphore object if the function succeeds;
-\item \texttt{NULL} if it fails.
+\item An \texttt{HANDLE} to the semaphore object on success;
+\item \texttt{NULL} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -385,8 +385,8 @@ BOOL ReleaseSemaphore (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE} if the function succeeds;
-\item \texttt{FALSE} if it fails.
+\item \texttt{TRUE} on success;
+\item \texttt{FALSE} on failure.
 \end{itemize}
 
 \paragraph{Parameters}

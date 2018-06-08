@@ -28,42 +28,44 @@ HANDLE HeapCreate (
   DWORD flOptions,
   DWORD dwInitialSize,
   DWORD dwMaximumSize
-)}
+);
 \end{verbatim}
 
 \paragraph{Returned value}
 \begin{itemize}
-\item A heap \texttt{HANDLE} on success;
+\item A heap handle on success;
 \item \texttt{NULL} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{flOptions}] combination of two flags:
+\item [\texttt{flOptions}] Combination of two flags:
 \begin{description}
-\item [\texttt{HEAP\_GENERATE\_EXCEPTIONS}] by generating exceptions, it is possible to avoid explicit testing after each heap management call;
+\item [\texttt{HEAP\_GENERATE\_EXCEPTIONS}] By generating exceptions, it is possible to avoid explicit testing after each heap management call;
 \item [\texttt{HEAP\_NO\_SERIALIZE}]
 \end{description}
 \item [\texttt{dwInitialSize}]
-\item [\texttt{dwMaximumSize}] maximum heap size:
+\item [\texttt{dwMaximumSize}] Maximum heap size:
 \begin{description}
-\item [\texttt{0}] ``growable heap'' without any fixed limit;
-\item [non-zero] ``non-growable heap''. The entire block is allocated from the virtual address space but only the initial size is committed in the paging file.
+\item [\texttt{0}] ``Growable heap'' without any fixed limit;
+\item [non-zero] ``Non-growable heap''. The entire block is allocated from the virtual address space but only the initial size is committed in the paging file.
 \end{description}
 \end{description}
 
 \begin{verbatim}
-BOOL HeapDestroy (HANDLE hHeap)
+BOOL HeapDestroy (HANDLE hHeap);
 \end{verbatim}
 Do not destroy the process' heap, obtainable using \texttt{GetProcessHeap()}. By using \texttt{HeapDestroy}, mo data structure traversal code is necessary and it is not needed to deallocate each individual data structure element, which be time-consuming.
 
 \paragraph{Returned value}
-???
+\begin{itemize}
+\item \texttt{TRUE} on success;
+\item \texttt{FALSE} on failure.
+\end{itemize}
 
 \paragraph{Parameter}
-\paragraph{Parameters}
 \begin{description}
-\item [\texttt{hHeap}] heap \texttt{HANDLE} generated using \texttt{HeapCreate}.
+\item [\texttt{hHeap}] Heap handle generated using \texttt{HeapCreate}.
 \end{description}
 
 \begin{verbatim}
@@ -71,7 +73,7 @@ LPVOID HeapAlloc (
   HANDLE hHeap,
   DWORD dwFlags,
   DWORD dwBytes
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -83,13 +85,13 @@ LPVOID HeapAlloc (
 \paragraph{Parameters}
 \begin{description}
 \item [\texttt{hHeap}] Heap generated using \texttt{HeapCreate} or obtained with \texttt{GetProcessHeap}.
-\item [\texttt{dwFlags}] combination of:
+\item [\texttt{dwFlags}] Combination of:
 \begin{description}
 \item [\texttt{GENERATE\_EXCEPTIONS}]
 \item [\texttt{NO\-SERIALIZE}]
 \item [\texttt{HEAP\_ZERO\_MEMORY}]
 \end{description}
-\item [\texttt{dwBytes}] number of bytes to allocate.
+\item [\texttt{dwBytes}] Number of bytes to allocate.
 \end{description}
 
 \begin{verbatim}
@@ -97,7 +99,7 @@ BOOL HeapFree (
   HANDLE hHeap,
   DWORD dwFlags,
   LPVOID lpMem
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -108,9 +110,9 @@ BOOL HeapFree (
 
 \paragraph{Parameters}
 \begin{description}
-\item [\texttt{hHeap}] should be the heap that \texttt{lpMem} was allocated from.
-\item [\texttt{dwFlags}] should be zero on \texttt{HEAP\_NO\_SERIALIZE}.
-\item [\texttt{lpMem}] should have a value returned by \texttt{HeapAlloc} or \texttt{HeapReAlloc}.
+\item [\texttt{hHeap}] It should be the heap that \texttt{lpMem} was allocated from.
+\item [\texttt{dwFlags}] It should be zero on \texttt{HEAP\_NO\_SERIALIZE}.
+\item [\texttt{lpMem}] It should have a value returned by \texttt{HeapAlloc} or \texttt{HeapReAlloc}.
 \end{description}
 
 \begin{verbatim}
@@ -119,7 +121,7 @@ LPVOID HeapReAlloc (
   DWORD dwFlags,
   LPVOID lpMem,
   DWORD dwBytes
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -131,14 +133,14 @@ LPVOID HeapReAlloc (
 \paragraph{Parameters}
 \begin{description}
 \item [\texttt{hHeap}] Heap generated using \texttt{HeapCreate} or obtained with \texttt{GetProcessHeap}.
-\item [\texttt{dwFlags}] some essential control blocks:
+\item [\texttt{dwFlags}] Some essential control blocks:
 \begin{description}
 \item [\texttt{HEAP\_GENERATE\_EXCEPTIONS} or \texttt{HEAP\_NO\_SERIALIZE}]
-\item [\texttt{HEAP\_ZERO\_MEMORY}] only newly allocated memory is initialized.
-\item [\texttt{HEAP\_REALLOC\_IN\_PLACE\_ONLY}] do not move the block.
+\item [\texttt{HEAP\_ZERO\_MEMORY}] Only newly allocated memory is initialized.
+\item [\texttt{HEAP\_REALLOC\_IN\_PLACE\_ONLY}] Do not move the block.
 \end{description}
-\item [\texttt{lpMem}] existing block in \texttt{hHeap} to be reallocated.
-\item [\texttt{dwBytes}] new block size.
+\item [\texttt{lpMem}] Existing block in \texttt{hHeap} to be reallocated.
+\item [\texttt{dwBytes}] New block size.
 \end{description}
 
 \begin{verbatim}
@@ -146,7 +148,7 @@ LPVOID HeapSize (
   HANDLE hHeap,
   DWORD dwFlags,
   LPVOID lpMem
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -186,7 +188,7 @@ HANDLE CreateFileMapping (
   DWORD dwMaximumSizeHigh,
   DWORD dwMaximumSizeLow,
   LPCTSTR lpMapName
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -215,7 +217,7 @@ HANDLE OpenFileMapping (
   DWORD dwDesiredAccess,
   BOOL bInheritHandle,
   LPCTSTR lpNameP
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -223,6 +225,12 @@ HANDLE OpenFileMapping (
 \item A file mapping \texttt{HANDLE};
 \item \texttt{NULL} on failure.
 \end{itemize}
+
+\begin{description}
+\item [\texttt{dwDesiredAccess}] The access to the file mapping object.
+\item [\texttt{bInheritHandle}] If \texttt{TRUE}, a process can inherit the handle. Otherwise, the handle cannot be inherited.
+\item [\texttt{lpNameP}] The name of the file mapping object to be opened.
+\end{description}
 
 \subsection{Mapping process address space}
 \begin{verbatim}
@@ -247,8 +255,8 @@ LPVOID MapViewOfFile (
 \item [\texttt{dwAccess}] Must be compatible with mapping object's access.
 \begin{description}
 \item [\texttt{FILE\_MAP\_WRITE}]
-\item [\texttt{FILE\_MAP\_READ}].
-\item [\texttt{FILE\_MAP\_ALL\_ACCESS}].
+\item [\texttt{FILE\_MAP\_READ}]
+\item [\texttt{FILE\_MAP\_ALL\_ACCESS}]
 \end{description}
 \item [\texttt{dwOffsetHigh}] Low-order 32 bits of the offset of the mapped file region.
 \item [\texttt{dwOffsetLow}] High-order 32 bits of the offset of the mapped file region.
@@ -259,7 +267,7 @@ LPVOID MapViewOfFile (
 \texttt{MapViewOfFileEx} is similar, but it is possible to specify an existing address.
 
 \begin{verbatim}
-BOOL UnmapViewOfFile (LPVOID lpBaseAddress)
+BOOL UnmapViewOfFile (LPVOID lpBaseAddress);
 \end{verbatim}
 It permits to release file views.
 
@@ -325,7 +333,7 @@ It is possible to export and import variables as well as function entry points.
 In \emph{explicit linking}, or run time dynamic linking, the executable using the DLL must make function calls to explicitly load and unload the DLL and to access the DLL’s exported functions. A module uses the \texttt{LoadLibrary()} or \texttt{LoadLibraryEx()} function to load the DLL at run time. After the DLL is loaded, the module calls the \texttt{GetProcAddress()} function to get the addresses of the entry point(s) of the DLL functions. The module calls the exported DLL functions using the function pointers returned by \texttt{GetProcAddress()}: this eliminates the need for an import library. Finally, it free the library calling the \texttt{FreeLibrary()} function.
 
 \begin{verbatim}
-HINSTANCE LoadLibary (LPCTSTR lpLibFileName)
+HINSTANCE LoadLibary (LPCTSTR lpLibFileName);
 \end{verbatim}
 \texttt{LoadLibaryEx} is similar with several flags for specifying alternate search paths and loading the library as a data file.
 
@@ -336,7 +344,7 @@ HINSTANCE LoadLibary (LPCTSTR lpLibFileName)
 \end{itemize}
 
 \begin{verbatim}
-BOOL FreeLibary (HINSTANCE hLibModule)
+BOOL FreeLibary (HINSTANCE hLibModule);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -349,7 +357,7 @@ BOOL FreeLibary (HINSTANCE hLibModule)
 FARPROC GetProcAddress (
   HMODULE hModule,
   LPCTSTR lpProcName
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}

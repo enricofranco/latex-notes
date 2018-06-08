@@ -5,19 +5,19 @@ Input and output are inherently slow compared to other processing due to delays 
 \paragraph{Windows asynchronous I/O}
 \begin{itemize}
 \item Threads and processes: each thread within a process performs normal synchronous I/O but other threads can continue execution;
-\item Overlapped I/O: a thread continues execution after issuing a read, write, or other I/O operation. The thread then waits on either the handle or a specified event when it requires the I/O results before continuing;
+\item Overlapped I/O: a thread continues execution after issuing a read, write, or other I/O operation. The thread then waits on either the handle or a specified event when it requires the I/O result before continuing;
 \item Completion routines: the system invokes a specified \emph{completion routine} within the thread when the I/O operation completes. They are also called extended I/O or alertable I/O.
 \end{itemize}
 
 \section{Overlapped I/O}
-Overlapped structures are options on four I/O functions that can potentially block while the operation completes: \texttt{ReadFile}, \texttt{WriteFile}, \texttt{TransactNamedPipe} and \texttt{ConnectNamedPipe}.
+Overlapped structures are options on four I/O functions that can potentially block while the operation completes: \texttt{ReadFile}, \texttt{WriteFile}, \texttt{ConnectNamedPipe} and \texttt{TransactNamedPipe}.
 
 It is needed to specify \texttt{FILE\_FLAG\_OVERLAPPED} as part of \texttt{fdwAttrsAndFlags} for \texttt{CreateFile}, or as part of \texttt{fdwOpenMode} for \texttt{CreateNamedPipe}. Overlapped I/O can be used with Windows Sockets, too.
 
 \paragraph{Consequences}
-I/O operations do not block. The system return immediately from \texttt{ReadFile}, \texttt{WriteFile}, \texttt{TransactNamedPipe} and \texttt{ConnectNamedPipe}. The returned function value and the returned number of bytes transferred are not useful to indicate success or failure because the I/O operation is most likely not yet complete.
+I/O operations do not block. The system returns immediately from \texttt{ReadFile}, \texttt{WriteFile}, \texttt{TransactNamedPipe} and \texttt{ConnectNamedPipe}. The returned function value and the returned number of bytes transferred are not useful to indicate success or failure because the I/O operation is most likely not yet completed
 
-The program may issue multiple reads or write on a single handle, therefore the file pointer is meaningless. The program must be able to wait on I/O completion: in case of multiple outstanding operations on a single handle, it must be able to determine which operation completed because I/O operations do not necessarily complete in the same order as they were issued.
+The program may issue multiple reads or writes on a single handle, therefore the file pointer is meaningless. The program must be able to wait on I/O completion: in case of multiple outstanding operations on a single handle, it must be able to determine which operation completed because I/O operations do not necessarily complete in the same order as they were issued.
 
 \paragraph{Overlapped structure}
 \begin{verbatim}
@@ -27,12 +27,12 @@ typedef struct _OVERLAPPED {
   DWORD OffsetLow;
   DWORD OffsetHigh;
   HANDLE hEvent;
-} OVERLAPPED  
+} OVERLAPPED;
 \end{verbatim}
-The overlapped structure, indicates the file position on 64 bits, the event that will be signaled when the operation completes specified, for example, by the \texttt{lpOverlapped} parameter of \texttt{ReadFile}. There are also two internal \texttt{DWORD}s that the programmer does not use.
+The overlapped structure, indicates the file position on 64 bits, the event that will be signaled when the operation completes, specified, for example, by the \texttt{lpOverlapped} parameter of \texttt{ReadFile}. There are also two internal \texttt{DWORD}s that the programmer does not use.
 
 \begin{itemize}
-\item The file position must be set in \texttt{Offset} and \texttt{OffsetHigh};
+\item File position must be set in \texttt{Offset} and \texttt{OffsetHigh};
 \item \texttt{hEvent} is an event \texttt{HANDLE} created with \texttt{CreateEvent}. The event can be named or unnamed, but it must be a \emph{manually reset event}; if \texttt{hEvent} is \texttt{NULL}, wait is performed on the file handle.
 \end{itemize}
 The event is immediately reset by the system when the program makes an I/O call and, when it completes, the event is signaled.
@@ -57,7 +57,7 @@ BOOL GetOverlappedResult (
   LPOVERLAPPED lpoOverlapped,
   LPWORD lpcbTransfer,
   BOOL fWait
-)
+);
 \end{verbatim}
 
 \paragraph{Returned value}
@@ -85,7 +85,7 @@ BOOL ReadFileEx (
   DWORD nNumberOfBytesToRead,
   LPOVERLAPPED lpOverlapped,
   LPOVERLAPPED_COMPLETION_ROUTINE lpcr
-)
+);
 \end{verbatim}
 
 \begin{verbatim}
@@ -95,7 +95,7 @@ BOOL WriteFileEx (
   DWORD nNumberOfBytesToWrite,
   LPOVERLAPPED lpOverlapped,
   LPOVERLAPPED_COMPLETION_ROUTINE lpcr
-)
+);
 \end{verbatim}
 
 The extended read and write functions can be used with open file and named pipe handles if \texttt{FILE\_FLAG\_OVERLAPPED} was used at open or create time. The two functions are familiar but have an extra parameter to specify the completion routine. The overlapped structure must be supplied without need to specify the \texttt{hEvent} member.
@@ -107,7 +107,7 @@ VOID WINAPI FileIOCompletionRoutine (
   DWORD fdwError,
   DWORD cbTransferred,
   LPOVERLAPPED lpo
-)
+);
 \end{verbatim}
 \texttt{FileIoCompletionRoutine} is a place holder, not an actual function name. \texttt{fdwError} is limited to \texttt{0}, meaning success.
 
@@ -123,7 +123,7 @@ DWORD WaitForSingleObjectEx (
   HANDLE hObject,
   DWORD dwTimeOut,
   BOOL fAlertable
-)
+);
 \end{verbatim}
 
 \begin{verbatim}
@@ -133,26 +133,26 @@ DWORD WaitForMultipleObjectsEx (
   BOOL fWaitAll,
   DWORD dwTimeOut,
   BOOL fAlertable
-)
+);
 \end{verbatim}
 
 \begin{verbatim}
 DWORD SleepEx (
   DWORD dwTimeOut,
   BOOL fAlertable
-)
+);
 \end{verbatim}
 
 Each function has an \texttt{fAlertable} flag which must be set to \texttt{TRUE}. These three functions will return as soon as one of the following occurs:
 \begin{itemize}
 \item Handle(s) are signaled so as to satisfy one of the first two functions;
 \item Any completion routine in the thread finishes;
-\item The time period expires, it could also be \texttt{infinite}.
+\item The time period expires (it could also be \texttt{infinite}).
 \end{itemize}
 There are no events associated with the \texttt{ReadFileEx} and \texttt{WriteFileEx} overlapped structures. \texttt{SleepEx} is not associated with a synchronization object.
 
 \paragraph{Execution of completion routines}
-As soon as an extended I/O operation is complete, its associated completion routine is queued for execution. All of a thread's queued completion routines will be executed when the thread enters an alertable wait state, and the alertable wait function reqturns only after the completion routines return.
+As soon as an extended I/O operation is complete, its associated completion routine is queued for execution. All of a thread's queued completion routines will be executed when the thread enters an alertable wait state, and the alertable wait function returns only after the completion routines return.
 
 \texttt{SleepEx} will return \texttt{WAIT\_IO\_COMPLETION} if one or more queued completion routines were executed. \texttt{GetLastError} will return this same value after one of the wait function returns. It is possible to use a 0 timeout value with any alertable wait function, and it will return immediately.
 

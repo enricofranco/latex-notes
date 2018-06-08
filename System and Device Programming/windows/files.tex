@@ -57,7 +57,7 @@ There is an \texttt{OpenFile} function but it is obsolete, for 16-bit applicatio
 \paragraph{Returned value}
 \begin{itemize}
 \item A \texttt{HANDLE} to an open file object;
-\item \texttt{INVALID\_HANDLE\_VALUE} in case of failure.
+\item \texttt{INVALID\_HANDLE\_VALUE} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -195,8 +195,8 @@ Given a device, it returns its handle.
 
 \paragraph{Returned value}
 \begin{itemize}
-\item A valid handle in case of success;
-\item \texttt{INVALID\_HANDLE\_VALUE} for failure.
+\item A valid handle on success;
+\item \texttt{INVALID\_HANDLE\_VALUE} on failure.
 \end{itemize}
 
 \paragraph{Parameter}
@@ -215,8 +215,8 @@ It assigns a standard device to a handle.
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE} in case of success;
-\item \texttt{FALSE} for failure.
+\item \texttt{TRUE} on success;
+\item \texttt{FALSE} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -299,11 +299,11 @@ typedef union _LARGE_INTEGER {
 
 \begin{center}
 \begin{tabular}{|c|c|}
-\hline 
-\multicolumn{2}{|c|}{\texttt{LONGLONG QuadPart}} \\ 
-\hline 
-\texttt{LONG} HighPart & \texttt{DWORD} LowPart \\ 
-\hline 
+\hline
+\multicolumn{2}{|c|}{\texttt{LONGLONG QuadPart}} \\
+\hline
+\texttt{LONG} HighPart & \texttt{DWORD} LowPart \\
+\hline
 \end{tabular}
 \end{center}
 
@@ -349,8 +349,8 @@ BOOL LockFileEx (
 
 \paragraph{Returned value}
 \begin{itemize}
-\item \texttt{TRUE} if it succeeds;
-\item \texttt{FALSE} if it fails.
+\item \texttt{TRUE} on success;
+\item \texttt{FALSE} on failure.
 \end{itemize}
 
 \paragraph{Parameters}
@@ -390,16 +390,16 @@ The unlock must use exactly the same range as a preceding lock. Returned value a
 A new lock is issued when a previous lock is present.
 \begin{center}
 \begin{tabular}{|l|c|c|}
-\hline 
+\hline
 \multirow{2}{*}{Existing lock} &  \multicolumn{2}{c|}{Requested lock type} \\\cline{2-3}
  & Shared lock & Exclusive lock \\
-\hline 
-None & Granted & Granted \\ 
-\hline 
-Shared lock & Granted & Refused \\ 
-\hline 
-Exclusive lock & Refused & Refused \\ 
-\hline 
+\hline
+None & Granted & Granted \\
+\hline
+Shared lock & Granted & Refused \\
+\hline
+Exclusive lock & Refused & Refused \\
+\hline
 \end{tabular}
 \end{center}
 
@@ -407,16 +407,16 @@ Exclusive lock & Refused & Refused \\
 A thread/process issues a R/W operation on a region where there is a lock, or more than one.
 \begin{center}
 \begin{tabularx}{\textwidth}{|l|X|X|}
-\hline 
+\hline
 \multirow{2}{*}{Existing lock} &  \multicolumn{2}{c|}{Requested I/O operation} \\\cline{2-3}
  & \multicolumn{1}{c|}{Read} & \multicolumn{1}{c|}{Write} \\
-\hline 
-None & Succeeds & Succeeds \\ 
-\hline 
-Shared lock & Succeeds & Succeeds for the lock owner. Refused otherwise \\ 
-\hline 
-Exclusive lock & Succeeds for the lock owner. Refused otherwise & Succeeds for the lock owner. Refused otherwise \\ 
-\hline 
+\hline
+None & Succeeds & Succeeds \\
+\hline
+Shared lock & Succeeds & Succeeds for the lock owner. Refused otherwise \\
+\hline
+Exclusive lock & Succeeds for the lock owner. Refused otherwise & Succeeds for the lock owner. Refused otherwise \\
+\hline
 \end{tabularx}
 \end{center}
 
