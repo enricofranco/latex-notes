@@ -1,5 +1,5 @@
 \chapter{Processes and concurrency}
-A \emph{process} is a sequence of operations performed by a program in execution on a given set of input data. A process is a dynamic entity. It is characterized by a \textbf{Process Control Block}.
+A \emph{process} is a sequence of operations performed by a program in execution on a given set of input data. A process is a dynamic entity and it is characterized by a \emph{Process Control Block}.
 
 \begin{figure}[hbtp]
 \centering
@@ -13,9 +13,9 @@ A \emph{process} is a sequence of operations performed by a program in execution
 \item [Stack] contains local variables and return addresses of functions. The \emph{Stack Pointer} points to the top of the stack. It grows ``downward'', i.e.,\@ in the opposite direction to the Heap.
 \end{description}
 
-It is possible to conceptually imagine the \textbf{trace} of a process as a table containing values of variables and registers (stack pointer and program counter, too) at any time, that is knowing the state of the process after any instruction. In this way it is possible to perform \textbf{context switching}, the operation performed by the kernel which moves the attention of the CPU from a process to a different one, restoring its state as if it was never interrupted.
+It is possible to conceptually imagine the \textbf{trace} of a process as a table containing values of variables and registers (stack pointer and program counter, too) at any time, that is knowing the state of the process after any instruction. In this way it is possible to perform \emph{context switching}, the operation performed by the kernel which moves the attention of the CPU from a process to a different one, restoring its state as if it was never interrupted.
 
-Every process has a unique identifier which is called \textbf{PID}, a unique non negative integer. Although a PID is unique, UNIX reuses the numbers of terminated processes.
+Every process has a unique identifier called \emph{PID}, a unique non negative integer. Although a PID is unique, UNIX reuses the numbers of terminated processes.
 
 Library \texttt{unistd.h} contains system calls to retrieve PID:
 \begin{verbatim}
@@ -25,19 +25,19 @@ uid_t getuid();    // Get the real user ID
 gid_t geteuid();   // Get the effective ID
 \end{verbatim}
 \section{Concurrency}
-Sequential processes are deterministic. \textit{Cooperating processes} have precedence constraints in order to guarantee a specific order in the process execution. Therefore, processes are not more independent and some typical issues arise, e.g.,\@ deadlock and synchronization.
+Sequential processes are deterministic. \textit{Cooperating processes} have precedence constraints in order to guarantee a specific order in the execution. Therefore, processes are not more independent and some typical issues arise, e.g.,\@ deadlock and synchronization.
 
 \subsection{Process creation}
-System call \texttt{fork} creates a new \textbf{child} process which is a perfect clone of the parent process. These processes have the same initial value of variables, share code and file pointers of open files (pointers to the kernel memory). Instead, they do have different stacks, heaps and data sections.
+System call \texttt{fork} creates a new \emph{child process} which is a perfect clone of the parent process. These processes have the same initial value of variables, they share code and file pointers of open files (pointers to the kernel memory). Instead, they do have different stacks, heaps and data sections.
 
-\texttt{fork()} returns two different values:
+\texttt{fork} returns two different values:
 \begin{itemize}
 \item The parent process receives the child PID: in this way it can recognize every single child;
 \item The child process receives the value 0: it does not have to receive the parent PID because it can obtain it through the system call \texttt{getppid};
 \item -1 in case of error.
 \end{itemize}
 
-Library \texttt{unistd.h} contains \texttt{fork()} system call:
+Library \texttt{unistd.h} contains \texttt{fork} system call:
 \begin{verbatim}
 pid_t fork(void);
 \end{verbatim}
@@ -45,12 +45,7 @@ pid_t fork(void);
 \subsection{Process termination}
 When a process terminates, the kernel sends a \texttt{SIGCHLD} to its parent. Receiving a signal is an asynchronous event and the parent process may
 \begin{itemize}
-\item Manage the child termination:
-\begin{itemize}
-\item System call \texttt{wait};
-\item System call \texttt{waitpid};
-\item Using a signal handler for signal \texttt{SIGCHLD}.
-\end{itemize}
+\item Manage the child termination: system call \texttt{wait} and \texttt{waitpid}, or using a signal handler for signal \texttt{SIGCHLD}.
 \item Ignore the event (default behavior).
 \end{itemize}
 
@@ -97,7 +92,7 @@ int execve(char *path, char *argv[], char *envp[]);
 \paragraph{Arguments}
 \begin{itemize}
 \item Pathname of the executable file: in the `p' versions the complete path is not necessary. The file must be in one of the directories listed in the environment variable \texttt{PATH}. Remember that, for security reasons, current directory is not in \texttt{PATH};
-\item Its argument list: the first argument is the \textit{name} (alias) of the process (its \texttt{argv[0]}). The other arguments of the list are argument for the executable;
+\item Its argument list: the first argument is the \textit{name} (alias) of the process (its \texttt{argv[0]}). The other arguments of the list are arguments for the executable;
 \item Possibly the environment vector.
 \end{itemize}
 
@@ -131,7 +126,7 @@ It returns:
 \end{itemize}
 
 \section{Signals}
-A \emph{signal} is a \textbf{software interrupt}\footnote{Asynchronous event which may occur at any time} sent to a process to notify it of an event that occurred. A signal can be used as a limited form of inter-process communication or for synchronization. The use of signals is prone to race conditions and they are difficult to manage.
+A \emph{signal} is a software interrupt\footnote{Asynchronous event which may occur at any time} sent to a process to notify it of an event that occurred. A signal can be used as a limited form of inter-process communication or for synchronization. The use of signals is prone to race conditions and they are difficult to manage.
 
 \subsection{Generating a signal}
 The UNIX command \texttt{KILL -SIGUSR1 4481} is used to send the \texttt{SIGUSR1} signal to process with PID 4481. Possible signals are \texttt{SIGUSR1}, \texttt{SIGUSR2}, \texttt{SIGALRM}, \texttt{SIGCHLD} (sent from a child process to its parent when it terminates) and \texttt{SIG\_IGN} (used to ignore a specific signal).
@@ -155,7 +150,7 @@ System call \texttt{signal} is used to inform the kernel about the reaction, spe
 
 Library \texttt{signal.h} contains \texttt{signal} system call:
 \begin{verbatim}
-void(*signal (int sig, void (*func)(int)))(int);
+void(*signal(int sig, void (*func)(int)))(int);
 \end{verbatim}
 
 The function \texttt{func} has this prototype: \texttt{void func(int signo)}. In this way, the same function can be used to manage different signals which can be recognized inside the signal handler.
@@ -172,18 +167,16 @@ while(TRUE) {
     /* Parent: Continue the execution */
 }
 \end{verbatim}
-Actually, this naive solution does not work because every child process becomes a zombie, given that there is no process waiting for it.
-
-Therefore, it is needed to allocate a signal handler which ignores the \texttt{SIGCHLD} generated on child termination: \texttt{signal(SIGCHLD, SIG\_IGN);}
+Actually, this naive solution does not work because every child process becomes a zombie, given that there is no process waiting for it. Therefore, it is needed to allocate a signal handler which ignores the \texttt{SIGCHLD} generated on child termination: \texttt{signal(SIGCHLD, SIG\_IGN);}
 
 \subsection{Issues}
 If many signals of the \emph{same} type are waiting to be handled, then most UNIXs will only deliver one of them. So multiple signals are lost.
 
 If many signals of \emph{different} types are waiting to be handled, they are not delivered in any fixed order.
 
-It is good practice to re-allocate the handler at the end of the handler function. In fact, in some UNIX systems, the signal reaction is reset to its default action immediately after the signal has been sent.
+It is good practice to re-allocate the handler at the end of the handler function. In fact, in some UNIX systems, the signal reaction is resetting to its default action immediately after the signal has been sent.
 
-If a signal is sent during the execution of a signal handler, the signal is lost. So, the signal handler must be short, in order to receive
+If a signal is sent during the execution of a signal handler, the signal is lost. Hence, the signal handler must be short, in order to receive
 ``all'' signals.
 
 \subsection{Synchronization}

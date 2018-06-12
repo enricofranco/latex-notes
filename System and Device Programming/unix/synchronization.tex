@@ -10,7 +10,7 @@ A \emph{Critical Section} or \emph{Critical Region} is a section of code, common
 \item The release possibly unlocks another thread which was waiting in the ``reservation'' code of its CS.
 \end{itemize}
 
-In general, \textbf{software solutions} to the problem of CS are complex and inefficient. In fact, test and set operations are ``invisible'' to other threads and they are not atomic, thus a thread can react to the presumed value of a variable rather than to its current value. Furthermore, the solutions is not easily extensible to an arbitrary number of threads.
+In general, \textbf{software solutions} to the problem of critical section are complex and inefficient. In fact, test and set operations are ``invisible'' to other threads and they are not atomic, thus a thread can react to the presumed value of a variable rather than to its current value. Furthermore, the solutions is not easily extensible to an arbitrary number of threads.
 
 Instead, \textbf{hardware solutions} can be easily extensible to a larger number of threads but they introduce busy form of waiting with spin lock, leading to possible starvation.
 
@@ -175,22 +175,23 @@ Consumer() {
 \emph{Readers \& Writers} represents the typical problem of sharing a database between two sets of concurrent threads:
 \begin{itemize}
 \item Readers are allowed to access the database in concurrency;
-\item Writers must access the database in Mutual Exclusion with other Writers and Readers.
+\item Writers must access the database in mutual exclusion with other Writers and Readers.
 \end{itemize}
 When a writer is writing in the database, several Readers and Writers processes can be blocked waiting the end of the write operation.
 
-\textbf{Readers precedence}: at the end of a writing operation, favour the access of the waiting Readers rather than of the waiting Writers.
-
-\textbf{Writers precedence}: at the end of a writing operation, favour the access of the waiting Writers rather than of the waiting Readers.
+\begin{itemize}
+\item \textbf{Readers precedence}: at the end of a writing operation, favour the access of the waiting Readers rather than of the waiting Writers.
+\item \textbf{Writers precedence}: at the end of a writing operation, favour the access of the waiting Writers rather than of the waiting Readers.
+\end{itemize}
 
 \paragraph{Readers priority}
 Giving priority to the Readers means that a Reader does not wait unless a Writer is writing. While Readers are reading, new Readers are allowed to read and Writers are blocked. The first Reader blocks any Writer and, dually, when the last Reader terminates, a waiting Writer can access the database. The solution uses:
 
 \begin{itemize}
 \item A shared variable \texttt{nR} that counts the number of Readers inside the critical section;
-\item A Mutual Exclusion semaphore \texttt{meR} to protect variable \texttt{nR};
-\item A Mutual Exclusion semaphore \texttt{w} among Writers or among Readers and Writers;
-\item A Mutual Exclusion semaphore \texttt{meW} among Writers.
+\item A mutual exclusion semaphore \texttt{meR} to protect variable \texttt{nR};
+\item A mutual exclusion semaphore \texttt{w} among Writers or among Readers and Writers;
+\item A mutual exclusion semaphore \texttt{meW} among Writers.
 \end{itemize}
 
 \begin{verbatim}
@@ -234,8 +235,8 @@ Giving priority to the Writers means that a Writer has priority over all Readers
 
 \begin{itemize}
 \item Two shared variables \texttt{nR} and \texttt{nW} to count the Readers inside the critical section and the Writers that need to write (one of them possibly writing);
-\item Two Mutual Exclusion semaphores \texttt{meR} and \texttt{meW} to protect the variables \texttt{nR} and \texttt{nW};
-\item Two Mutual Exclusion semaphores \texttt{r} and \texttt{w} to enforce Readers and Writers to wait on different queues.
+\item Two mutual exclusion semaphores \texttt{meR} and \texttt{meW} to protect the variables \texttt{nR} and \texttt{nW};
+\item Two mutual exclusion semaphores \texttt{r} and \texttt{w} to enforce Readers and Writers to wait on different queues.
 \end{itemize}
 
 \begin{verbatim}
@@ -370,7 +371,7 @@ The main thread has to define such a structure, allocate a global structure of t
 \begin{description}
 \item \texttt{int pthread\_cond\_wait(pthread\_cond\_t *cond, \newline pthread\_mutex\_t *mutex)} blocks the calling thread until the specified condition is signaled. This system call should be called while \texttt{mutex} is locked, and it will automatically release the \texttt{mutex} while it waits.
 
-After signal is received and thread is awakened, \texttt{mutex} will be automatically locked for use by the thread.
+Once signal is received and thread is awakened, \texttt{mutex} will be automatically locked for use by the thread.
 
 The programmer is then responsible for unlocking \texttt{mutex} when the thread does not more need it.
 \end{description}
@@ -381,7 +382,7 @@ The programmer is then responsible for unlocking \texttt{mutex} when the thread 
 
 It should be called with the \texttt{mutex} locked, and must unlock it to allow \texttt{pthread\_cond\_wait} to complete.
 
-\item \texttt{int pthread\_cond\_broadcast(pthread\_cond\_t *cond)} should be used insted of \texttt{pthread\_cond\_signal} if more than one thread is blocked on the same condition variable.
+\item \texttt{int pthread\_cond\_broadcast(pthread\_cond\_t *cond)} should be used instead of \texttt{pthread\_cond\_signal} if more than one thread is blocked on the same condition variable.
 \end{description}
 Calling \texttt{pthread\_cond\_signal} before \texttt{pthread\_cond\_wait} is a logical error.
 
@@ -393,3 +394,99 @@ The first thing to do is to delete arcs which are not necessary and can, therefo
 \textbf{Acyclic threads}: outgoing arcs require a single semaphore and incoming arcs require a single semaphore.
 
 \textbf{Cyclic threads}: outgoing arcs require different semaphores, while incoming arcs use a single  semaphore. In fact, using the same semaphore, because of the loop statement, a single process can get two signals if it is very fast.
+
+\subsection{Path expressions}
+\paragraph{Pure synchronization}
+Pure synchronization is showm on figure~\ref{img:puresync}.
+
+\underline{path} a ; b \underline{end}
+\begin{verbatim}
+init(s0) = 1, init(s1) = 0
+wait(s0) a; b signal (s0)
+A: wait(s0) a signal(s1)
+B: wait(s1) b signal(s0)
+\end{verbatim}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.6]{images/synchronization/pathexp_puresynchronization.png}
+\caption{Pure synchronization}
+\label{img:puresync}
+\end{figure}
+
+\paragraph{Mutual exclusion}
+Mutual exclusion is shows on figure~\ref{img:mutex}.
+
+\underline{path} a + b \underline{end}
+\begin{verbatim}
+init(s0) = 1
+A: wait(s0) a signal(s0)
+B: wait(s0) b signal(s0)
+\end{verbatim}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.6]{images/synchronization/pathexp_mutex.png}
+\caption{Mutual exclusion}
+\label{img:mutex}
+\end{figure}
+
+\paragraph{Readers and writers}
+Readers and writers, without any precedence, is show on figure~\ref{img:rw}. \emph{Double arrow} on\texttt{a} indicates that it can be run in parallel.
+
+\underline{path} \{a\} + b \underline{end}
+
+\begin{verbatim}
+init(m) = 1, init(s) = 1
+\end{verbatim}
+
+\begin{Parallel}{}{}
+\ParallelLText{
+\begin{verbatim}
+WW(s, c, m) {
+  wait(m)
+  c++
+  if(c == 1)
+    wait(s)
+  signal(m)
+}
+\end{verbatim}}
+\ParallelRText{
+\begin{verbatim}
+SS(s, c, m) {
+  wait(m)
+  c--
+  if(c == 0)
+    signal(s)
+  signal(m)
+}
+\end{verbatim}}
+\end{Parallel}
+
+\begin{verbatim}
+A: WW(s0, c, m) a SS(s1, c, m)
+B: wait(s1) b signal(s0)
+\end{verbatim}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.6]{images/synchronization/pathexp_rw.png}
+\caption{Readers and writers}
+\label{img:rw}
+\end{figure}
+
+\paragraph{Example}
+\underline{path} (a + b); (c + \{d\}); e \underline{end}
+
+{\small
+\begin{verbatim}
+wait(s0) (a + b); (c + {d}); e signal(s0)
+wait(s0) (a + b) signal(s1); wait(s1) (c + {d}); wait(s2) e signal(s0)
+
+A: wait(s0) a signal(s1);
+B: wait(s0) b signal(s1);
+C: wait(s1) c signal(s2);
+D: WW(s1, c, m) d SS(s2, c, m);
+E: wait(s2) e signal(s0);
+\end{verbatim}
+\small}

@@ -61,7 +61,7 @@ The \textbf{File Allocation Table (FAT)}, adopted by \emph{DOS filesystem}, is a
 \subsubsection{Indexed allocation}
 \emph{Indexed allocation} keeps all the indexes into a single block (i.e.,\@ block of indexes) for each file instead of spreading them all over the filesystem or storing them in a FAT. When a file is opened, its index block is opened too and it is possible to access its blocks wherever they are. Some disk space is wasted because an entire index block must be allocated for each files. There are several approaches to implement the index block:
 \begin{itemize}
-\item \textbf{Linked Scheme}: An index block is one disk block, which can be read and written in a single disk operation. The first index block contains some header information, the first N block addresses, and if necessary a pointer to additional linked index blocks;
+\item \textbf{Linked Scheme}: An index block is a disk block, which can be read and written in a single disk operation. The first index block contains some header information, the first N block addresses, and if necessary a pointer to additional linked index blocks;
 \item \textbf{Multi-Level Index}: The first index block contains a set of pointers to secondary index blocks, which in turn contain pointers to the actual data blocks.
 \end{itemize}
 
@@ -72,7 +72,7 @@ The \textbf{File Allocation Table (FAT)}, adopted by \emph{DOS filesystem}, is a
 \end{figure}
 
 \subsection{Virtual File System}
-\emph{Virtual File Systems} (VFS) provide a common interface to multiple different file system types. In addition, it provides a unique identifier (\textbf{vnode}) for files across the entire space, including across all file systems of different types. (UNIX inodes are unique only across a single file system, and certainly do not carry across networked file systems). The VFS in Unix is based upon four key object types:
+\emph{Virtual File Systems} (VFS) provide a common interface to multiple different file system types. In addition, it provides a unique identifier (\textbf{vnode}) for files across the entire space, including across all file systems of different types. (UNIX inodes are unique only across a single file system, and certainly do not workf across networked file systems). The VFS in Unix is based upon four key object types:
 \begin{itemize}
 \item \textbf{The inode object}, representing an individual file;
 \item \textbf{The file object}, representing an opened file;
@@ -103,7 +103,7 @@ Boot block & Superblock & Inode list & Data blocks \\
 
 \begin{itemize}
 \item The first block is the \emph{boot block} containing the bootstrap code loaded and executed at system power on.
-\item The \emph{superblock} describes the filesystem state, i.e.,\@ size, number of files included, free list of inodes and data blocks, etc.
+\item The \emph{superblock} describes the filesystem state, i.e.,\@ size, number of files included, list of free inodes and data blocks, etc.
 \end{itemize}
 
 \paragraph{Inode} The \emph{inode} contains information about the owner, file type (regular, directory, special, \dots), access rights, access times, link number, file size and table of the data block addresses on disk. Those information can be retrieved exploiting command \texttt{ls -l}.
@@ -127,10 +127,7 @@ Table~\ref{system_mgmt_upper_layers} includes functions directly used by system 
 \end{tabular}
 \caption{Upper layers}
 \label{system_mgmt_upper_layers}
-\end{table} 
 
-\begin{table}
-\centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline 
 \multicolumn{5}{|c|}{buffer allocation algorithm} \\ 
@@ -142,15 +139,21 @@ Table~\ref{system_mgmt_upper_layers} includes functions directly used by system 
 \label{system_mgmt_lower_layers}
 \end{table}
 
-\paragraph{\texttt{iget}} It is called by system call \texttt{open}. It locks the inode, allocates in memory a copy of the inode describing a file and returns an unlocked inode with reference count incremented by one. If the inode free list is empty, the kernel returns an error.
+\paragraph{\texttt{iget}} It is called by system call \texttt{open}. It locks the inode, allocates in memory a copy of the inode describing a file and returns an unlocked inode with reference count incremented by one. If the list of free inodes is empty, the kernel returns an error.
 
 \paragraph{\texttt{iput}} It is called by system call \texttt{close}. It locks the inode and decrements the reference count by one. If the reference count is 0, the inode is written on disk if modified and its copy is released from the inode free list. If the link count\footnote{Number of names referring to that object.} is 0, the kernel releases all the data blocks of the file and its disk inode.
 
-Reference counter and link counter may differ, for example, if a file is created (system call \texttt{creat}) and immediately unlinked the reference counter is one while the link counter is zero. In this case, only the process creating the file has the possibility to access the file because it knows its file descriptor, thus it may use the file as a temporary file. When the process closes (system call \texttt{close}) the file, both reference and link counters are zero and, therefore, the kernel can remove the file.
+Reference counter and link counter may differ, for example, if a file is created (system call \texttt{creat}) and immediately unlinked the reference counter is one, while the link counter is zero. In this case, only the process creating the file has the possibility to access the file because it knows its file descriptor, thus it may use the file as a temporary file. When the process closes (system call \texttt{close}) the file, both reference and link counters are zero and, therefore, the kernel can remove the file.
 
-\paragraph{\texttt{bmap}} It converts the file offset in the corresponding physical block on disk. Given the offset, it uses the inode pointer to identify disk block where the information is stored and returns a pointer to the disk block.
+\paragraph{\texttt{bmap}} It converts the file offset in the corresponding physical block on disk. Given the offset, it uses the inode pointer to identify the disk block where the information is stored and returns a pointer to the disk block.
 
-\paragraph{\texttt{namei}} It returns the inode of a file, given its pathname. It analyzes a pathname component at a time and finds the corresponding inode. The pointer to the inode of the process working directory is stored in the user area\footnote{Common kernel memory area to all process. Kernel uses this are to store the parameters of the currently running process.}. It implements a non trivial and expensive operation. In fact it is used only once when a file is opened, then the file descriptor is used to reach the file.
+\paragraph{\texttt{namei}} It returns the inode of a file, given its pathname. It analyzes a pathname component at a time and finds the corresponding inode. The pointer to the inode of the process working directory is stored in the user area\footnote{Common kernel memory area to all process. Kernel uses this area to store the parameters of the currently running process.}. It implements a non trivial and expensive operation. In fact it is used only once when a file is opened, then the file descriptor is used to reach the file.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.35]{images/file_system/namei.png}
+\caption{\texttt{namei} - Resolving pathname \texttt{../a/b}}
+\end{figure}
 
 \paragraph{\texttt{ialloc}} It is called by system call \texttt{open} with \texttt{O\_CREAT} flag. It assigns a disk inode to a file that has to be created.
 
@@ -167,13 +170,13 @@ Reference counter and link counter may differ, for example, if a file is created
 \item Allocate inode: \texttt{creat}, \texttt{mknod}, \texttt{unlink};
 \item Attributes: \texttt{chown}, \texttt{chmod}, \texttt{stat};
 \item I/O: \texttt{read}, \texttt{write}, \texttt{seek};
-\item filesystem structure management: \texttt{mount}, \texttt{umount}, \texttt{chdir}, \texttt{chroot}.
+\item Filesystem structure management: \texttt{mount}, \texttt{umount}, \texttt{chdir}, \texttt{chroot}.
 \end{itemize}
 
 \paragraph{open}
 \texttt{int open(char* pathname, int flags, mode\_t mode);}
 
-It returns a \emph{file descriptor} associated to \texttt{pathname}. The parameter \texttt{flags} must include one of the access modes: \texttt{O\_RDONLY}, \texttt{O\_WRONLY} or \texttt{O\_RDWR} standing for read-only, write-only or read write, respectively. In addition, zero or more file creation flags and file status flags can be bitwise-or'd in \texttt{flags}, e.g.,\@ create file if not existing, truncate it, append the content, no writing delay, exclusive access.
+It returns a \emph{file descriptor} associated to \texttt{pathname}. The parameter \texttt{flags} must include one of the access modes: \texttt{O\_RDONLY}, \texttt{O\_WRONLY} or \texttt{O\_RDWR}, standing for read-only, write-only or read write, respectively. In addition, zero or more file creation flags and file status flags can be bitwise-or'd in \texttt{flags}, e.g.,\@ create file if not existing, truncate it, append the content, no writing delay, exclusive access.
 
 \begin{figure}[hbtp]
 \centering
@@ -222,21 +225,21 @@ It repositions the file offset of the open file associated with the file descrip
 \item \texttt{SEEK\_CUR}: The file offset is set to its current location plus \texttt{offset} bytes.
 \item \texttt{SEEK\_END}: The file offset is set to the size of the file plus \texttt{offset} bytes.
 \end{itemize}
-It allows the file offset to be set beyond the end of the file,but this does not change the size of the file. If data is later written at this point, subsequent reads of the data in the gap (a \emph{hole}) return null bytes until data is actually written into the gap. Upon successful completion, it returns the resulting offset location as measured in bytes from the beginning of the file.  On error, the value -1 is returned.
+It allows the file offset to be set beyond the end of the file, but this does not change the size of the file. If data is later written at this point, subsequent readings of the data in the gap (a \emph{hole}) return null bytes until data is actually written into the gap. Upon successful completion, it returns the resulting offset location measured in bytes from the beginning of the file.  On error, -1 is returned.
 
 \paragraph{close}
 \texttt{int close(int fd);}
 
-It closes a file descriptor, so that it no longer refers to any file and may be reused. Any record lock held on the file it was associated with, and owned by the process, are removed (regardless of the file descriptor that was used to obtain the lock). If \texttt{fd} is the last file descriptor referring to the underlying open file descriptor, the resources associated with the open file descriptor are freed; if the file descriptor was the last reference to a file which has been removed using \texttt{unlink}, the file is deleted. It returns zero on success. On error, -1 is returned.
+It closes a file descriptor, so that it no longer refers to any file and may be reused. Any record lock held on the file it was associated with, and owned by the process, are removed (regardless of the file descriptor that was used to obtain the lock). If \texttt{fd} is the last file descriptor referring to the underlying open file descriptor, the resources associated with the open file descriptor are freed; if the file descriptor was the last reference to a file which has been removed using \texttt{unlink}, the file is deleted. It returns zero on success and -1 on error.
 
-If the inode reference count is greater than one, it decrements the counter and return. If the inode reference count is one, the kernel releases, by means of \texttt{iput}, the inode allocated in memory by the \texttt{open} system call, the corresponding entry in the inode table and the entry in the user file description tables. When a process exits, the kernel closes all its file descriptor still open. 
+If the inode reference count is greater than one, it decrements the counter and returns. If the inode reference count is one, the kernel releases, by means of \texttt{iput}, the inode allocated in memory by the \texttt{open} system call, the corresponding entry in the inode table and the entry in the user file description tables. When a process exits, the kernel closes all its file descriptors still open. 
 
 \paragraph{creat}
 \texttt{int creat(const char *pathname, mode\_t mode);}
 
 It is equivalent to calling \texttt{open} with flags equal to \texttt{O\_CREAT | O\_WRONLY | O\_TRUNC}. If the file does not exist, it is created with the specified name and mode. The kernel analyzes the pathname by means of \texttt{namei} and when the last component is parsed, it allocates a free inode, it stores the name in the first free entry of the last parsed directory name and opens the file. If the file exists, parsing its pathname, the kernel finds its inode, it initializes the file dimension to 0 and releases all its data blocks.
 
-If the process calling \texttt{creat} has the write permission, and the file exists, the file owner and the access permission do not change. The kernel does not verify that the parent directory of existing file has the write permission because the directory content does not change.
+If the process calling \texttt{creat} has the write permission, and the file exists, the file owner and the access permissions do not change. The kernel does not verify that the parent directory of existing file has the write permission because the directory content does not change.
 
 \paragraph{mknod}
 \texttt{int mknod(const char *pathname, mode\_t mode, dev\_t dev);}
@@ -255,7 +258,7 @@ The kernel decrements the reference count, releases the old directory inode and 
 \paragraph{chroot}
 \texttt{int chroot(const char *pathname);}
 
-It changes the root directory of the calling process to that specified in \texttt{path}. This directory will be used for pathnames beginning with /. The root directory is inherited by all children of the calling process. On success, zero is returned. On error, -1 is returned and \texttt{errno} is set appropriately. Only privileged process can call \texttt{chroot}.
+It changes the root directory of the calling process to that one specified in \texttt{path}. This directory will be used for pathnames beginning with /. The root directory is inherited by all children of the calling process. On success, zero is returned. On error, -1 is returned and \texttt{errno} is set appropriately. Only privileged process can call \texttt{chroot}.
 
 The kernel keeps a global variable pointer to the root inode. This call does not change the current working directory and does not close open file descriptors.
 
@@ -301,7 +304,7 @@ struct stat {
 \end{verbatim}
 
 \paragraph{pipe}
-Pipes and FIFOs (also known as named pipes) provide a unidirectional interprocess communication channel. The difference between them is the manner in which they are created and opened. I/O on pipes and FIFOs has exactly the same well knows bounded buffer producer-consumer semantics. Pipes, essentially, are two file descriptors referencing the same, one for reading and one for writing.
+Pipes and FIFOs (also known as named pipes) provide a unidirectional interprocess communication channel. The difference between them is the manner in which they are created and opened. I/O on pipes and FIFOs has exactly the same well known bounded buffer producer-consumer semantics. Pipes, essentially, are two file descriptors referencing the same, one for reading and one for writing.
 \\
 \texttt{int pipe(int pipefd[2]);}
 
@@ -311,7 +314,7 @@ An inode is assigned to a new pipe and two entries in the user file descriptor t
 \\
 \texttt{FILE *pipe fp = popen(char *command, char *type);}
 
-Since the most common way to use a pipe is an interprocess communication, the POSIX.2 standard introduced two system calls which synthesize these operations. The first function is \texttt{popen} which create a pipe, calls the \texttt{fork} system call and executes the command program using the shell. The argument \texttt{type} must be one of the two mode \texttt{w} or \texttt{r} in order to connect the pipe to the standard input or to the standard output of the specified \texttt{command}, respectively. The system call returns the pointer to the stream associated to the pipe. This stream must be closed by the second function related to the pipe \texttt{pclose}.
+Since the most common way to use a pipe is an interprocess communication, the POSIX.2 standard introduced two system calls which synthesize these operations. The first function is \texttt{popen} which creates a pipe, calls the \texttt{fork} system call and executes the command program using the shell. The argument \texttt{type} must be one of the two mode \texttt{w} or \texttt{r} in order to connect the pipe to the standard input or to the standard output of the specified \texttt{command}, respectively. The system call returns the pointer to the stream associated to the pipe. This stream must be closed by the second function related to the pipe \texttt{pclose}.
 \\
 \texttt{int pclose(FILE *stream);}
 
@@ -320,11 +323,11 @@ It closes the stream and waits for the termination of the program specified by \
 \medskip
 In UNIX operating systems, it is possible to create a named pipe by means of the \texttt{mknod} system call and the processes which are going to use the pipe must be on the same host. Other useful functions related to the management of pipes, both named and unnamed, are listed below. These system calls are exactly the same used in file management. In fact, a pipe can be considered as a special file using its pipe’s file descriptors.
 \begin{itemize}
-\item \texttt{open}: a process opening a pipe for reading will be suspended until another process open the pipe for writing and viceversa. It is possible to open a FIFO using flags \texttt{O\_NONBLOCK}, \texttt{O\_NDELAY} or \texttt{O\_ASYNC}. Setting the \texttt{O\_ASYNC} flag for the read end of a pipe causes a \texttt{SIGIO} signal to be generated when new input becomes available on the pipe. Non-blocking I/O is also possible by using the \texttt{fcnt F\_SETFL} operation to enable the \texttt{O\_NONBLOCK} open file status flag.
-\item \texttt{write}: writes of less than \texttt{PIPE\_BUF} (4~KB on Linux) are atomic. If \texttt{O\_NONBLOCK} is disabled, all bytes are written atomically and \texttt{write} may block if there is not room for all bytes to be written immediately. If \texttt{O\_NONBLOCK} is enabled, \texttt{write} succeeds immediately if there is room to write all the bytes to the pipe, otherwise it fails with \texttt{errno} set to \texttt{EAGAIN}.
+\item \texttt{open}: a process opening a pipe for reading will be suspended until another process opens the pipe for writing and viceversa. It is possible to open a FIFO using flags \texttt{O\_NONBLOCK}, \texttt{O\_NDELAY} or \texttt{O\_ASYNC}. Setting the \texttt{O\_ASYNC} flag for the read end of a pipe causes a \texttt{SIGIO} signal to be generated when new input becomes available on the pipe. Non-blocking I/O is also possible by using the \texttt{fcnt F\_SETFL} operation to enable the \texttt{O\_NONBLOCK} open file status flag.
+\item \texttt{write}: writes of less than \texttt{PIPE\_BUF} (4KB on Linux) are atomic. If \texttt{O\_NONBLOCK} is disabled, all bytes are written atomically and \texttt{write} may block if there is not room for all bytes to be written immediately. If \texttt{O\_NONBLOCK} is enabled, \texttt{write} succeeds immediately if there is room to write all the bytes to the pipe, otherwise it fails with \texttt{errno} set to \texttt{EAGAIN}.
 
 Writes of more than \texttt{PIPE\_BUF} are not atomic. If \texttt{O\_NONBLOCK} is disabled, \texttt{write} is non-atomic. Data given to \texttt{write} may be interleaved with writes by other processes and it blocks until all bytes have been written. If \texttt{O\_NONBLOCK} is enabled and the pipe is full, \texttt{write} fails with \texttt{errno} set to \texttt{EAGAIN}. Otherwise, a ``partial write'' of some bytes may occur and these bytes may be interleaved with writes by other processes.
-\item \texttt{close}: If all file descriptors referring to the \emph{write end} of a pipe have been closed, then an attempt to \texttt{read} from the pipe returns 0. If all file descriptors referring to \emph{read end} of a pipe have been closed, then a \texttt{write} will cause a \texttt{SIGPIPE} signal to be generated for the calling process. If the calling process is ignoring this signal, then \texttt{write} fails with error \texttt{EPIPE}.
+\item \texttt{close}: If all file descriptors referring to the \emph{write end} of a pipe have been closed, then an attempt to \texttt{read} from the pipe returns 0. If all file descriptors referring to the \emph{read end} of a pipe have been closed, then a \texttt{write} will cause a \texttt{SIGPIPE} signal to be generated for the calling process. If the calling process is ignoring this signal, then \texttt{write} fails with error \texttt{EPIPE}.
 
 An application that uses pipe and fork should close unnecessary file descriptors to ensures that end-of-file and \texttt{SIGPIPE}/\texttt{EPIPE} are delivered when appropriate.
 \end{itemize}
@@ -334,8 +337,8 @@ These system calls duplicate file descriptor in the user file description table.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.35]{images/file_system/dup.png}
-\caption{UNIX dup and dup2 system calls}
+\includegraphics[scale=0.4]{images/file_system/dup.png}
+\caption{UNIX \texttt{dup} and \texttt{dup2} system calls}
 \end{figure}
 
 \texttt{int dup(int oldfd);} It creates a copy of the file descriptor \texttt{oldfd}, in the first free entry of the user file description table, hence using the lowest-numbered unused file descriptor.
@@ -345,7 +348,7 @@ These system calls duplicate file descriptor in the user file description table.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.35]{images/file_system/dup_file_redirection.png}
+\includegraphics[scale=0.4]{images/file_system/dup_file_redirection.png}
 \caption{Output file redirection}
 \label{dup_file_redirection}
 \end{figure}
@@ -353,7 +356,7 @@ These system calls duplicate file descriptor in the user file description table.
 It is possible to use \texttt{dup} to perform file redirection by opening the file and closing \texttt{stdout}, which will be the first free entry, and duplicating the file descriptor of the open file which will be duplicated on the first free entry, as shown in figure~\ref{dup_file_redirection}. Without system call \texttt{dup}, in order to perform file redirection, it is needed to first close \texttt{stdout} and then open a file which will be associated to file descriptor 1, i.e.,\@ the one associated to \texttt{stdout}.
 
 \paragraph{mount}
-\texttt{int mount(int mount(const char *dev\_pathname, \\ const char *dir\_pathname, mode t options);}
+\texttt{int mount(const char *dev\_pathname, \\ const char *dir\_pathname, mode t options);}
 
 It attaches the filesystem specified by \texttt{dev\_pathname}, which is often a pathname referring to a device, possibly created with \texttt{mknod} system call or \texttt{mkfs} command, but can also be a directory name or a dummy string, to the location specified by the pathname in \texttt{dir\_pathname} belonging to the current directory tree. The \texttt{options} parameter indicates the mode of mounting. On success, zero is
 returned. On error, -1 is returned and
@@ -451,8 +454,8 @@ Bytes past the end of the file may be locked, but not bytes before the start of 
 
 \begin{itemize}
 \item \texttt{F\_SETLK}: acquire a lock, when \texttt{l\_type} is \texttt{F\_RDLCK} or \texttt{F\_WRLCK}, or release a lock, when \texttt{l\_type} is \texttt{F\_UNLCK}. If a conflicting lock is held by another process, this call returns -1 and \texttt{errno} is set to \texttt{EACCES} or \texttt{EAGAIN}.
-\item \texttt{F\_SETLKW}: waits if a conflicting lock is held by another process;
+\item \texttt{F\_SETLKW}: wait if a conflicting lock is held by another process;
 \item \texttt{F\_GETLK}: on input to this call, \texttt{lock} describes a lock we would like to place on the file. If the lock could be placed, \texttt{fcntl} does not actually place it, but returns \texttt{F\_UNLCK} in the \texttt{l\_type} field of lock and leaves the other fields of the structure unchanged. If, instead, one or more incompatible locks would prevent this lock being placed, then \texttt{fcntl} returns details about one of these locks in the \texttt{l\_type}, \texttt{l\_whence}, \texttt{l\_start} and \texttt{l\_len} fields of lock and sets \texttt{l\_pid} to be the PID of the process holding that lock.
 \end{itemize}
 
-Record locks are automatically released when the process terminates or if it closes any file descriptor referring to a file on which locks are held. A process can lose the locks when some other process decides to operate on a file by opening, reading and finally closing it. Record locks are not inherited by a child created via \texttt{fork}, but are preserved across an \texttt{execve}. Because of the buffering performing by the \texttt{stdio} library, avoid the use of record locking with \texttt{stdio} functions: \texttt{read} and \texttt{write} should be used instead.
+Record locks are automatically released when the process terminates or if it closes any file descriptor referring to a file on which locks are held. A process can loose the locks when some other process decides to operate on a file by opening, reading and finally closing it. Record locks are not inherited by a child created via \texttt{fork}, but are preserved across an \texttt{execve}. Because of the buffering performing by the \texttt{stdio} library, avoid the use of record locking with \texttt{stdio} functions: \texttt{read} and \texttt{write} should be used instead.

@@ -31,7 +31,7 @@ If there is a reference to a page, first reference to that page will trap the op
 \caption{Page fault handling}
 \end{figure}
 
-$\text{EAT} = (1-p) t_{memory} + p (t_{page\ fault} + t_{swap\ out} + t_{swap\ in} + t_{restart})$ being $ 0 \le p \le 1 $, page fault ratio.
+$\text{EAT} = (1-p) t_{\text{memory}} + p (t_{\text{page fault}} + t_{\text{swap out}} + t_{\text{swap in}} + t_{\text{restart}})$ being $ 0 \le p \le 1 $, page fault ratio.
 
 \subsection{Page replacement}
 If there is no free frame, it is needed to find some page in memory not really in use and swap it out.
@@ -71,7 +71,7 @@ Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 3 & 3 & 5 & 2 & 2 \\
 Frame 3 &  &  & \textbf{4} & \textbf{3} & \textbf{2} & \textbf{1} & 4 & 4 & \textbf{4} & \textbf{3} & 5 & 5 \\
 \hline
 \end{tabular}
-\[ f = 10/12 = 83 \% \]
+\[ f = 9/12 = 75 \% \]
 \end{center}
 This algorithm is subjected to Belady's Anomaly: adding more frames will cause more page faults.
 
@@ -91,11 +91,11 @@ Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
 \hline
 String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
 \hline
-Fault & • & • & • & • & & & • & & & • & • & • \\
+Fault & • & • & • & • & • & • & • & & & • & • & • \\
 \hline
 Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
 Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 \\
-Frame 3 & & & \textbf{4} & \textbf{3} & \textbf{2} & \textbf{1} & 4 & 3 & \textbf{5} & \textbf{4} & 3 & 2 \\
+Frame 3 & & & \textbf{4} & \textbf{3} & \textbf{2} & \textbf{1} & 4 & 3 & \textbf{5} & \textbf{4} & \textbf{3} & 2 \\
 \hline
 \end{tabular}
 \[ f = 10/12 = 83 \% \]
@@ -121,7 +121,7 @@ Time & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 \\
 \hline
 String & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
 \hline
-Fault & • & • & • & • & • & • & • & & & • & • & • \\
+Fault & • & • & • & • & & & • & & & • & • & • \\
 \hline
 Frame 1 & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 & 5 \\
 Frame 2 & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 & 1 \\
@@ -129,7 +129,7 @@ Frame 3 & & & 4 & 3 & 2 & 1 & 4 & 3 & 5 & 4 & 3 & 2 \\
 Frame 4 & & & & 4 & 3 & \textbf{2} & 1 & 1 & \textbf{1} & \textbf{5} & \textbf{4} & 3 \\
 \hline
 \end{tabular}
-\[ f = 8/12 = 75 \% \]
+\[ f = 8/12 = 67 \% \]
 \end{center}
 
 \paragraph{LRU Approximation Algorithms}
@@ -153,10 +153,10 @@ Select a page which has not been referred for a certain amount of time, i.e.,\@ 
 \end{itemize}
 
 \subsection{Allocation of frames}
-Each process needs \emph{minimum} number of pages. Two major allocation schemes:
+Each process needs a \emph{minimum} number of pages. Two major allocation schemes:
 \begin{description}
-\item [Fixed allocation] Allocation can be equal (i.e.,\@ assign an equal number of frames among processes) or proportional (i.e.,\@ assign a number of frames according to the size of process).
-\item [Priority allocation] Use a proportional allocation scheme using priority numbers rather than size. If a process generates a page fault, select for replacement one of its frames or select for replacement a frame from a process with lower priority number.
+\item [Fixed allocation] Allocation can be equal (i.e.,\@ assign an equal number of frames among processes) or proportional (i.e.,\@ assign a number of frames according to the process size).
+\item [Priority allocation] Use a proportional allocation scheme using priority numbers rather than sizes. If a process generates a page fault, select for replacement one of its frames or select for replacement a frame from a process with lower priority number.
 \end{description}
 Two strategies are possible for page replacement:
 \begin{description}
@@ -188,7 +188,7 @@ It is needed to establish ``acceptable'' page-fault rate ($1/c$ where $c$ is the
 \paragraph{Strategy}
 Run at each page fault, not at every reference. It is controlled by the time interval between page faults.
 \begin{itemize}
-\item If $\tau < c$, i.e.,\@ the measured page fault frequency is greater than the one acceptable, a page has to e added to the Resident Set of the process issuing this page fault;
+\item If $\tau < c$, i.e.,\@ the measured page fault frequency is greater than the one acceptable, a page has to be added to the Resident Set of the process issuing this page fault;
 \item If $\tau > c$, all pages not referred in that interval by the current process are eliminated from its Resident Set. The reference bit of all pages in the Resident Set are cleared.
 \end{itemize}
 
@@ -200,9 +200,9 @@ Run at each page fault, not at every reference. It is controlled by the time int
 
 \subsection{Other issues}
 \paragraph{Prepaging}
-To reduce the large number of page faults that occurs at process startup, prepage all or some of the pages a process will need, before they are referenced but if prepaged pages are unused, I/O and memory was wasted.
+To reduce the large number of page faults that occurs at process startup, prepage all or some of the pages a process will need before they are referenced but if prepaged pages are unused, I/O and memory is wasted.
 
 Assuming $s$ pages are prepaged and $\alpha$ of the pages is used, it is needed to compare the cost of $s \cdot \alpha$ save pages faults with the cost of prepaging $s \cdot (1-\alpha)$ unnecessary pages.
 
 \paragraph{Page size}
-Page size selection must take into consideration fragmentation, table size, I/O overhead and locality.
+Page size selection must take into account fragmentation, table size, I/O overhead and locality.
