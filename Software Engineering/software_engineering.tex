@@ -1,7 +1,8 @@
-\documentclass{report}
+\documentclass[a4paper, titlepage]{report}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{frontespizio}
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
@@ -18,10 +19,9 @@
 \usepackage{xcolor}
 \usepackage{rotating}
 \author{Enrico Franco}
-\title{Software Engineering - Morisio Maurizio \\
-	Lectures notes}
+\title{Software Engineering}
 \begin{document}
-\maketitle
+\input{frontespizio}
 \tableofcontents
 
 \include{introduction}
@@ -33,6 +33,7 @@
 \include{configuration_management}
 \include{verification_validation}
 \include{software_process_models}
+\include{process_managementc}
 
 \include{appendix_gui_espresso}
 \include{exercises/uml}
