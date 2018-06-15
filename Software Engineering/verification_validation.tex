@@ -548,7 +548,7 @@ Tests previously defined are repeated after a change to assure that the change h
 \begin{table}
 \centering
 \small
-\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\begin{tabularx}{0.95 \textwidth}{|X|X|X|X|X|}
 \hline 
  & Functional / Non functional & Who tests & Platform & Techniques \\ 
 \hline
@@ -689,7 +689,7 @@ These techniques are applied directly to the source code. Code is read by some t
 Compilers analyze the code checking for syntax, types and semantic correctness. The errors detected by a compiler strongly depend on the language, e.g.,\@ loose or strongly typed.
 
 \paragraph{MISRA-C}
-\emph{Motor Industry Software Reliability Association} defines some guidelines for C in order to limit possible but dangerous operations. For example:
+\emph{Motor Industry Software Reliability Association} defines guidelines for C in order to limit possible but dangerous operations. For example:
 \begin{itemize}
 \item Use only character in the source character set. This excludes the characters \texttt{\$} and \texttt{@}, among others;
 \item Declarations of identifiers denoting objects should the narrowest block scope unless a wider scope is necessary;
@@ -730,3 +730,6 @@ Some tools recover the sequence and recognize suspect ones.
 
 \paragraph{Symbolic execution}
 The program is executed with symbolic values instead of actual values. Output variables are expressed as symbolic formulas of input variables. Symbolic execution may be extremely complex even for simple programs.
+
+\section{Certifications}
+ISQTB (\href{www.isqtb.org}{www.isqtb.org}) is the International Software Testing Qualifications on Board, with delegations in most countries. It publishes Syllabus, which are available for free and provides certifications, via exams at different levels: foundation, advanced and expert on core, agile and specialist tracks.
